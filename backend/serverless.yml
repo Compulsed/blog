@@ -1,0 +1,120 @@
+tenant: compulsed
+app: eng-stats-app
+service:
+  name: eng-stats-service
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stackName: ${self:service}-${self:provider.stage}
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action: "*"
+      Resource: "*"
+
+  apiGateway:
+    restApiId: 
+      Ref: ApiGatewayRestApi
+    restApiResources:
+      Fn::GetAtt:
+        - ApiGatewayRestApi
+        - RootResourceId
+  tracing:
+    lambda: true # Optional, can be true (true equals 'Active'), 'Active' or 'PassThrough'
+
+custom:
+  accountId: #{AWS::AccountId}
+  RDS:
+    name: eng-stats-db
+    clusterIdentifier: ${self:service}-${self:provider.stage}-eng-stats-aurora-cluster
+  GraphQL:
+    path: '/graphql'
+
+# package:
+#   exclude:
+#     - src/**
+#     - node_modules/**
+
+plugins:
+  - serverless-offline
+  - serverless-pseudo-parameters
+  - serverless-dotenv-plugin
+
+functions:
+  graphql:
+    handler: src/handler.handler
+    timeout: 30
+    events:
+      - http:
+          path: ${self:custom.GraphQL.path}
+          method: post
+          cors: true
+    environment:
+      SECRET_ARN: { Ref: DatabaseSecret }
+      DB_ARN: arn:aws:rds:${self:provider.region}:#{AWS::AccountId}:cluster:${self:custom.RDS.clusterIdentifier}
+      DATABASE_NAME: ${self:custom.RDS.name}
+          
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:service}-${self:provider.stage}
+
+    DatabaseSecret:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: 'This is the secret for my RDS instance'
+        GenerateSecretString:
+          SecretStringTemplate: '{"username": "admin"}'
+          GenerateStringKey: 'password'
+          PasswordLength: 16
+          ExcludeCharacters: '"@/'
+
+    DatabaseCluster:
+      Type: AWS::RDS::DBCluster
+      Properties:
+        MasterUsername:
+          Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:username}}' ]]
+        MasterUserPassword:
+          Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:password}}' ]]
+        DatabaseName: ${self:custom.RDS.name}
+        DBClusterIdentifier: ${self:custom.RDS.clusterIdentifier}
+        Engine: aurora
+        EngineMode: serverless
+        ScalingConfiguration:
+          AutoPause: true
+          MaxCapacity: 16
+          MinCapacity: 2
+          SecondsUntilAutoPause: 3600
+
+    SecretRDSInstanceAttachment:
+      Type: AWS::SecretsManager::SecretTargetAttachment
+      Properties:
+        SecretId: { Ref: DatabaseSecret }
+        TargetId: { Ref: DatabaseCluster }
+        TargetType: AWS::RDS::DBCluster
+
+  Outputs:
+    GraphQLUrl:
+      Value:
+        Fn::Join:
+        - ""
+        - - "https://"
+          - Ref: "ApiGatewayRestApi"
+          - ".execute-api."
+          - ${self:provider.region}.
+          - Ref: "AWS::URLSuffix"
+          - "/"
+          - ${self:provider.stage}
+          - ${self:custom.GraphQL.path}
+      Export:
+        Name: ${self:service}-${self:provider.stage}-GraphQLUrl
+
+    DatabaseClusterIdentifier:
+      Value:
+        { Ref: DatabaseCluster }
+      Export:
+        Name: ${self:service}-${self:provider.stage}-DatabaseClusterIdentifier

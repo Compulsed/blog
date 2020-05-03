@@ -1,0 +1,28 @@
+{
+  "name": "ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apollo": "^2.13.0",
+    "apollo-server-lambda": "^2.4.8",
+    "graphql": "^14.2.1",
+    "knex": "^0.16.5",
+    "lodash": "^4.17.11",
+    "sqlstring": "^2.3.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.395.0",
+    "inquirer": "^6.3.1",
+    "js-yaml": "^3.13.1",
+    "minimist": "^1.2.0",
+    "serverless": "^1.45.0",
+    "serverless-offline": "^4.9.4",
+    "serverless-pseudo-parameters": "^2.4.0"
+  },
+  "scripts": {
+    "deploy-prod": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage prod",
+    "deploy-test": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage test",
+    "deploy-dev": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage dev"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apollo": "^2.13.0",
+    "apollo-server-lambda": "^2.4.8"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.395.0",
+    "serverless": "^1.45.0",
+    "serverless-dotenv-plugin": "^2.4.2",
+    "serverless-offline": "^4.9.4",
+    "serverless-pseudo-parameters": "^2.4.0"
+  },
+  "scripts": {
+    "dev": "sls offline --stage dev",
+    "deploy-prod": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage prod",
+    "deploy-test": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage test",
+    "deploy-dale": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage dale"
+  }
+}
