@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Running SSH Tunnel"
+ssh -i "~/2020-05-03-dale-desktop.pem" \
+    -N -L \
+    5433:engstats-dev-4-us-east-1-aurora-cluster.cluster-cjr8nin5r4hm.us-east-1.rds.amazonaws.com:5432\
+    ec2-user@ec2-3-91-155-165.compute-1.amazonaws.com

@@ -1,14 +1,12 @@
-tenant: compulsed
-app: eng-stats-app
 service:
-  name: eng-stats-service
+  name: engstats
 
 provider:
   name: aws
-  runtime: nodejs10.x
-  stackName: ${self:service}-${self:provider.stage}
-  stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
+  runtime: nodejs12.x
+  stackName: ${self:service}-${self:provider.stage}-${env:AWS_REGION}
+  stage: ${env:STAGE}
+  region: ${env:AWS_REGION}
   iamRoleStatements:
     - Effect: Allow
       Action: "*"
@@ -25,22 +23,27 @@ provider:
     lambda: true # Optional, can be true (true equals 'Active'), 'Active' or 'PassThrough'
 
 custom:
-  accountId: #{AWS::AccountId}
   RDS:
-    name: eng-stats-db
-    clusterIdentifier: ${self:service}-${self:provider.stage}-eng-stats-aurora-cluster
+    clusterIdentifierName: ${self:provider.stackName}-aurora-cluster
+    clusterDatabaseSecretName: ${self:custom.RDS.clusterIdentifierName}-secret
+    databaseName: ${self:service} # rds requires alphanumeric database names
+    databaseUser: ${self:service}
   GraphQL:
     path: '/graphql'
+  Network:
+    VpcCIDR: '10.192.0.0/16'
+    PublicSubnet0CIDR: '10.192.10.0/24'
+    PublicSubnet1CIDR: '10.192.11.0/24'
+    PublicSubnet2CIDR: '10.192.12.0/24'
+    PublicSubnet3CIDR: '10.192.13.0/24'
+    PublicSubnet4CIDR: '10.192.14.0/24'
+    PublicSubnet5CIDR: '10.192.15.0/24'
 
-# package:
-#   exclude:
-#     - src/**
-#     - node_modules/**
+
 
 plugins:
   - serverless-offline
   - serverless-pseudo-parameters
-  - serverless-dotenv-plugin
 
 functions:
   graphql:
@@ -53,22 +56,24 @@ functions:
           cors: true
     environment:
       SECRET_ARN: { Ref: DatabaseSecret }
-      DB_ARN: arn:aws:rds:${self:provider.region}:#{AWS::AccountId}:cluster:${self:custom.RDS.clusterIdentifier}
-      DATABASE_NAME: ${self:custom.RDS.name}
+      DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
+      DATABASE_NAME: ${self:custom.RDS.databaseName}
+      DATABASE_USER: ${self:custom.RDS.databaseUser}
           
 resources:
   Resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: ${self:service}-${self:provider.stage}
+        Name: ${self:provider.stackName}-api
 
     DatabaseSecret:
       Type: AWS::SecretsManager::Secret
       Properties:
-        Description: 'This is the secret for my RDS instance'
+        Name: ${self:custom.RDS.clusterDatabaseSecretName}
+        Description: 'Used to access aurora serverless instance'
         GenerateSecretString:
-          SecretStringTemplate: '{"username": "admin"}'
+          SecretStringTemplate: '{"username": "${self:custom.RDS.databaseUser}"}'
           GenerateStringKey: 'password'
           PasswordLength: 16
           ExcludeCharacters: '"@/'
@@ -76,19 +81,33 @@ resources:
     DatabaseCluster:
       Type: AWS::RDS::DBCluster
       Properties:
+        DatabaseName: ${self:custom.RDS.databaseName}
         MasterUsername:
           Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:username}}' ]]
         MasterUserPassword:
           Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:password}}' ]]
-        DatabaseName: ${self:custom.RDS.name}
-        DBClusterIdentifier: ${self:custom.RDS.clusterIdentifier}
-        Engine: aurora
+        DBClusterIdentifier: ${self:custom.RDS.clusterIdentifierName}
+        Engine: aurora-postgresql
         EngineMode: serverless
+        EnableHttpEndpoint: true # DataAPI - https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
         ScalingConfiguration:
           AutoPause: true
           MaxCapacity: 16
           MinCapacity: 2
           SecondsUntilAutoPause: 3600
+        DBSubnetGroupName: { Ref: DBSubnetGroup }
+        VpcSecurityGroupIds:
+          - { Ref: VpcSecurityGroup }
+
+    # Unlikely to be correct, might also need to reference itself?
+    VpcSecurityGroup: 
+      Type: AWS::RDS::DBSecurityGroup
+      Properties: 
+        GroupDescription: "Ingress for Amazon EC2 security group"
+        DBSecurityGroupIngress: 
+          - 
+            EC2SecurityGroupId: "sg-09a48384bdcaab633"
+            EC2SecurityGroupOwnerId: "145722906259"
 
     SecretRDSInstanceAttachment:
       Type: AWS::SecretsManager::SecretTargetAttachment
@@ -97,6 +116,168 @@ resources:
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
 
+  ################
+  # Networking
+  ################
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: ${self:custom.Network.VpcCIDR}
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: ${self:provider.stackName}
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ${self:provider.stackName}
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: { Ref: InternetGateway }
+      VpcId: { Ref: VPC }
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: String
+      DBSubnetGroupName: String
+      SubnetIds: 
+        - { Ref: PublicSubnet0 }
+        - { Ref: PublicSubnet1 }
+        - { Ref: PublicSubnet2 }
+        - { Ref: PublicSubnet3 }
+        - { Ref: PublicSubnet4 }
+        - { Ref: PublicSubnet5 }
+
+  PublicSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet0CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ0)"
+
+  PublicSubnet1:
+    Type: AWS::EC1::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet1CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ1)"
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 2, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet2CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ2)"
+
+  PublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 3, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet3CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ3)"
+
+  PublicSubnet4:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 4, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet4CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ4)"
+
+  PublicSubnet5:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: { Ref: VPC }
+      AvailabilityZone: !Select [ 5, !GetAZs '' ]
+      CidrBlock: ${self:custom.Network.PublicSubnet5CIDR}
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Subnet (AZ5)"          
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: { Ref: VPC }
+      Tags:
+        - Key: Name
+          Value: "${self:provider.stackName} Public Routes"
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: { Ref: InternetGateway }
+
+  PublicSubnet0RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet0 }
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet1 }
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet2 }
+
+  PublicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet3 }
+
+  PublicSubnet4RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet4 }
+
+  PublicSubnet5RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: { Ref: PublicRouteTable }
+      SubnetId: { Ref: PublicSubnet5 }
+
+  ################
+  # Outputs
+  ################
+  
   Outputs:
     GraphQLUrl:
       Value:
@@ -111,10 +292,20 @@ resources:
           - ${self:provider.stage}
           - ${self:custom.GraphQL.path}
       Export:
-        Name: ${self:service}-${self:provider.stage}-GraphQLUrl
+        Name: ${self:provider.stackName}-graphQLUrl
 
-    DatabaseClusterIdentifier:
+    DatabaseClusterIdentifierName:
       Value:
         { Ref: DatabaseCluster }
       Export:
-        Name: ${self:service}-${self:provider.stage}-DatabaseClusterIdentifier
+        Name: ${self:provider.stackName}-databaseClusterIdentifierName
+
+    DatabaseName:
+      Value: ${self:custom.RDS.databaseName}
+      Export:
+        Name: ${self:provider.stackName}-databaseName
+
+    DatabaseSecretArn:
+      Value: { Ref: DatabaseSecret }
+      Export:
+        Name: ${self:provider.stackName}-databaseSecretArn
