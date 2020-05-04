@@ -130,7 +130,7 @@ resources:
             FromPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
             ToPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
         
-        # Change this, it is not secure (Should only need Port 22)
+        # TODO: Change this, it is not secure (Should only need Port 22)
         SecurityGroupIngress:
           - CidrIp: 0.0.0.0/0
             FromPort: -1
@@ -169,8 +169,6 @@ resources:
           - Key: Name
             Value: ${self:provider.stackName}
 
-    # TODO Change this to a proper EC2
-    # Unlikely to be correct, might also need to reference itself?
     DatabaseVPCSecurityGroup: 
       Type: AWS::EC2::SecurityGroup
       Properties:
@@ -182,8 +180,6 @@ resources:
           -
             IpProtocol: "tcp"
             CidrIp: "0.0.0.0/0" # FIX THIS
-            # SourceSecurityGroupId: "sg-09a48384bdcaab633" # !Ref SecurityGroupBastion
-            # SourceSecurityGroupOwnerId: "145722906259"
             FromPort: 5432
             ToPort: 5432
 

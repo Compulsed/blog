@@ -5,11 +5,12 @@
 - [x] Deploy a single stage
 - [x] Query via TablePlus
 - [x] VPC Bastion host
-  - [ ] Conditionally launch Bastion host -- EC2_KEY_NAME included
-  - [ ] Clean up bastion rules
+  - [x] Conditionally launch Bastion host -- EC2_KEY_NAME included
+  - [x] Clean up bastion rules
 - [ ] GraphQL returning a value
 - [ ] GraphQL querying Serverless Aurora
 - [ ] CI / CD Code Pipeline (Multi account)
+- [ ] Bastion defined as separate cloudformation stack
 
 ## Before Production
 - [ ] Limit Execution role in serverless.yml as it is *
@@ -26,7 +27,6 @@
 - [ ] Support named stages (not just dev)
 - [ ] Web sockets
 - [ ] HTTP Api rather than RestAPI
-- [ ] Bastion defined as separate cloudformation stack
 
 ## Optional
 - [ ] Serverless CI/CD
