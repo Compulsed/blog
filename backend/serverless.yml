@@ -61,6 +61,12 @@ functions:
       DATABASE_PORT: !GetAtt 'DatabaseCluster.Endpoint.Port'
 
 resources:
+  Conditions:
+    BastionEnabled:
+      Fn::Equals:
+        - ${env:BASTION}
+        - 'true'
+
   Resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
@@ -111,6 +117,7 @@ resources:
     ################
     BastionSecurityGroup:
       Type: AWS::EC2::SecurityGroup
+      Condition: BastionEnabled
       Properties: 
         GroupDescription: 'Bastion for ${self:provider.stackName}'
         SecurityGroupEgress:
@@ -133,8 +140,9 @@ resources:
 
     Bastion:
       Type: AWS::EC2::Instance
+      Condition: BastionEnabled
       Properties:
-        DisableApiTermination: true
+        DisableApiTermination: false
         ImageId: ${ssm:/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-ebs}
         InstanceType: t2.nano
         KeyName: ${env:EC2_KEY_NAME}
@@ -377,6 +385,7 @@ resources:
         Name: ${self:provider.stackName}-databasePort
 
     BastionPublicDnsName:
+      Condition: BastionEnabled
       Description: 'The connection endpoint for the DB cluster.'
       Value: !GetAtt 'Bastion.PublicDnsName'
       Export:

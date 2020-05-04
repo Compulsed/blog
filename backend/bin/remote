@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+# TODO: Check if Bastion is enabled in CF
 STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
 BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
 DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)
@@ -19,11 +20,3 @@ ssh -i "~/$EC2_KEY_NAME.pem" \
     -N -L \
     "5433:$DATABASE_HOST_NAME:$DATABASE_PORT"\
     "ec2-user@$BASTION_PUBLIC_DNS_NAME"
-
-
-# echo "Running SSH Tunnel"
-# ssh -i "~/2020-05-03-dale-desktop.pem" \
-#     -N -L \
-#     5433:engstats-dev-4-us-east-1-aurora-cluster.cluster-cjr8nin5r4hm.us-east-1.rds.amazonaws.com:5432\
-#     ec2-user@ec2-3-91-155-165.compute-1.amazonaws.com
-    
