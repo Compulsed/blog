@@ -1,0 +1,1 @@
+Requires JQ, AWS ClI, asdf

@@ -138,9 +138,14 @@
       RouteTableId: !Ref PrivateRouteTable2
       SubnetId: !Ref PrivateSubnet2
 
-  NoIngressSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: "no-ingress-sg"
-      GroupDescription: "Security group with no ingress rule"
-      VpcId: !Ref VPC
+  DbSecurityByEC2SecurityGroup: 
+    Type: AWS::RDS::DBSecurityGroup
+    Properties: 
+      GroupDescription: "Ingress for Amazon EC2 security group"
+      DBSecurityGroupIngress: 
+        - 
+          EC2SecurityGroupId: "sg-b0ff1111"
+          EC2SecurityGroupOwnerId: "111122223333"
+        - 
+          EC2SecurityGroupId: "sg-ffd722222"
+          EC2SecurityGroupOwnerId: "111122223333"

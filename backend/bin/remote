@@ -1,8 +1,29 @@
 #!/bin/bash
 set -euo pipefail
 
+STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
+BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
+DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)
+DATABASE_PORT=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabasePort'].OutputValue" --output text)
+DATABASE_SECRET_ARN=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseSecretArn'].OutputValue" --output text)
+DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."password" )
+
 echo "Running SSH Tunnel"
-ssh -i "~/2020-05-03-dale-desktop.pem" \
+echo "-> $BASTION_PUBLIC_DNS_NAME"
+echo "-> $DATABASE_HOST_NAME"
+echo "-> $DATABASE_PORT"
+echo "-> ~/$EC2_KEY_NAME.pem"
+echo "-> Connect with losthost, port 5433, secret: $DATABASE_SECRET"
+
+ssh -i "~/$EC2_KEY_NAME.pem" \
     -N -L \
-    5433:engstats-dev-4-us-east-1-aurora-cluster.cluster-cjr8nin5r4hm.us-east-1.rds.amazonaws.com:5432\
-    ec2-user@ec2-3-91-155-165.compute-1.amazonaws.com
+    "5433:$DATABASE_HOST_NAME:$DATABASE_PORT"\
+    "ec2-user@$BASTION_PUBLIC_DNS_NAME"
+
+
+# echo "Running SSH Tunnel"
+# ssh -i "~/2020-05-03-dale-desktop.pem" \
+#     -N -L \
+#     5433:engstats-dev-4-us-east-1-aurora-cluster.cluster-cjr8nin5r4hm.us-east-1.rds.amazonaws.com:5432\
+#     ec2-user@ec2-3-91-155-165.compute-1.amazonaws.com
+    

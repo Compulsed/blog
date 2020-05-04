@@ -5,6 +5,8 @@
 - [x] Deploy a single stage
 - [x] Query via TablePlus
 - [ ] VPC Bastion host
+  - [ ] Conditionally launch Bastion host -- EC2_KEY_NAME included
+  - [ ] Should BastionSecurityGroup.SecurityGroupIngress be empty?
 - [ ] GraphQL returning a value
 - [ ] GraphQL querying Serverless Aurora
 - [ ] CI / CD Code Pipeline (Multi account)

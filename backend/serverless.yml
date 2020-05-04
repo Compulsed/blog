@@ -39,8 +39,6 @@ custom:
     PublicSubnet4CIDR: '10.192.14.0/24'
     PublicSubnet5CIDR: '10.192.15.0/24'
 
-
-
 plugins:
   - serverless-offline
   - serverless-pseudo-parameters
@@ -59,7 +57,9 @@ functions:
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
-          
+      DATABASE_HOSTNAME: !GetAtt 'DatabaseCluster.Endpoint.Address'
+      DATABASE_PORT: !GetAtt 'DatabaseCluster.Endpoint.Port'
+
 resources:
   Resources:
     ApiGatewayRestApi:
@@ -95,19 +95,9 @@ resources:
           MaxCapacity: 16
           MinCapacity: 2
           SecondsUntilAutoPause: 3600
-        DBSubnetGroupName: { Ref: DBSubnetGroup }
-        VpcSecurityGroupIds:
-          - { Ref: VpcSecurityGroup }
-
-    # Unlikely to be correct, might also need to reference itself?
-    VpcSecurityGroup: 
-      Type: AWS::RDS::DBSecurityGroup
-      Properties: 
-        GroupDescription: "Ingress for Amazon EC2 security group"
-        DBSecurityGroupIngress: 
-          - 
-            EC2SecurityGroupId: "sg-09a48384bdcaab633"
-            EC2SecurityGroupOwnerId: "145722906259"
+        DBSubnetGroupName: !Ref "MyDBSubnetGroup"
+        VpcSecurityGroupIds: # DBSecurityGroups vs VPCSecurityGroups vs VpcSecurityGroupIds
+          - !GetAtt DatabaseVPCSecurityGroup.GroupId
 
     SecretRDSInstanceAttachment:
       Type: AWS::SecretsManager::SecretTargetAttachment
@@ -115,169 +105,233 @@ resources:
         SecretId: { Ref: DatabaseSecret }
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
+    
+    ################
+    # Bastion
+    ################
+    BastionSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties: 
+        GroupDescription: 'Bastion for ${self:provider.stackName}'
+        SecurityGroupEgress:
+          - CidrIp: 0.0.0.0/0
+            FromPort: -1
+            ToPort: -1
+            IpProtocol: '-1'
+          - DestinationSecurityGroupId: !GetAtt DatabaseVPCSecurityGroup.GroupId
+            IpProtocol: tcp
+            FromPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
+            ToPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
+        
+        # Change this, it is not secure (Should only need Port 22)
+        SecurityGroupIngress:
+          - CidrIp: 0.0.0.0/0
+            FromPort: -1
+            ToPort: -1
+            IpProtocol: '-1'
+        VpcId: { Ref: VPC }
 
-  ################
-  # Networking
-  ################
+    Bastion:
+      Type: AWS::EC2::Instance
+      Properties:
+        DisableApiTermination: true
+        ImageId: ${ssm:/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-ebs}
+        InstanceType: t2.nano
+        KeyName: ${env:EC2_KEY_NAME}
+        Monitoring: false
+        UserData: !Base64 'yum install postgresql --assumeyes'
+        NetworkInterfaces: 
+          - AssociatePublicIpAddress: "true"
+            DeviceIndex: "0"
+            GroupSet: 
+              - Ref: "DatabaseVPCSecurityGroup"
+              - Ref: "BastionSecurityGroup"
+            SubnetId: { Ref: "PublicSubnet0" }
 
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: ${self:custom.Network.VpcCIDR}
-      EnableDnsSupport: true
-      EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: ${self:provider.stackName}
+    ################
+    # Networking
+    ################
+    VPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: ${self:custom.Network.VpcCIDR}
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        Tags:
+          - Key: Name
+            Value: ${self:provider.stackName}
 
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-        - Key: Name
-          Value: ${self:provider.stackName}
+    # TODO Change this to a proper EC2
+    # Unlikely to be correct, might also need to reference itself?
+    DatabaseVPCSecurityGroup: 
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        VpcId: { Ref: VPC }
+        GroupDescription: "Ingress for Amazon EC2 security group"
 
-  InternetGatewayAttachment:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      InternetGatewayId: { Ref: InternetGateway }
-      VpcId: { Ref: VPC }
+        # Change this, it is not secure, might only need Bastion hosts' 
+        SecurityGroupIngress:
+          -
+            IpProtocol: "tcp"
+            CidrIp: "0.0.0.0/0" # FIX THIS
+            # SourceSecurityGroupId: "sg-09a48384bdcaab633" # !Ref SecurityGroupBastion
+            # SourceSecurityGroupOwnerId: "145722906259"
+            FromPort: 5432
+            ToPort: 5432
 
-  DBSubnetGroup:
-    Type: AWS::RDS::DBSubnetGroup
-    Properties: 
-      DBSubnetGroupDescription: String
-      DBSubnetGroupName: String
-      SubnetIds: 
-        - { Ref: PublicSubnet0 }
-        - { Ref: PublicSubnet1 }
-        - { Ref: PublicSubnet2 }
-        - { Ref: PublicSubnet3 }
-        - { Ref: PublicSubnet4 }
-        - { Ref: PublicSubnet5 }
+    InternetGateway:
+      Type: AWS::EC2::InternetGateway
+      Properties:
+        Tags:
+          - Key: Name
+            Value: ${self:provider.stackName}
 
-  PublicSubnet0:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet0CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ0)"
+    InternetGatewayAttachment:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        InternetGatewayId: { Ref: InternetGateway }
+        VpcId: { Ref: VPC }
 
-  PublicSubnet1:
-    Type: AWS::EC1::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 1, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet1CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ1)"
+    MyDBSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      DependsOn: # Consider if this is actually needed
+        - PublicSubnet0RouteTableAssociation
+        - PublicSubnet1RouteTableAssociation
+        - PublicSubnet2RouteTableAssociation
+        - PublicSubnet3RouteTableAssociation
+        - PublicSubnet4RouteTableAssociation
+      Properties: 
+        DBSubnetGroupDescription: DBSubnetGroupDescription
+        SubnetIds: 
+          - { Ref: PublicSubnet0 }
+          - { Ref: PublicSubnet1 }
+          - { Ref: PublicSubnet2 }
+          - { Ref: PublicSubnet3 }
+          - { Ref: PublicSubnet4 }
+          - { Ref: PublicSubnet5 }
 
-  PublicSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 2, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet2CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ2)"
+    PublicSubnet0:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet0CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ0)"
 
-  PublicSubnet3:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 3, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet3CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ3)"
+    PublicSubnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 1, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet1CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ1)"
 
-  PublicSubnet4:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 4, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet4CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ4)"
+    PublicSubnet2:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 2, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet2CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ2)"
 
-  PublicSubnet5:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: { Ref: VPC }
-      AvailabilityZone: !Select [ 5, !GetAZs '' ]
-      CidrBlock: ${self:custom.Network.PublicSubnet5CIDR}
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Subnet (AZ5)"          
+    PublicSubnet3:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 3, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet3CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ3)"
 
-  PublicRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: { Ref: VPC }
-      Tags:
-        - Key: Name
-          Value: "${self:provider.stackName} Public Routes"
+    PublicSubnet4:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 4, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet4CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ4)"
 
-  DefaultPublicRoute:
-    Type: AWS::EC2::Route
-    DependsOn: InternetGatewayAttachment
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: { Ref: InternetGateway }
+    PublicSubnet5:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: { Ref: VPC }
+        AvailabilityZone: !Select [ 5, !GetAZs '' ]
+        CidrBlock: ${self:custom.Network.PublicSubnet5CIDR}
+        MapPublicIpOnLaunch: true
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Subnet (AZ5)"          
 
-  PublicSubnet0RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet0 }
+    PublicRouteTable:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId: { Ref: VPC }
+        Tags:
+          - Key: Name
+            Value: "${self:provider.stackName} Public Routes"
 
-  PublicSubnet1RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet1 }
+    DefaultPublicRoute:
+      Type: AWS::EC2::Route
+      DependsOn: InternetGatewayAttachment
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: { Ref: InternetGateway }
 
-  PublicSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet2 }
+    PublicSubnet0RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet0 }
 
-  PublicSubnet3RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet3 }
+    PublicSubnet1RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet1 }
 
-  PublicSubnet4RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet4 }
+    PublicSubnet2RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet2 }
 
-  PublicSubnet5RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: { Ref: PublicRouteTable }
-      SubnetId: { Ref: PublicSubnet5 }
+    PublicSubnet3RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet3 }
+
+    PublicSubnet4RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet4 }
+
+    PublicSubnet5RouteTableAssociation:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId: { Ref: PublicRouteTable }
+        SubnetId: { Ref: PublicSubnet5 }
 
   ################
   # Outputs
   ################
-  
+
   Outputs:
     GraphQLUrl:
       Value:
@@ -309,3 +363,21 @@ resources:
       Value: { Ref: DatabaseSecret }
       Export:
         Name: ${self:provider.stackName}-databaseSecretArn
+
+    DatabaseHostName:
+      Description: 'The connection endpoint for the DB cluster.'
+      Value: !GetAtt 'DatabaseCluster.Endpoint.Address'
+      Export:
+        Name: ${self:provider.stackName}-databaseHostName
+    
+    DatabasePort:
+      Description: 'The connection endpoint for the DB cluster.'
+      Value: !GetAtt 'DatabaseCluster.Endpoint.Port'
+      Export:
+        Name: ${self:provider.stackName}-databasePort
+
+    BastionPublicDnsName:
+      Description: 'The connection endpoint for the DB cluster.'
+      Value: !GetAtt 'Bastion.PublicDnsName'
+      Export:
+        Name: ${self:provider.stackName}-PublicDnsName
