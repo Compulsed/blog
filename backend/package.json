@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@moe-tech/serverless-plugin-local-env": "^0.1.6",
     "apollo": "^2.13.0",
-    "apollo-server-lambda": "^2.4.8"
+    "apollo-server-lambda": "^2.4.8",
+    "data-api-client": "^1.0.1"
   },
   "devDependencies": {
     "aws-sdk": "^2.395.0",

@@ -7,16 +7,23 @@
 - [x] VPC Bastion host
   - [x] Conditionally launch Bastion host -- EC2_KEY_NAME included
   - [x] Clean up bastion rules
-- [ ] GraphQL returning a value
-- [ ] GraphQL querying Serverless Aurora
-- [ ] CI / CD Code Pipeline (Multi account)
-- [ ] CI / CD Code Pipeline (Deploy new instance on CI, validates CF)
+- [x] GraphQL returning a value in client
+- [x] GraphQL querying Serverless Aurora
+- [ ] Database Seed (Does can this be done with DataAPI?)
+  - [ ] Database migration script
+- [ ] GraphQL triggered by test
+- [ ] CI / CD Pipeline (Multi account)
+- [ ] CI / CD Pipeline (Deploy new instance on CI, validates CF)
+- [ ] Data Faker
 
 ## Before Production
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 
 ## Nice to have
+- [ ] Logging framework
+  - [ ] Database logs
+- [ ] Cloudwatch Metrics
 - [ ] TypeScript / DI support
 - [x] Custom VPC (Project does not have off default VPC)
 - [ ] Support for XRay
@@ -29,6 +36,8 @@
 - [ ] Web sockets
 - [ ] HTTP Api rather than RestAPI
 - [ ] Bastion defined as separate cloudformation stack
+- [ ] DNS on database
+- [ ] DNS on API
   
 ## Optional
 - [ ] Serverless CI/CD

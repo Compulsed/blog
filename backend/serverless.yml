@@ -53,12 +53,14 @@ functions:
           method: post
           cors: true
     environment:
-      SECRET_ARN: { Ref: DatabaseSecret }
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM} # Hack 1
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt 'DatabaseCluster.Endpoint.Address'
       DATABASE_PORT: !GetAtt 'DatabaseCluster.Endpoint.Port'
+    dependsOn: 
+      - SecretARNSSM # Hack 1
 
 resources:
   Conditions:
@@ -112,6 +114,19 @@ resources:
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
     
+    ###############
+    # Hack 1 
+    ###############
+    # Serverless offline does not allow you to use Ref, which our lambda depends on the secret ARN
+    #   We can save the value on the first deploy in SSM, and then use the SSM value in serverless offline
+    # https://github.com/dherault/serverless-offline/issues/688
+    SecretARNSSM:
+      Type: AWS::SSM::Parameter
+      Properties: 
+        Type: String
+        Name: "/${self:provider.stackName}/SECRET_ARN_SSM"
+        Value: { Ref: DatabaseSecret }
+
     ################
     # Bastion
     ################
