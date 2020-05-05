@@ -9,12 +9,15 @@
   - [x] Clean up bastion rules
 - [x] GraphQL returning a value in client
 - [x] GraphQL querying Serverless Aurora
+- [ ] Database migration script
 - [ ] Database Seed (Does can this be done with DataAPI?)
-  - [ ] Database migration script
 - [ ] GraphQL triggered by test
 - [ ] CI / CD Pipeline (Multi account)
 - [ ] CI / CD Pipeline (Deploy new instance on CI, validates CF)
 - [ ] Data Faker
+
+## Technical Debt
+- [ ] Database name now exists in env? 
 
 ## Before Production
 - [ ] Limit Execution role in serverless.yml as it is *
@@ -38,6 +41,7 @@
 - [ ] Bastion defined as separate cloudformation stack
 - [ ] DNS on database
 - [ ] DNS on API
+- [ ] IAM Auth on database
   
 ## Optional
 - [ ] Serverless CI/CD

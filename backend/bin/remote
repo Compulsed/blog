@@ -14,9 +14,9 @@ echo "-> $BASTION_PUBLIC_DNS_NAME"
 echo "-> $DATABASE_HOST_NAME"
 echo "-> $DATABASE_PORT"
 echo "-> ~/$EC2_KEY_NAME.pem"
-echo "-> Connect with losthost, port 5433, secret: $DATABASE_SECRET"
+echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
 
 ssh -i "~/$EC2_KEY_NAME.pem" \
     -N -L \
-    "5433:$DATABASE_HOST_NAME:$DATABASE_PORT"\
+    "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT"\
     "ec2-user@$BASTION_PUBLIC_DNS_NAME"

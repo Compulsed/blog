@@ -7,7 +7,9 @@
     "@moe-tech/serverless-plugin-local-env": "^0.1.6",
     "apollo": "^2.13.0",
     "apollo-server-lambda": "^2.4.8",
-    "data-api-client": "^1.0.1"
+    "data-api-client": "^1.0.1",
+    "knex": "^0.21.1",
+    "pg": "^8.0.3"
   },
   "devDependencies": {
     "aws-sdk": "^2.395.0",
