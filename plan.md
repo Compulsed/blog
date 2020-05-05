@@ -11,15 +11,18 @@
 - [x] GraphQL querying Serverless Aurora
 - [x] Database migration script
 - [x] Database Seed (Does can this be done with DataAPI?)
+- [x] Data Faker
 - [ ] GraphQL triggered by test
 - [ ] CI / CD Pipeline (Multi account)
 - [ ] CI / CD Pipeline (Deploy new instance on CI, validates CF)
-- [ ] Data Faker
-
-## Technical Debt
-- [ ] Database name now exists in env? 
+- [ ] GitHub commits into repo
+- [ ] Buildkite commits into repo (Event Bridge)
+- [ ] Jira stories into repo
+- [ ] Build out frontend
+- [ ] Authentication (cognito?)
 
 ## Before Production
+- [ ] API Authentication
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 
