@@ -4,8 +4,16 @@ const AWS = require('aws-sdk');
 const _ = require('lodash');
 
 const typeDefs = gql`
+    type User {
+        email: String
+        first_name: String
+        last_name: String
+    }
+
+
     type Query {
         hello: String!
+        users: [User]
     }
 
     type TableData {
@@ -21,7 +29,22 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        hello: () => 'Hello'
+        hello: () => 'Hello',
+
+        users: async () => {
+            const data = require('data-api-client')({
+                secretArn: process.env.SECRET_ARN,
+                resourceArn: process.env.DB_ARN,
+                database: process.env.DATABASE_NAME,
+            });
+
+            const result = await data.query(`
+                SELECT * FROM users
+            `);
+
+            return result.records;
+
+        }
     },
     Mutation: {
         run: async (root, args, context) => {

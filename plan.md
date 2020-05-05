@@ -9,8 +9,8 @@
   - [x] Clean up bastion rules
 - [x] GraphQL returning a value in client
 - [x] GraphQL querying Serverless Aurora
-- [ ] Database migration script
-- [ ] Database Seed (Does can this be done with DataAPI?)
+- [x] Database migration script
+- [x] Database Seed (Does can this be done with DataAPI?)
 - [ ] GraphQL triggered by test
 - [ ] CI / CD Pipeline (Multi account)
 - [ ] CI / CD Pipeline (Deploy new instance on CI, validates CF)
