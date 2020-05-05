@@ -10,14 +10,15 @@
 - [ ] GraphQL returning a value
 - [ ] GraphQL querying Serverless Aurora
 - [ ] CI / CD Code Pipeline (Multi account)
-- [ ] Bastion defined as separate cloudformation stack
+- [ ] CI / CD Code Pipeline (Deploy new instance on CI, validates CF)
 
 ## Before Production
 - [ ] Limit Execution role in serverless.yml as it is *
+- [ ] Remove * CIDR from BastionSecurityGroup
 
 ## Nice to have
 - [ ] TypeScript / DI support
-- [ ] Custom VPC (Project does not have off default VPC)
+- [x] Custom VPC (Project does not have off default VPC)
 - [ ] Support for XRay
 - [ ] Load testing
 - [ ] Insomnia api in repo
@@ -27,7 +28,8 @@
 - [ ] Support named stages (not just dev)
 - [ ] Web sockets
 - [ ] HTTP Api rather than RestAPI
-
+- [ ] Bastion defined as separate cloudformation stack
+  
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
