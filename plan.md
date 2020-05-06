@@ -45,6 +45,7 @@
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
+- [ ] Move compose into backend (does not support microservices nicely)
   
 ## Optional
 - [ ] Serverless CI/CD
