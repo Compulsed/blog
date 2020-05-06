@@ -11,13 +11,12 @@ steps:
   - label: "Deploy Testing Environment"
     trigger: "eng-stats-deploy"
     build:
-      commit: "$BUILDKITE_COMMIT"
-      message: "$BUILDKITE_MESSAGE"
-      branch: "$BUILDKITE_BRANCH"
+      # commit: "$BUILDKITE_COMMIT"
+      # message: "$BUILDKITE_MESSAGE"
+      # branch: "$BUILDKITE_BRANCH"
       env:
         ENG_STATS_ENV: "test"
-        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-test-ci-role
-        AWS_PROFILE: "dale-personal-admin-laptop"
+        ROLE_ARN: "arn:aws:iam::755220514429:role/eng-stats-test-ci-role"
         AWS_DEFAULT_REGION: "us-east-1"
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "755220514429"
