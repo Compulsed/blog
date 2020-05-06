@@ -6,8 +6,8 @@ steps:
     concurrency: 1
     concurrency_group: "eng-stats-deploy-${ENG_STATS_ENV}"
     plugins:
-      - cultureamp/aws-assume-role#v0.1.0:
-          role: "$ROLE_ARN"
+      # - cultureamp/aws-assume-role#v0.1.0:
+      #     role: "$ROLE_ARN"
       - docker-compose#v3.1.0:
           run: backend
           env:
