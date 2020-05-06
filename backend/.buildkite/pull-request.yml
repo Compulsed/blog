@@ -7,7 +7,7 @@ steps:
       queue: default
     plugins:
       - docker-compose#v3.0.1:
-        run: backend
+          run: backend
   - label: "Deploy production environment"
     trigger: "eng-stats-deploy"
     build:
