@@ -1,0 +1,38 @@
+steps:
+  - label: "Deploy staging environment"
+    trigger: "eng-stats-deploy"
+    build:
+      commit: "$BUILDKITE_COMMIT"
+      message: "$BUILDKITE_MESSAGE"
+      branch: "$BUILDKITE_BRANCH"
+      env:
+        ENG_STATS_ENV: "staging"
+        ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_REGION: "us-east-1"
+        AWS_ACCOUNT_ID: "745453995866"
+        STAGE: "staging"
+        BASTION: "false"
+        EC2_KEY_NAME: "2020-05-03-dale-desktop"
+        DATABASE_LOCAL_PORT: "5433"
+        DATABASE_NAME: "engstats"
+  - wait
+  - block: ":rocket: Release!"
+  - label: "Deploy production environment"
+    trigger: "eng-stats-deploy"
+    build:
+      commit: "$BUILDKITE_COMMIT"
+      message: "$BUILDKITE_MESSAGE"
+      branch: "$BUILDKITE_BRANCH"
+      env:
+        ENG_STATS_ENV: "production"
+        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_REGION: "us-east-1"
+        AWS_ACCOUNT_ID: "755220514429"
+        STAGE: "prod"
+        BASTION: "false"
+        EC2_KEY_NAME: "2020-05-03-dale-desktop"
+        DATABASE_LOCAL_PORT: "5433"
+        DATABASE_NAME: "engstats"
+

@@ -1,0 +1,28 @@
+
+steps:
+  - label: Run PR
+    command:
+      - "echo 'Pull requesting!'"
+    agents:
+      queue: default
+    plugins:
+      - docker-compose#v3.0.1:
+          run: backend
+  - label: "Deploy production environment"
+    trigger: "eng-stats-deploy"
+    build:
+      commit: "$BUILDKITE_COMMIT"
+      message: "$BUILDKITE_MESSAGE"
+      branch: "$BUILDKITE_BRANCH"
+      env:
+        ENG_STATS_ENV: "test"
+        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-test-ci-role
+        AWS_PROFILE: "dale-personal-admin-laptop"
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_REGION: "us-east-1"
+        AWS_ACCOUNT_ID: "755220514429"
+        STAGE: "test"
+        BASTION: "false"
+        EC2_KEY_NAME: "2020-05-03-dale-desktop"
+        DATABASE_LOCAL_PORT: "5433"
+        DATABASE_NAME: "engstats"
