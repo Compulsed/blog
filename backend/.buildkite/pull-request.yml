@@ -44,3 +44,14 @@ steps:
             - EC2_KEY_NAME
             - DATABASE_LOCAL_PORT
             - DATABASE_NAME
+    env:
+      ENG_STATS_ENV: "test-${BUILDKITE_BUILD_NUMBER}"
+      ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
+      AWS_DEFAULT_REGION: "us-east-1"
+      AWS_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "335713476045"
+      STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
+      BASTION: "false"
+      EC2_KEY_NAME: "2020-05-03-dale-desktop"
+      DATABASE_LOCAL_PORT: "5433"
+      DATABASE_NAME: "engstats"
