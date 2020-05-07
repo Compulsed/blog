@@ -11,8 +11,8 @@ steps:
       - docker-compose#v3.1.0:
           run: backend
           env:
-            - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
+            - AWS_ACCESS_KEY_ID
             - AWS_SESSION_TOKEN
             - AWS_REGION=us-east-1
             - AWS_DEFAULT_REGION=us-east-1
