@@ -53,8 +53,8 @@ functions:
           method: post
           cors: true
     environment:
-      #  ${opt:stage, self:provider.stage}, consider overrides
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM} # Hack 1
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM, !Ref DatabaseSecret }  # ${opt:stage, self:provider.stage}, consider overrides
+      # SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM} # Hack 1
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
