@@ -24,4 +24,4 @@ steps:
         BASTION: "false"
         EC2_KEY_NAME: "2020-05-03-dale-desktop"
         DATABASE_LOCAL_PORT: "5433"
-        DATABASE_NAME: "engstats"  
+        DATABASE_NAME: "engstats"
