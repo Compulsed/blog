@@ -20,7 +20,7 @@ steps:
       DATABASE_LOCAL_PORT: "5433"
       DATABASE_NAME: "engstats"
   - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
-    command: "./bin/deploy"
+    command: "./bin/deploy && ./bin/remove"
     agents:
       queue: default
     plugins:
