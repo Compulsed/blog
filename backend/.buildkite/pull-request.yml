@@ -7,21 +7,40 @@ steps:
       queue: default
     plugins:
       - docker-compose#v3.0.1:
+          run: backend   
+    env:
+      ENG_STATS_ENV: "test-${BUILDKITE_BUILD_NUMBER}"
+      ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
+      AWS_DEFAULT_REGION: "us-east-1"
+      AWS_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "335713476045"
+      STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
+      BASTION: "false"
+      EC2_KEY_NAME: "2020-05-03-dale-desktop"
+      DATABASE_LOCAL_PORT: "5433"
+      DATABASE_NAME: "engstats"
+  - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
+    command: "./bin/deploy"
+    agents:
+      queue: default
+    plugins:
+      - cultureamp/aws-assume-role#v0.1.0:
+          role: "$ROLE_ARN"
+      - docker-compose#v3.1.0:
           run: backend
-  - label: "Deploy Testing Environment"
-    trigger: "eng-stats-deploy"
-    build:
-      commit: "$BUILDKITE_COMMIT"
-      message: "$BUILDKITE_MESSAGE"
-      branch: "$BUILDKITE_BRANCH"
-      env:
-        ENG_STATS_ENV: "test"
-        ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-        AWS_DEFAULT_REGION: "us-east-1"
-        AWS_REGION: "us-east-1"
-        AWS_ACCOUNT_ID: "335713476045"
-        STAGE: "test"
-        BASTION: "false"
-        EC2_KEY_NAME: "2020-05-03-dale-desktop"
-        DATABASE_LOCAL_PORT: "5433"
-        DATABASE_NAME: "engstats"
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_DEFAULT_REGION=us-east-1
+            - AWS_REGION=us-east-1
+            - ENG_STATS_ENV
+            - ROLE_ARN
+            - AWS_DEFAULT_REGION
+            - AWS_REGION
+            - AWS_ACCOUNT_ID
+            - STAGE
+            - BASTION
+            - EC2_KEY_NAME
+            - DATABASE_LOCAL_PORT
+            - DATABASE_NAME
