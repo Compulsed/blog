@@ -16,7 +16,7 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         ENG_STATS_ENV: "test"
-        ROLE_ARN: "arn:aws:iam::755220514429:role/eng-stats-test-ci-role"
+        ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
         AWS_DEFAULT_REGION: "us-east-1"
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "755220514429"
