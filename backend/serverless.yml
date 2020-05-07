@@ -61,7 +61,7 @@ functions:
       DATABASE_HOSTNAME: !GetAtt 'DatabaseCluster.Endpoint.Address'
       DATABASE_PORT: !GetAtt 'DatabaseCluster.Endpoint.Port'
     dependsOn: 
-      - SecretARNSSM # Hack 1
+      - SecretARNSSM # Hack 1 
 
 resources:
   Conditions:
