@@ -14,10 +14,9 @@ steps:
       AWS_REGION: "us-east-1"
       AWS_ACCOUNT_ID: "335713476045"
       STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
-      BASTION: "false"
-      EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
       DATABASE_LOCAL_PORT: "5433"
       DATABASE_NAME: "engstats"
+      BASTION: "false"
       EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
       EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
 
@@ -31,10 +30,10 @@ steps:
       AWS_REGION: "us-east-1"
       AWS_ACCOUNT_ID: "335713476045"
       STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
-      BASTION: "false"
-      EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
       DATABASE_LOCAL_PORT: "5433"
       DATABASE_NAME: "engstats"
+      BASTION: "false"
+      EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
       EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
