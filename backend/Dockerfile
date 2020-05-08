@@ -14,7 +14,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install
 
 RUN apt-get update && apt-get upgrade -y 
-RUN apt-get install jq
+RUN apt-get install jq -y
 
 # Bundle app source
 COPY . .
