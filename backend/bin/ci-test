@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+usage="USAGE: $(basename "$0")
+where:
+    -h | --help         show this help text"
+
+while [ $# -gt 0 ]; do
+    if [[ $1 =~ "--"* ]]; then
+        case $1 in
+            --help|-h) echo "$usage"; exit; ;;
+        esac
+    fi
+  shift
+done
+
+
+# echo "Running ci test for stage: $STAGE"
+./bin/deploy
+
+./bin/remote
+
+yarn knex migrate:latest --env "$STAGE"
+
+knex seed:run
+
+STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
+GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+
+curl --request POST \
+  --url "$GRAPHQL_URL" \
+  --header 'content-type: application/json' \
+  --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
+
+# echo "Clearning up ci test for stage: $STAGE"
+ ./bin/remove
+ 

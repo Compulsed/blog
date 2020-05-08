@@ -13,10 +13,18 @@ echo "Running SSH Tunnel"
 echo "-> $BASTION_PUBLIC_DNS_NAME"
 echo "-> $DATABASE_HOST_NAME"
 echo "-> $DATABASE_PORT"
-echo "-> ~/$EC2_KEY_NAME.pem"
+echo "-> ./$EC2_KEY_NAME.pem"
 echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
 
-ssh -i "~/$EC2_KEY_NAME.pem" \
+aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
+chmod 0400 "./$EC2_KEY_NAME.pem"
+
+echo "Starting tunnel"
+
+# Do I need to clean this up
+# -o trusts that the EC2 instance is not MTM
+ssh -i "./$EC2_KEY_NAME.pem" \
+    -o "StrictHostKeyChecking=no" \
     -N -L \
     "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT"\
-    "ec2-user@$BASTION_PUBLIC_DNS_NAME"
+    "ec2-user@$BASTION_PUBLIC_DNS_NAME" &

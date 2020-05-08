@@ -14,6 +14,8 @@
 - [x] Data Faker
 - [x] CI / CD Pipeline (Multi account)
 - [x] CI / CD Pipeline (Deploy new instance on CI, validates CF)
+- [ ] CI / Trigger migration
+- [ ] Trigger API call on deploy
 - [ ] GraphQL triggered by test
 - [ ] GitHub commits into repo
 - [ ] Buildkite commits into repo (Event Bridge)
@@ -47,6 +49,9 @@
 - [ ] IAM Auth on database
 - [ ] Move compose into backend (does not support microservices nicely)
   
+## Technical debt
+- [ ] EC2 key to log into bastion host in cloudformation
+
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
@@ -59,3 +64,9 @@
 ## Aurora Serverless
 Limitations:
 - https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations
+
+## Notes
+3 Ways lambda can connect to RDS
+- Lambda in VPC
+- RDS Data API
+- RDS Proxy
