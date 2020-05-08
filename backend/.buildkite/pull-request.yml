@@ -18,6 +18,9 @@ steps:
       EC2_KEY_NAME: "2020-05-03-dale-desktop"
       DATABASE_LOCAL_PORT: "5433"
       DATABASE_NAME: "engstats"
+      EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
+      EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
+
   - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
     command: "./bin/ci-test"
     agents:
@@ -52,3 +55,5 @@ steps:
             - EC2_KEY_NAME
             - DATABASE_LOCAL_PORT
             - DATABASE_NAME
+            - EC2_KEY_NAME
+            - EC2_KEY_S3_BUCKET
