@@ -28,3 +28,5 @@ ssh -i "./$EC2_KEY_NAME.pem" \
     -N -L \
     "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT"\
     "ec2-user@$BASTION_PUBLIC_DNS_NAME" &
+
+sleep 30
