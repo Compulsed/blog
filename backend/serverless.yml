@@ -101,9 +101,9 @@ resources:
         EnableHttpEndpoint: true # DataAPI - https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
         ScalingConfiguration:
           AutoPause: true
-          MaxCapacity: 16
+          MaxCapacity: 2
           MinCapacity: 2
-          SecondsUntilAutoPause: 3600
+          SecondsUntilAutoPause: 300
         DBSubnetGroupName: !Ref "MyDBSubnetGroup"
         VpcSecurityGroupIds: # DBSecurityGroups vs VPCSecurityGroups vs VpcSecurityGroupIds
           - !GetAtt DatabaseVPCSecurityGroup.GroupId

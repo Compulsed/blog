@@ -12,9 +12,9 @@
 - [x] Database migration script
 - [x] Database Seed (Does can this be done with DataAPI?)
 - [x] Data Faker
+- [x] CI / CD Pipeline (Multi account)
+- [x] CI / CD Pipeline (Deploy new instance on CI, validates CF)
 - [ ] GraphQL triggered by test
-- [ ] CI / CD Pipeline (Multi account)
-- [ ] CI / CD Pipeline (Deploy new instance on CI, validates CF)
 - [ ] GitHub commits into repo
 - [ ] Buildkite commits into repo (Event Bridge)
 - [ ] Jira stories into repo
@@ -57,26 +57,5 @@
 - [ ] Do any resources in stack contain the stack name twice?
 
 ## Aurora Serverless
-Successes
-- No VPC required
-- Scales down
-- 
-
 Limitations:
-- Cannot load data in or save data to S3 (can use CSV?)
-- 5c per 10,000 accesses 
-- No publically accessible URL (same for regular aurora?                                                   )
-
-Question:
-- Can you use RDS proxy with this?
-
-## Aurora
-Successes:
-- 
-
-Limitations:
-- 
-
-Questions:
-- Does DataAPI work with regular aurora?
-- Does RDS Proxy work with regular aurora?
+- https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations
