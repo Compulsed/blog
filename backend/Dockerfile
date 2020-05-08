@@ -8,9 +8,8 @@ WORKDIR /usr/src/app
 COPY package*.json yarn.lock ./
 
 RUN yarn install --pure-lockfile
-RUN pip install awscli --upgrade --user
 
-run curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
     unzip awscliv2.zip &&\
     sudo ./aws/install
 
