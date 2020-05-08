@@ -22,7 +22,7 @@ steps:
     command: "./bin/ci-test"
     agents:
       queue: default
-     env:
+    env:
       ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
       AWS_DEFAULT_REGION: "us-east-1"
       AWS_REGION: "us-east-1"
