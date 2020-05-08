@@ -34,7 +34,8 @@ steps:
       BASTION: "false"
       EC2_KEY_NAME: "2020-05-03-dale-desktop"
       DATABASE_LOCAL_PORT: "5433"
-      DATABASE_NAME: "engstats"     
+      DATABASE_NAME: "engstats"
+      EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
