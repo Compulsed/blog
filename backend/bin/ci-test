@@ -16,22 +16,22 @@ done
 
 
 # echo "Running ci test for stage: $STAGE"
-./bin/deploy
+# ./bin/deploy
 
-./bin/remote
+# ./bin/remote
 
-yarn knex migrate:latest --env "$STAGE"
+# yarn knex migrate:latest --env "$STAGE"
 
-knex seed:run
+# knex seed:run
 
-STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
-GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+# STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
+# GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
 
-curl --request POST \
-  --url "$GRAPHQL_URL" \
-  --header 'content-type: application/json' \
-  --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
+# curl --request POST \
+#   --url "$GRAPHQL_URL" \
+#   --header 'content-type: application/json' \
+#   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
 
 # echo "Clearning up ci test for stage: $STAGE"
-./bin/remove
+# ./bin/remove
  

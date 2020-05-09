@@ -33,7 +33,7 @@ const resolvers = {
 
         users: async () => {
             const data = require('data-api-client')({
-                secretArn: process.env.SECRET_ARN,
+                secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
                 resourceArn: process.env.DB_ARN,
                 database: process.env.DATABASE_NAME,
             });
@@ -49,7 +49,7 @@ const resolvers = {
     Mutation: {
         run: async (root, args, context) => {
             const data = require('data-api-client')({
-                secretArn: process.env.SECRET_ARN,
+                secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
                 resourceArn: process.env.DB_ARN,
                 database: process.env.DATABASE_NAME,
             });
