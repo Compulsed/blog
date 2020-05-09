@@ -157,22 +157,30 @@ resources:
     Bastion:
       Type: AWS::EC2::Instance
       Condition: BastionEnabled
+      CreationPolicy:
+        ResourceSignal:
+          Count: 1
+          Timeout: PT10M
+      Metadata: 
+        AWS::CloudFormation::Init:
+          config:
+            services:
+              sysvinit:
+                sshd:
+                  enabled: true
+                  ensureRunning: true
       Properties:
         DisableApiTermination: false
         ImageId: ${ssm:/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-ebs}
         InstanceType: t2.nano
         KeyName: ${env:EC2_KEY_NAME}
         Monitoring: false
-        CreationPolicy:
-          ResourceSignal:
-            Count: 1
-            Timeout: PT10M
         UserData:
           'Fn::Base64': !Sub |
             #!/bin/bash -ex
             trap '/opt/aws/bin/cfn-signal --exit-code 1 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}' ERR
-            echo "Waiting for SSH"
-            /opt/aws/bin/cfn-signal --exit-code 0 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}
+            /opt/aws/bin/cfn-init -v --resource Bastion --stack ${self:provider.stackName} --region ${env:AWS_REGION}
+            /opt/aws/bin/cfn-signal --exit-code 0 --resource Bastion --stack ${self:provider.stackName} --region ${env:AWS_REGION} 
         NetworkInterfaces: 
           - AssociatePublicIpAddress: "true"
             DeviceIndex: "0"
