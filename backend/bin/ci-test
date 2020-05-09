@@ -1,19 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
-usage="USAGE: $(basename "$0")
-where:
-    -h | --help         show this help text"
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Error Handler
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+cleanup() {
+  echo "Running clean up"
+  ./bin/remove
+}
+trap cleanup 0
 
-while [ $# -gt 0 ]; do
-    if [[ $1 =~ "--"* ]]; then
-        case $1 in
-            --help|-h) echo "$usage"; exit; ;;
-        esac
-    fi
-  shift
-done
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
 
+trap 'error ${LINENO}' ERR
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Integration Test
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
 # echo "Running ci test for stage: $STAGE"
 ./bin/deploy
@@ -38,4 +55,4 @@ curl --request POST \
 echo "Clearning up ci test for stage: $STAGE"
 ./bin/remove
  
- echo "Done!"
+echo "Done!"
