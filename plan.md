@@ -14,9 +14,11 @@
 - [x] Data Faker
 - [x] CI / CD Pipeline (Multi account)
 - [x] CI / CD Pipeline (Deploy new instance on CI, validates CF)
-- [ ] CI / Trigger migration
-- [ ] Trigger API call on deploy
-- [ ] GraphQL triggered by test
+- [x] CI / Trigger migration
+- [x] Trigger API call on deploy
+- [x] GraphQL triggered by test
+- [ ] Ec2 Wait or Creation policy
+- [ ] 
 - [ ] GitHub commits into repo
 - [ ] Buildkite commits into repo (Event Bridge)
 - [ ] Jira stories into repo
@@ -47,7 +49,8 @@
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
-- [ ] Move compose into backend (does not support microservices nicely)
+- [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
+- [ ] Cfn-lint
   
 ## Technical debt
 - [ ] EC2 key to log into bastion host in cloudformation

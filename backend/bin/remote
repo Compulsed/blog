@@ -19,9 +19,6 @@ echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SEC
 aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
 chmod 0400 "./$EC2_KEY_NAME.pem"
 
-echo "Sleeping for Bastion to bring up SSH"
-sleep 120
-
 echo "Starting tunnel"
 
 # Do I need to clean this up
@@ -35,6 +32,8 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
     > foo.out 2> foo.err < /dev/null &
 
-echo "Sleeping 30 before other script"
+echo "START: Sleeping 30 before other script"
 
 sleep 30
+
+echo "DONE: Sleeping 30 before other script"
