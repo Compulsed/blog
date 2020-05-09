@@ -21,6 +21,8 @@ chmod 0400 "./$EC2_KEY_NAME.pem"
 
 echo "Starting tunnel"
 
+sleep 300
+
 # Do I need to clean this up
 # -o trusts that the EC2 instance is not MTM
 ssh -i "./$EC2_KEY_NAME.pem" \
