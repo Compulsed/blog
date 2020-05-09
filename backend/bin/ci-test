@@ -18,10 +18,13 @@ done
 # echo "Running ci test for stage: $STAGE"
 ./bin/deploy
 
+echo "Running remove"
 ./bin/remote
 
+echo "Running migrate"
 yarn knex migrate:latest --env "$STAGE"
 
+echo "Running seed"
 knex seed:run
 
 # STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
@@ -35,3 +38,4 @@ knex seed:run
 # echo "Clearning up ci test for stage: $STAGE"
 # ./bin/remove
  
+ echo "Done!"
