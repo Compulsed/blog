@@ -25,17 +25,17 @@ echo "Running migrate"
 yarn knex migrate:latest --env "$STAGE"
 
 echo "Running seed"
-knex seed:run
+yarn knex seed:run
 
-# STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
-# GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
+GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
 
-# curl --request POST \
-#   --url "$GRAPHQL_URL" \
-#   --header 'content-type: application/json' \
-#   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
+curl --request POST \
+  --url "$GRAPHQL_URL" \
+  --header 'content-type: application/json' \
+  --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
 
-# echo "Clearning up ci test for stage: $STAGE"
-# ./bin/remove
+echo "Clearning up ci test for stage: $STAGE"
+./bin/remove
  
  echo "Done!"
