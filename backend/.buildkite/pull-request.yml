@@ -21,7 +21,7 @@ steps:
   #     EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
 
   - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
-    command: "./bin/ci-test"
+    command: "./bin/ci-test; ./bin/remove "
     agents:
       queue: default
     env:

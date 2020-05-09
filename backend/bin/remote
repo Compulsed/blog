@@ -19,16 +19,22 @@ echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SEC
 aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
 chmod 0400 "./$EC2_KEY_NAME.pem"
 
-echo "Starting tunnel"
+echo "Sleeping for Bastion to bring up SSH"
+sleep 120
 
-sleep 300
+echo "Starting tunnel"
 
 # Do I need to clean this up
 # -o trusts that the EC2 instance is not MTM
-ssh -i "./$EC2_KEY_NAME.pem" \
+# -4 IPV4
+nohup ssh -i "./$EC2_KEY_NAME.pem" \
+    -4 \
     -o "StrictHostKeyChecking=no" \
     -N -L \
-    "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT"\
-    "ec2-user@$BASTION_PUBLIC_DNS_NAME" &
+    "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT" \
+    "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
+    > foo.out 2> foo.err < /dev/null &
+
+echo "Sleeping 30 before other script"
 
 sleep 30
