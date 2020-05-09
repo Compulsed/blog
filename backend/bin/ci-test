@@ -53,6 +53,6 @@ curl --request POST \
   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
 
 echo "Clearning up ci test for stage: $STAGE"
-./bin/remove
+# ./bin/remove
  
 echo "Done!"
