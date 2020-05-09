@@ -16,9 +16,9 @@ done
 
 
 # echo "Running ci test for stage: $STAGE"
-# ./bin/deploy
+./bin/deploy
 
-# ./bin/remote
+./bin/remote
 
 # yarn knex migrate:latest --env "$STAGE"
 
