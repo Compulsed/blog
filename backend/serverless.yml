@@ -167,11 +167,12 @@ resources:
           ResourceSignal:
             Count: 1
             Timeout: PT10M
-        UserData: 'Fn::Base64': !Sub |
-          #!/bin/bash -ex
-          trap '/opt/aws/bin/cfn-signal --exit-code 1 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}' ERR
-          echo "Waiting for SSH"
-          /opt/aws/bin/cfn-signal --exit-code 0 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}
+        UserData:
+          'Fn::Base64': !Sub |
+            #!/bin/bash -ex
+            trap '/opt/aws/bin/cfn-signal --exit-code 1 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}' ERR
+            echo "Waiting for SSH"
+            /opt/aws/bin/cfn-signal --exit-code 0 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}
         NetworkInterfaces: 
           - AssociatePublicIpAddress: "true"
             DeviceIndex: "0"
