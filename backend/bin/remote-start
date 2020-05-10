@@ -8,7 +8,7 @@ echo "START: Create Stack"
 aws cloudformation create-stack \
     --template-body "file://./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK_NAME" \
-    --parameters "ParameterKey=ServiceStackName,ParameterValue=$SERVICE_STACK_NAME ParameterKey=EC2SSHKeyName,ParameterValue=$EC2_KEY_NAME"
+    --parameters "ParameterKey=ServiceStackName,ParameterValue=$SERVICE_STACK_NAME" "ParameterKey=EC2SSHKeyName,ParameterValue=$EC2_KEY_NAME"
 echo "DONE: Create Stack"
 
 echo "START: wait stack-create-complete"
