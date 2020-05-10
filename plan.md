@@ -18,10 +18,12 @@
 - [x] Trigger API call on deploy
 - [x] GraphQL triggered by test
 - [x] Ec2 Wait or Creation policy
-- [ ] Tests should fail when in error handler (rollback)
+- [x] Tests should fail when in error handler (rollback)
+- [ ] EC2 key to log into bastion host in cloudformation
 
 ## Testing Improvements
-- [ ] EC2 key to log into bastion host in cloudformation
+- [ ] API Performance monitoring (jest?)
+
 
 ## Features
 - [ ] Build out frontend
