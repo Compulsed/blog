@@ -9,13 +9,13 @@ set -euo pipefail
 cleanup() {
   echo "Running clean up"
 
-  echo "START: Stopping remove"
+  echo "START: Remote Stop"
   ./bin/remote-stop
-  echo "DONE: Stopping remove"
+  echo "DONE: Remote Stop"
 
-  echo "START: Stack Remove"
-  ./bin/stack-remove
-  echo "DONE: Stack Remove"
+  echo "START: Stack Delete"
+  ./bin/stack-delete
+  echo "DONE: Stack Delete"
 }
 trap cleanup 0
 

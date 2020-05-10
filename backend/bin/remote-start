@@ -38,7 +38,3 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     > foo.out 2> foo.err < /dev/null &
 echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
 echo "DONE: SSH Tunnel"
-
-echo "START: Sleeping 30 before other script"
-sleep 30
-echo "DONE: Sleeping 30 before other script"
