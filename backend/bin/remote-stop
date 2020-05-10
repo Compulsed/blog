@@ -3,4 +3,10 @@ set -euo pipefail
 
 STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
 
-aws cloudformation wait stack-create-complete --stack "$STACK_NAME"
+echo "START: Delete Stack"
+aws cloudformation delete-stack --stack "$STACK_NAME"
+echo "DONE: Delete Stack"
+
+echo "START: wait stack-delete-complete"
+aws cloudformation wait stack-delete-complete --stack "$STACK_NAME"
+echo "DONE: wait stack-delete-complete"

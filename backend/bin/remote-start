@@ -3,12 +3,16 @@ set -euo pipefail
 
 STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
 
+echo "START: Create Stack"
 aws cloudformation create-stack \
     --template-body "file://./stacks/bastion.yml" \
     --stack-name "$STACK_NAME" \
-    --parameters "ParameterKey=ServiceStackName,ParameterValue=engstats-dev-8-us-east-1";
+    --parameters "ParameterKey=ServiceStackName,ParameterValue=engstats-dev-8-us-east-1"
+echo "DONE: Create Stack"
 
+echo "START: wait stack-create-complete"
 aws cloudformation wait stack-create-complete --stack "$STACK_NAME"
+echo "DONE: wait stack-create-complete"
 
 BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
 DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)

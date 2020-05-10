@@ -8,7 +8,14 @@ set -euo pipefail
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 cleanup() {
   echo "Running clean up"
-  # ./bin/remove
+
+  echo "START: Stopping remove"
+  ./bin/remote-stop
+  echo "DONE: Stopping remove"
+
+  echo "START: Stack Remove"
+  ./bin/stack-remove
+  echo "DONE: Stack Remove"
 }
 trap cleanup 0
 
@@ -33,11 +40,11 @@ trap 'error ${LINENO}' ERR
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
 echo "STAR: Running Deploy"
-./bin/deploy
+./bin/stack-deploy
 echo "END: Running Deploy"
 
 echo "START: Setting up remote database connection"
-./bin/remote
+./bin/remote-start
 echo "END: Setting up remote database connection"
 
 echo "START: Running Migration"

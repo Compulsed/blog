@@ -1,6 +1,6 @@
 steps:
   - label: "Deploying backend to ${ENG_STATS_ENV}"
-    command: "./bin/deploy"
+    command: "./bin/stack-deploy"
     agents:
       queue: default
     concurrency: 1
