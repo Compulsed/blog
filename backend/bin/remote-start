@@ -5,10 +5,7 @@ SERVICE_STACK_NAME="engstats-$STAGE-$AWS_REGION"
 BASTION_STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
 
 echo "START: Create Stack"
-aws cloudformation create-stack \
-    --template-body "file://./stacks/bastion.yml" \
-    --stack-name "$BASTION_STACK_NAME" \
-    --parameters "ParameterKey=ServiceStackName,ParameterValue=$SERVICE_STACK_NAME"
+aws cloudformation create-stack --template-body "file://./stacks/bastion.yml" --stack-name "$BASTION_STACK_NAME" --parameters "ParameterKey=ServiceStackName,ParameterValue=$SERVICE_STACK_NAME"
 echo "DONE: Create Stack"
 
 echo "START: wait stack-create-complete"
