@@ -7,6 +7,9 @@ Parameters:
 
   ServiceStackName:
     Type: String
+  
+  EC2SSHKeyName:
+    Type: String
 
 Resources:
   BastionSecurityGroup:
@@ -53,7 +56,7 @@ Resources:
       DisableApiTermination: false
       ImageId: !Ref LatestAmiId
       InstanceType: t2.nano
-      KeyName: 2020-05-08-eng-stats-dev-ec2-key
+      KeyName: !Ref EC2SSHKeyName
       Monitoring: false
       UserData:
         Fn::Base64: !Sub |
