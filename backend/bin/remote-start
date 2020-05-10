@@ -1,23 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
-STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
+SERVICE_STACK_NAME="engstats-$STAGE-$AWS_REGION"
+BASTION_STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
 
 echo "START: Create Stack"
 aws cloudformation create-stack \
     --template-body "file://./stacks/bastion.yml" \
-    --stack-name "$STACK_NAME" \
-    --parameters "ParameterKey=ServiceStackName,ParameterValue=engstats-dev-8-us-east-1"
+    --stack-name "$BASTION_STACK_NAME" \
+    --parameters "ParameterKey=ServiceStackName,ParameterValue=$SERVICE_STACK_NAME"
 echo "DONE: Create Stack"
 
 echo "START: wait stack-create-complete"
-aws cloudformation wait stack-create-complete --stack "$STACK_NAME"
+aws cloudformation wait stack-create-complete --stack "$BASTION_STACK_NAME"
 echo "DONE: wait stack-create-complete"
 
-BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
-DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)
-DATABASE_PORT=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabasePort'].OutputValue" --output text)
-DATABASE_SECRET_ARN=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseSecretArn'].OutputValue" --output text)
+BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
+DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)
+DATABASE_PORT=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabasePort'].OutputValue" --output text)
+DATABASE_SECRET_ARN=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseSecretArn'].OutputValue" --output text)
 DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."password" )
 
 echo "START: SSH Key Download"
