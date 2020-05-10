@@ -8,7 +8,7 @@ const createFakeUser = () => ({
 });
 
 exports.seed = async function(knex) {
-  const fakeUsers = _.times(1000)
+  const fakeUsers = _.times(100)
     .map(() => createFakeUser());
 
   await knex('users')

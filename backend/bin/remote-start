@@ -13,7 +13,7 @@ AWS_PAGER="" aws cloudformation create-stack \
 echo "DONE: Create Stack"
 
 echo "START: wait stack-create-complete"
-AWS_PAGER="" aws cloudformation wait stack-create-complete --stack "$BASTION_STACK_NAME"
+aws cloudformation wait stack-create-complete --stack "$BASTION_STACK_NAME"
 echo "DONE: wait stack-create-complete"
 
 BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
