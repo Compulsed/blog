@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
+
+aws cloudformation wait stack-create-complete --stack "$STACK_NAME"

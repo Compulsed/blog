@@ -13,7 +13,7 @@ provider:
       Resource: "*"
 
   apiGateway:
-    restApiId: 
+    restApiId:
       Ref: ApiGatewayRestApi
     restApiResources:
       Fn::GetAtt:
@@ -29,15 +29,15 @@ custom:
     databaseName: ${self:service} # rds requires alphanumeric database names
     databaseUser: ${self:service}
   GraphQL:
-    path: '/graphql'
+    path: "/graphql"
   Network:
-    VpcCIDR: '10.192.0.0/16'
-    PublicSubnet0CIDR: '10.192.10.0/24'
-    PublicSubnet1CIDR: '10.192.11.0/24'
-    PublicSubnet2CIDR: '10.192.12.0/24'
-    PublicSubnet3CIDR: '10.192.13.0/24'
-    PublicSubnet4CIDR: '10.192.14.0/24'
-    PublicSubnet5CIDR: '10.192.15.0/24'
+    VpcCIDR: "10.192.0.0/16"
+    PublicSubnet0CIDR: "10.192.10.0/24"
+    PublicSubnet1CIDR: "10.192.11.0/24"
+    PublicSubnet2CIDR: "10.192.12.0/24"
+    PublicSubnet3CIDR: "10.192.13.0/24"
+    PublicSubnet4CIDR: "10.192.14.0/24"
+    PublicSubnet5CIDR: "10.192.15.0/24"
 
 plugins:
   - serverless-offline
@@ -53,23 +53,17 @@ functions:
           method: post
           cors: true
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM }  # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
-      DATABASE_HOSTNAME: !GetAtt 'DatabaseCluster.Endpoint.Address'
-      DATABASE_PORT: !GetAtt 'DatabaseCluster.Endpoint.Port'
-    dependsOn: 
-      - SecretARNSSM # Hack 1 
+      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address"
+      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"
+    dependsOn:
+      - SecretARNSSM # Hack 1
 
 resources:
-  Conditions:
-    BastionEnabled:
-      Fn::Equals:
-        - ${env:BASTION}
-        - 'true'
-
   Resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
@@ -80,10 +74,10 @@ resources:
       Type: AWS::SecretsManager::Secret
       Properties:
         Name: ${self:custom.RDS.clusterDatabaseSecretName}
-        Description: 'Used to access aurora serverless instance'
+        Description: "Used to access aurora serverless instance"
         GenerateSecretString:
           SecretStringTemplate: '{"username": "${self:custom.RDS.databaseUser}"}'
-          GenerateStringKey: 'password'
+          GenerateStringKey: "password"
           PasswordLength: 16
           ExcludeCharacters: '"@/'
 
@@ -92,9 +86,25 @@ resources:
       Properties:
         DatabaseName: ${self:custom.RDS.databaseName}
         MasterUsername:
-          Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:username}}' ]]
+          Fn::Join:
+            [
+              "",
+              [
+                "{{resolve:secretsmanager:",
+                { Ref: DatabaseSecret },
+                ":SecretString:username}}",
+              ],
+            ]
         MasterUserPassword:
-          Fn::Join: ['', ['{{resolve:secretsmanager:', { Ref: DatabaseSecret }, ':SecretString:password}}' ]]
+          Fn::Join:
+            [
+              "",
+              [
+                "{{resolve:secretsmanager:",
+                { Ref: DatabaseSecret },
+                ":SecretString:password}}",
+              ],
+            ]
         DBClusterIdentifier: ${self:custom.RDS.clusterIdentifierName}
         Engine: aurora-postgresql
         EngineMode: serverless
@@ -114,80 +124,19 @@ resources:
         SecretId: { Ref: DatabaseSecret }
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
-    
+
     ###############
-    # Hack 1 
+    # Hack 1
     ###############
     # Serverless offline does not allow you to use Ref, which our lambda depends on the secret ARN
     #   We can save the value on the first deploy in SSM, and then use the SSM value in serverless offline
     # https://github.com/dherault/serverless-offline/issues/688
     SecretARNSSM:
       Type: AWS::SSM::Parameter
-      Properties: 
+      Properties:
         Type: String
         Name: "/${self:provider.stackName}/SECRET_ARN_SSM"
         Value: { Ref: DatabaseSecret }
-
-    ################
-    # Bastion
-    ################
-    BastionSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Condition: BastionEnabled
-      Properties: 
-        GroupDescription: 'Bastion for ${self:provider.stackName}'
-        SecurityGroupEgress:
-          - CidrIp: 0.0.0.0/0
-            FromPort: -1
-            ToPort: -1
-            IpProtocol: '-1'
-          - DestinationSecurityGroupId: !GetAtt DatabaseVPCSecurityGroup.GroupId
-            IpProtocol: tcp
-            FromPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
-            ToPort: !GetAtt 'DatabaseCluster.Endpoint.Port'
-        
-        # TODO: Change this, it is not secure (Should only need Port 22)
-        SecurityGroupIngress:
-          - CidrIp: 0.0.0.0/0
-            FromPort: -1
-            ToPort: -1
-            IpProtocol: '-1'
-        VpcId: { Ref: VPC }
-
-    Bastion:
-      Type: AWS::EC2::Instance
-      Condition: BastionEnabled
-      CreationPolicy:
-        ResourceSignal:
-          Count: 1
-          Timeout: PT10M
-      Metadata: 
-        AWS::CloudFormation::Init:
-          config:
-            services:
-              sysvinit:
-                sshd:
-                  enabled: true
-                  ensureRunning: true
-      Properties:
-        DisableApiTermination: false
-        ImageId: ${ssm:/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-ebs}
-        InstanceType: t2.nano
-        KeyName: ${env:EC2_KEY_NAME}
-        Monitoring: false
-        UserData:
-          'Fn::Base64': !Sub |
-            #!/bin/bash -ex
-            trap '/opt/aws/bin/cfn-signal --exit-code 1 --resource Bastion --region ${env:AWS_REGION} --stack ${self:provider.stackName}' ERR
-            /opt/aws/bin/cfn-init -v --resource Bastion --stack ${self:provider.stackName} --region ${env:AWS_REGION}
-            /opt/aws/bin/cfn-signal --exit-code 0 --resource Bastion --stack ${self:provider.stackName} --region ${env:AWS_REGION} 
-        NetworkInterfaces: 
-          - AssociatePublicIpAddress: "true"
-            DeviceIndex: "0"
-            GroupSet: 
-              - Ref: "DatabaseVPCSecurityGroup"
-              - Ref: "BastionSecurityGroup"
-            SubnetId: { Ref: "PublicSubnet0" }
 
     ################
     # Networking
@@ -202,16 +151,15 @@ resources:
           - Key: Name
             Value: ${self:provider.stackName}
 
-    DatabaseVPCSecurityGroup: 
+    DatabaseVPCSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         VpcId: { Ref: VPC }
         GroupDescription: "Ingress for Amazon EC2 security group"
 
-        # Change this, it is not secure, might only need Bastion hosts' 
+        # Change this, it is not secure, might only need Bastion hosts'
         SecurityGroupIngress:
-          -
-            IpProtocol: "tcp"
+          - IpProtocol: "tcp"
             CidrIp: "0.0.0.0/0" # FIX THIS
             FromPort: 5432
             ToPort: 5432
@@ -237,9 +185,9 @@ resources:
         - PublicSubnet2RouteTableAssociation
         - PublicSubnet3RouteTableAssociation
         - PublicSubnet4RouteTableAssociation
-      Properties: 
+      Properties:
         DBSubnetGroupDescription: DBSubnetGroupDescription
-        SubnetIds: 
+        SubnetIds:
           - { Ref: PublicSubnet0 }
           - { Ref: PublicSubnet1 }
           - { Ref: PublicSubnet2 }
@@ -251,7 +199,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 0, !GetAZs '' ]
+        AvailabilityZone: !Select [0, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet0CIDR}
         MapPublicIpOnLaunch: true
         Tags:
@@ -262,7 +210,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 1, !GetAZs '' ]
+        AvailabilityZone: !Select [1, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet1CIDR}
         MapPublicIpOnLaunch: true
         Tags:
@@ -273,7 +221,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 2, !GetAZs '' ]
+        AvailabilityZone: !Select [2, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet2CIDR}
         MapPublicIpOnLaunch: true
         Tags:
@@ -284,7 +232,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 3, !GetAZs '' ]
+        AvailabilityZone: !Select [3, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet3CIDR}
         MapPublicIpOnLaunch: true
         Tags:
@@ -295,7 +243,7 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 4, !GetAZs '' ]
+        AvailabilityZone: !Select [4, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet4CIDR}
         MapPublicIpOnLaunch: true
         Tags:
@@ -306,12 +254,12 @@ resources:
       Type: AWS::EC2::Subnet
       Properties:
         VpcId: { Ref: VPC }
-        AvailabilityZone: !Select [ 5, !GetAZs '' ]
+        AvailabilityZone: !Select [5, !GetAZs ""]
         CidrBlock: ${self:custom.Network.PublicSubnet5CIDR}
         MapPublicIpOnLaunch: true
         Tags:
           - Key: Name
-            Value: "${self:provider.stackName} Public Subnet (AZ5)"          
+            Value: "${self:provider.stackName} Public Subnet (AZ5)"
 
     PublicRouteTable:
       Type: AWS::EC2::RouteTable
@@ -371,23 +319,22 @@ resources:
 
   Outputs:
     GraphQLUrl:
-      Value:
+      Value: # Replace with Sub?
         Fn::Join:
-        - ""
-        - - "https://"
-          - Ref: "ApiGatewayRestApi"
-          - ".execute-api."
-          - ${self:provider.region}.
-          - Ref: "AWS::URLSuffix"
-          - "/"
-          - ${self:provider.stage}
-          - ${self:custom.GraphQL.path}
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api."
+            - ${self:provider.region}.
+            - Ref: "AWS::URLSuffix"
+            - "/"
+            - ${self:provider.stage}
+            - ${self:custom.GraphQL.path}
       Export:
         Name: ${self:provider.stackName}-graphQLUrl
 
     DatabaseClusterIdentifierName:
-      Value:
-        { Ref: DatabaseCluster }
+      Value: !Ref DatabaseCluster
       Export:
         Name: ${self:provider.stackName}-databaseClusterIdentifierName
 
@@ -397,25 +344,42 @@ resources:
         Name: ${self:provider.stackName}-databaseName
 
     DatabaseSecretArn:
-      Value: { Ref: DatabaseSecret }
+      Value: !Ref DatabaseSecret
       Export:
         Name: ${self:provider.stackName}-databaseSecretArn
 
     DatabaseHostName:
-      Description: 'The connection endpoint for the DB cluster.'
-      Value: !GetAtt 'DatabaseCluster.Endpoint.Address'
+      Description: "The connection endpoint for the DB cluster."
+      Value: !GetAtt "DatabaseCluster.Endpoint.Address"
       Export:
         Name: ${self:provider.stackName}-databaseHostName
-    
+
     DatabasePort:
-      Description: 'The connection endpoint for the DB cluster.'
-      Value: !GetAtt 'DatabaseCluster.Endpoint.Port'
+      Description: "The connection endpoint for the DB cluster."
+      Value: !GetAtt "DatabaseCluster.Endpoint.Port"
       Export:
         Name: ${self:provider.stackName}-databasePort
 
-    BastionPublicDnsName:
-      Condition: BastionEnabled
-      Description: 'The connection endpoint for the DB cluster.'
-      Value: !GetAtt 'Bastion.PublicDnsName'
+    VpcId:
+      Description: "VpcId"
+      Value: !Ref VPC
       Export:
-        Name: ${self:provider.stackName}-PublicDnsName
+        Name: ${self:provider.stackName}-vpcId
+
+    PublicSubnet0:
+      Description: "PublicSubnet0"
+      Value: !Ref PublicSubnet0
+      Export:
+        Name: ${self:provider.stackName}-publicSubnet0
+
+    DatabaseVPCSecurityGroup:
+      Description: "DatabaseVPCSecurityGroup"
+      Value: !Ref DatabaseVPCSecurityGroup
+      Export:
+        Name: ${self:provider.stackName}-databaseVPCSecurityGroup
+
+    DatabaseVPCSecurityGroupId:
+      Description: "DatabaseVPCSecurityGroupId"
+      Value: !GetAtt DatabaseVPCSecurityGroup.GroupId
+      Export:
+        Name: ${self:provider.stackName}-databaseVPCSecurityGroupId

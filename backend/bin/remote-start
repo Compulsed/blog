@@ -1,26 +1,27 @@
 #!/bin/bash
 set -euo pipefail
 
-# TODO: Check if Bastion is enabled in CF
-STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
+STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
+
+aws cloudformation create-stack \
+    --template-body "file://./stacks/bastion.yml" \
+    --stack-name "$STACK_NAME" \
+    --parameters "ParameterKey=ServiceStackName,ParameterValue=engstats-dev-8-us-east-1";
+
+aws cloudformation wait stack-create-complete --stack "$STACK_NAME"
+
 BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
 DATABASE_HOST_NAME=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseHostName'].OutputValue" --output text)
 DATABASE_PORT=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabasePort'].OutputValue" --output text)
 DATABASE_SECRET_ARN=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DatabaseSecretArn'].OutputValue" --output text)
 DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."password" )
 
-echo "Running SSH Tunnel"
-echo "-> $BASTION_PUBLIC_DNS_NAME"
-echo "-> $DATABASE_HOST_NAME"
-echo "-> $DATABASE_PORT"
-echo "-> ./$EC2_KEY_NAME.pem"
-echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
-
+echo "START: SSH Key Download"
 aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
 chmod 0400 "./$EC2_KEY_NAME.pem"
+echo "STOP: SSH Key Download"
 
-echo "Starting tunnel"
-
+echo "START: SSH Tunnel"
 # Do I need to clean this up
 # -o trusts that the EC2 instance is not MTM
 # -4 IPV4
@@ -31,9 +32,9 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT" \
     "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
     > foo.out 2> foo.err < /dev/null &
+echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
+echo "DONE: SSH Tunnel"
 
 echo "START: Sleeping 30 before other script"
-
 sleep 30
-
 echo "DONE: Sleeping 30 before other script"
