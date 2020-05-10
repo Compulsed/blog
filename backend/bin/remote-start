@@ -5,6 +5,7 @@ SERVICE_STACK_NAME="engstats-$STAGE-$AWS_REGION"
 BASTION_STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
 
 echo "START: Create Stack"
+# AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation create-stack \
     --template-body "file://./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK_NAME" \
@@ -12,7 +13,7 @@ AWS_PAGER="" aws cloudformation create-stack \
 echo "DONE: Create Stack"
 
 echo "START: wait stack-create-complete"
-aws cloudformation wait stack-create-complete --stack "$BASTION_STACK_NAME"
+AWS_PAGER="" aws cloudformation wait stack-create-complete --stack "$BASTION_STACK_NAME"
 echo "DONE: wait stack-create-complete"
 
 BASTION_PUBLIC_DNS_NAME=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BastionPublicDnsName'].OutputValue" --output text)
