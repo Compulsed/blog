@@ -20,10 +20,11 @@
 - [x] Ec2 Wait or Creation policy
 - [x] Tests should fail when in error handler (rollback)
 - [ ] EC2 key to log into bastion host in cloudformation
+- [ ] Manual snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
-
+- [ ] If errors happen in sub scripts (outside of ci-test.yml), it errors in the error block (messing message, code, etc)
 
 ## Features
 - [ ] Build out frontend
@@ -35,6 +36,7 @@
 - [ ] API Authentication when an API exists
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
+- [ ] DeletionPolicy: Delete, change this if production
 
 ## Nice to have
 - [ ] Jira stories into repo
@@ -52,12 +54,12 @@
 - [ ] Support named stages (not just dev)
 - [ ] Web sockets
 - [ ] HTTP Api rather than RestAPI
-- [ ] Bastion defined as separate cloudformation stack
+- [x] Bastion defined as separate cloudformation stack
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
-- [ ] Cfn-lint
+- [x] Cfn-lint
   
 ## Optional
 - [ ] Serverless CI/CD

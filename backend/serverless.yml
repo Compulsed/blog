@@ -83,6 +83,7 @@ resources:
 
     DatabaseCluster:
       Type: AWS::RDS::DBCluster
+      DeletionPolicy: Delete # Change for production
       Properties:
         DatabaseName: ${self:custom.RDS.databaseName}
         MasterUsername:
