@@ -14,7 +14,7 @@ cleanup() {
   echo "DONE: Remote Stop"
 
   echo "START: Stack Delete"
-  # ./bin/stack-delete
+  ./bin/stack-delete
   echo "DONE: Stack Delete"
 }
 trap cleanup 0
