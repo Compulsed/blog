@@ -17,20 +17,25 @@
 - [x] CI / Trigger migration
 - [x] Trigger API call on deploy
 - [x] GraphQL triggered by test
-- [ ] Ec2 Wait or Creation policy
-- [ ] 
+- [x] Ec2 Wait or Creation policy
+- [ ] Tests should fail when in error handler (rollback)
+
+## Testing Improvements
+- [ ] EC2 key to log into bastion host in cloudformation
+
+## Features
+- [ ] Build out frontend
 - [ ] GitHub commits into repo
 - [ ] Buildkite commits into repo (Event Bridge)
-- [ ] Jira stories into repo
-- [ ] Build out frontend
 - [ ] Authentication (cognito?)
 
 ## Before Production
-- [ ] API Authentication
+- [ ] API Authentication when an API exists
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 
 ## Nice to have
+- [ ] Jira stories into repo
 - [ ] Logging framework
   - [ ] Database logs
 - [ ] Cloudwatch Metrics
@@ -52,9 +57,6 @@
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Cfn-lint
   
-## Technical debt
-- [ ] EC2 key to log into bastion host in cloudformation
-
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform

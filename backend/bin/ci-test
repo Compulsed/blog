@@ -8,7 +8,7 @@ set -euo pipefail
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 cleanup() {
   echo "Running clean up"
-  ./bin/remove
+  # ./bin/remove
 }
 trap cleanup 0
 
@@ -32,18 +32,23 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-# echo "Running ci test for stage: $STAGE"
+echo "STAR: Running Deploy"
 ./bin/deploy
+echo "END: Running Deploy"
 
-echo "Running remove"
+echo "START: Setting up remote database connection"
 ./bin/remote
+echo "END: Setting up remote database connection"
 
-echo "Running migrate"
+echo "START: Running Migration"
 yarn knex migrate:latest --env "$STAGE"
+echo "END: Running Migration"
 
-echo "Running seed"
+echo "START: Running Seeding"
 yarn knex seed:run
+echo "END: Running Seeding"
 
+echo "START: Running API Test"
 STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
 GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
 
@@ -51,8 +56,6 @@ curl --request POST \
   --url "$GRAPHQL_URL" \
   --header 'content-type: application/json' \
   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
+echo "END: Running API Test"
 
-echo "Clearning up ci test for stage: $STAGE"
-# ./bin/remove
- 
-echo "Done!"
+echo "🎉 Done! 🎉"
