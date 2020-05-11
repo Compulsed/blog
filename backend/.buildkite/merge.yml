@@ -12,10 +12,10 @@ steps:
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "745453995866"
         STAGE: "staging"
-        BASTION: "false"
-        EC2_KEY_NAME: "2020-05-03-dale-desktop"
         DATABASE_LOCAL_PORT: "5433"
         DATABASE_NAME: "engstats"
+        EC2_KEY_NAME: "2020-05-08-eng-stats-staging-ec2-key"
+        EC2_KEY_S3_BUCKET: "eng-stats-staging-ec2-key"
   - label: "Deploy production environment"
     trigger: "eng-stats-deploy"
     build:
@@ -29,8 +29,8 @@ steps:
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "755220514429"
         STAGE: "prod"
-        BASTION: "false"
-        EC2_KEY_NAME: "2020-05-03-dale-desktop"
         DATABASE_LOCAL_PORT: "5433"
         DATABASE_NAME: "engstats"
+        EC2_KEY_NAME: "2020-05-08-eng-stats-prod-ec2-key"
+        EC2_KEY_S3_BUCKET: "eng-stats-prod-ec2-key"
 
