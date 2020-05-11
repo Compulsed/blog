@@ -18,11 +18,9 @@ steps:
             - AWS_REGION=us-east-1
             - ENG_STATS_ENV
             - ROLE_ARN
-            - AWS_DEFAULT_REGION
-            - AWS_REGION
             - AWS_ACCOUNT_ID
             - STAGE
-            - BASTION
-            - EC2_KEY_NAME
             - DATABASE_LOCAL_PORT
             - DATABASE_NAME
+            - EC2_KEY_NAME
+            - EC2_KEY_S3_BUCKET
