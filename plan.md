@@ -19,18 +19,25 @@
 - [x] GraphQL triggered by test
 - [x] Ec2 Wait or Creation policy
 - [x] Tests should fail when in error handler (rollback)
-- [ ] EC2 key to log into bastion host in cloudformation
-- [ ] Manual snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
+- [x] EC2 key to log into bastion host in cloudformation
+- [x] Manual snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
+
+## Statistics features (Should be value)
+- [ ] Showing what is currently being deployed to vs what is not (service activity)
+
+## CI/CD Improvements
+- [ ] Deploys always Run Up / Script
+- [ ] Conditionally deploy bastion? 
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
 - [ ] If errors happen in sub scripts (outside of ci-test.yml), it errors in the error block (messing message, code, etc)
 
-## Features
+## Infra
 - [ ] Build out frontend
-- [ ] GitHub commits into repo
-- [ ] Buildkite commits into repo (Event Bridge)
 - [ ] Authentication (cognito?)
+- [ ] Buildkite commits into repo (Event Bridge)
+- [ ] GitHub commits into repo
 
 ## Before Production
 - [ ] API Authentication when an API exists

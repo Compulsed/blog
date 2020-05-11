@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Error Handler
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+cleanup() {
+  echo "Running clean up"
+
+  echo "START: Remote Stop"
+  ./bin/remote-stop
+  echo "DONE: Remote Stop"
+}
+trap cleanup 0
+
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
+
+trap 'error ${LINENO}' ERR
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Integration Test
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+
+echo "STAR: Running Deploy"
+./bin/stack-deploy
+echo "END: Running Deploy"
+
+echo "START: Setting up remote database connection"
+./bin/remote-start
+echo "END: Setting up remote database connection"
+
+echo "START: Running Migration"
+yarn knex migrate:latest --env "$STAGE"
+echo "END: Running Migration"
+
+echo "🎉 Done! 🎉"
