@@ -1,4 +1,7 @@
+FROM segment/chamber:2 AS chamber
 FROM node:12
+
+COPY --from=chamber /chamber /bin/chamber
 
 # Create app directory
 WORKDIR /usr/src/app

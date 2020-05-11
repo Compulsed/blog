@@ -27,7 +27,7 @@
 - [x] Cfn-lint
 - [x] Buildkite Event Bridge investigation
 - [x] Json support postgres
-- [ ] Secrets storage 
+- [ ] Secrets storage -- chamber?
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
 
 

@@ -1,6 +1,6 @@
 steps:
   - label: "Deploying backend to ${ENG_STATS_ENV}"
-    command: "./bin/ci-deploy"
+    command: "CHAMBER_KMS_KEY_ALIAS=aws/ssm /bin/chamber exec ./bin/ci-deploy"
     agents:
       queue: default
     concurrency: 1
