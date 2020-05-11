@@ -18,7 +18,7 @@ module.exports = {
 
         const smParams = {
             SecretId: DatabaseSecretARN, 
-            VersionStage: "AWSPREVIOUS"
+            VersionStage: AWSPREVIOUS
         };
 
         const { SecretString } = await (new AWS.SecretsManager())
@@ -33,6 +33,14 @@ module.exports = {
             user: username,
             password : password,
             database : process.env.DATABASE_NAME,
+            min: 2,
+            max: 6,
+            createTimeoutMillis: 3000,
+            acquireTimeoutMillis: 30000,
+            idleTimeoutMillis: 30000,
+            reapIntervalMillis: 1000,
+            createRetryIntervalMillis: 100,
+            propagateCreateError: false // Fixes: https://github.com/knex/knex/issues/2820
         };
 
         return config;

@@ -26,8 +26,10 @@
 - [x] Bastion defined as separate cloudformation stack
 - [x] Cfn-lint
 - [x] Buildkite Event Bridge investigation
-- [ ] Json support postgres
+- [x] Json support postgres
+- [ ] Secrets storage 
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
+
 
 
 ## Statistics features (Should be value)
@@ -67,7 +69,8 @@
 - [ ] DNS on API
 - [ ] IAM Auth on database
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
-  
+- [ ] aws-vault
+
 ## Bugs
 - [ ] Uploads extracted AWS SDK to lambda function
 
