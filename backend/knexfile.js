@@ -18,7 +18,7 @@ module.exports = {
 
         const smParams = {
             SecretId: DatabaseSecretARN, 
-            VersionStage: "AWSPREVIOUS"
+            VersionStage: 'AWSPREVIOUS'
         };
 
         const { SecretString } = await (new AWS.SecretsManager())
