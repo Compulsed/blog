@@ -25,7 +25,10 @@
 - [x] Custom VPC (Project does not have off default VPC)
 - [x] Bastion defined as separate cloudformation stack
 - [x] Cfn-lint
-- [ ] Buildkite Event Bridge investigation
+- [x] Buildkite Event Bridge investigation
+- [ ] Json support postgres
+- [ ] Showing what is currently being deployed to vs what is not (service activity)
+
 
 ## Statistics features (Should be value)
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
@@ -65,6 +68,9 @@
 - [ ] IAM Auth on database
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
   
+## Bugs
+- [ ] Uploads extracted AWS SDK to lambda function
+
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
