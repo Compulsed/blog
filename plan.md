@@ -20,7 +20,7 @@
 - [x] Ec2 Wait or Creation policy
 - [x] Tests should fail when in error handler (rollback)
 - [x] EC2 key to log into bastion host in cloudformation
-- [x] Manual snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
+- [x] Manual  snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
 - [x] Deploys always Run Up / Script
 - [x] Custom VPC (Project does not have off default VPC)
 - [x] Bastion defined as separate cloudformation stack
