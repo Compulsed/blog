@@ -37,6 +37,6 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     -N -L \
     "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT" \
     "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
-    > foo.out 2> foo.err < /dev/null &
+    > /dev/null 2> /dev/null < /dev/null &
 echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET"
 echo "DONE: SSH Tunnel"

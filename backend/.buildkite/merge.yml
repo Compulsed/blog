@@ -1,5 +1,5 @@
 steps:
-  - label: "Deploy staging environment"
+  - label: "Staging"
     trigger: "eng-stats-deploy"
     build:
       commit: "$BUILDKITE_COMMIT"
@@ -16,7 +16,7 @@ steps:
         DATABASE_NAME: "engstats"
         EC2_KEY_NAME: "2020-05-08-eng-stats-staging-ec2-key"
         EC2_KEY_S3_BUCKET: "eng-stats-staging-ec2-key"
-  - label: "Deploy production environment"
+  - label: "Production"
     trigger: "eng-stats-deploy"
     build:
       commit: "$BUILDKITE_COMMIT"

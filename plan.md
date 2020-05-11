@@ -21,26 +21,26 @@
 - [x] Tests should fail when in error handler (rollback)
 - [x] EC2 key to log into bastion host in cloudformation
 - [x] Manual snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
+- [x] Deploys always Run Up / Script
+- [x] Custom VPC (Project does not have off default VPC)
+- [x] Bastion defined as separate cloudformation stack
+- [x] Cfn-lint
+- [ ] Buildkite Event Bridge investigation
 
 ## Statistics features (Should be value)
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
-
-## CI/CD Improvements
-- [ ] Deploys always Run Up / Script
-- [ ] Conditionally deploy bastion? 
+- [ ] Types of commits being used
+  - [ ] GitHub commits into repo
+- [ ] Frontend View
+  - [ ] Authentication (cognito?)
+  - [ ] Buildkite commits into repo (Event Bridge)
+  - [ ] API Authentication when an API exists
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
 - [ ] If errors happen in sub scripts (outside of ci-test.yml), it errors in the error block (messing message, code, etc)
 
-## Infra
-- [ ] Build out frontend
-- [ ] Authentication (cognito?)
-- [ ] Buildkite commits into repo (Event Bridge)
-- [ ] GitHub commits into repo
-
 ## Before Production
-- [ ] API Authentication when an API exists
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 - [ ] DeletionPolicy: Delete, change this if production
@@ -51,7 +51,6 @@
   - [ ] Database logs
 - [ ] Cloudwatch Metrics
 - [ ] TypeScript / DI support
-- [x] Custom VPC (Project does not have off default VPC)
 - [ ] Support for XRay
 - [ ] Load testing
 - [ ] Insomnia api in repo
@@ -61,12 +60,10 @@
 - [ ] Support named stages (not just dev)
 - [ ] Web sockets
 - [ ] HTTP Api rather than RestAPI
-- [x] Bastion defined as separate cloudformation stack
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
-- [x] Cfn-lint
   
 ## Optional
 - [ ] Serverless CI/CD
@@ -75,7 +72,7 @@
 ## Unknowns: 
 - [ ] Should key names in outputs, resources, contain 'engstats' prefix for better naming? Creates more semantic names
 - [ ] Consider putting any names under `custom:` so that they consistently contain stack name
-- [ ] Do any resources in stack contain the stack name twice?
+- [ ] Do any resources in stack contain the stack name? -- Might be duplicated
 
 ## Aurora Serverless
 Limitations:
