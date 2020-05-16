@@ -39,7 +39,7 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-echo "STAR: Running Deploy"
+echo "START: Running Deploy"
 ./bin/stack-deploy
 echo "END: Running Deploy"
 
@@ -56,8 +56,7 @@ yarn knex seed:run
 echo "END: Running Seeding"
 
 echo "START: Running API Test"
-STACK_NAME="engstats-$STAGE-$AWS_REGION" # TODO: Get from serverless.yml?
-GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
 
 curl --request POST \
   --url "$GRAPHQL_URL" \

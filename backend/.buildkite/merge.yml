@@ -6,16 +6,13 @@ steps:
       message: "$BUILDKITE_MESSAGE"
       branch: "$BUILDKITE_BRANCH"
       env:
+        AWS_REGION: "us-east-1"
+        AWS_DEFAULT_REGION: "us-east-1"
+        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
         ENG_STATS_ENV: "staging"
         ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-        AWS_DEFAULT_REGION: "us-east-1"
-        AWS_REGION: "us-east-1"
-        AWS_ACCOUNT_ID: "745453995866"
+        STACK: "engstats-staging-us-east-1"
         STAGE: "staging"
-        DATABASE_LOCAL_PORT: "5433"
-        DATABASE_NAME: "engstats"
-        EC2_KEY_NAME: "2020-05-08-eng-stats-staging-ec2-key"
-        EC2_KEY_S3_BUCKET: "eng-stats-staging-ec2-key"
   - label: "Production"
     trigger: "eng-stats-deploy"
     build:
@@ -23,14 +20,10 @@ steps:
       message: "$BUILDKITE_MESSAGE"
       branch: "$BUILDKITE_BRANCH"
       env:
+        AWS_REGION: "us-east-1"
+        AWS_DEFAULT_REGION: "us-east-1"
+        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
         ENG_STATS_ENV: "production"
         ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-        AWS_DEFAULT_REGION: "us-east-1"
-        AWS_REGION: "us-east-1"
-        AWS_ACCOUNT_ID: "755220514429"
+        STACK: "engstats-prod-us-east-1"
         STAGE: "prod"
-        DATABASE_LOCAL_PORT: "5433"
-        DATABASE_NAME: "engstats"
-        EC2_KEY_NAME: "2020-05-08-eng-stats-prod-ec2-key"
-        EC2_KEY_S3_BUCKET: "eng-stats-prod-ec2-key"
-

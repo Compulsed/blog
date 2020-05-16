@@ -21,19 +21,16 @@ steps:
   #     EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
 
   - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
-    command: "CHAMBER_KMS_KEY_ALIAS=aws/ssm /bin/chamber exec ./bin/ci-test"
+    command: "/bin/chamber exec ${STACK} -- ./bin/ci-test"
     agents:
       queue: default
     env:
-      ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-      AWS_DEFAULT_REGION: "us-east-1"
       AWS_REGION: "us-east-1"
-      AWS_ACCOUNT_ID: "335713476045"
+      AWS_DEFAULT_REGION: "us-east-1"
+      CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
+      ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
+      STACK: "engstats-test-${BUILDKITE_BUILD_NUMBER}-us-east-1"
       STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
-      DATABASE_LOCAL_PORT: "5433"
-      DATABASE_NAME: "engstats"
-      EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
-      EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
@@ -43,16 +40,8 @@ steps:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
-            - AWS_DEFAULT_REGION=us-east-1
-            - AWS_REGION=us-east-1
-            - ROLE_ARN
-            - AWS_DEFAULT_REGION
             - AWS_REGION
-            - AWS_ACCOUNT_ID
-            - STAGE
-            - BASTION
-            - EC2_KEY_NAME
-            - DATABASE_LOCAL_PORT
-            - DATABASE_NAME
-            - EC2_KEY_NAME
-            - EC2_KEY_S3_BUCKET
+            - AWS_DEFAULT_REGION
+            - CHAMBER_KMS_KEY_ALIAS
+            - ROLE_ARN
+            - STACK
