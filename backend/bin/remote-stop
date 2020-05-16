@@ -1,11 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "START: Delete Stack"
+BASTION_STACK="$STACK-bastion"
+
+echo "START: Remote Stop Delete Stack"
 # AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation delete-stack --stack "$STACK"
-echo "DONE: Delete Stack"
+echo "DONE: Remote Stop Delete Stack"
 
-echo "START: wait stack-delete-complete"
+echo "START: Remote Stop wait stack-delete-complete"
 aws cloudformation wait stack-delete-complete --stack "$STACK"
-echo "DONE: wait stack-delete-complete"
+echo "DONE: Remote Stop wait stack-delete-complete"

@@ -39,6 +39,8 @@ echo "STAR: Running Deploy"
 ./bin/stack-deploy
 echo "END: Running Deploy"
 
+export EC2_KEY_NAME=$EC2_KEY_NAME
+
 echo "START: Setting up remote database connection"
 ./bin/remote-start
 echo "END: Setting up remote database connection"

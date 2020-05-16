@@ -30,7 +30,7 @@ steps:
       ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
       STACK: "engstats-test"
       STAGE: "test"
-    command: "/bin/chamber exec ${STACK} -- ./bin/ci-test"
+    command: "/bin/chamber exec engstats-test -- ./bin/ci-test"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
