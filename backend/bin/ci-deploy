@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+export EC2_KEY_NAME=$EC2_KEY_NAME
+
+
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
 # FUNCTION: Error Handler
@@ -38,8 +41,6 @@ trap 'error ${LINENO}' ERR
 echo "STAR: Running Deploy"
 ./bin/stack-deploy
 echo "END: Running Deploy"
-
-export EC2_KEY_NAME=$EC2_KEY_NAME
 
 echo "START: Setting up remote database connection"
 ./bin/remote-start

@@ -5,9 +5,9 @@ BASTION_STACK="$STACK-bastion"
 
 echo "START: Remote Stop Delete Stack"
 # AWS_PAGER="" -- Container does not have 'less'
-AWS_PAGER="" aws cloudformation delete-stack --stack "$STACK"
+AWS_PAGER="" aws cloudformation delete-stack --stack "$BASTION_STACK"
 echo "DONE: Remote Stop Delete Stack"
 
 echo "START: Remote Stop wait stack-delete-complete"
-aws cloudformation wait stack-delete-complete --stack "$STACK"
+aws cloudformation wait stack-delete-complete --stack "$BASTION_STACK"
 echo "DONE: Remote Stop wait stack-delete-complete"
