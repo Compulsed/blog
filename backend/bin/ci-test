@@ -39,6 +39,9 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
+# Replace so multiple builds can run in parallel
+export STACK="$STACK-$BUILDKITE_BUILD_NUMBER"
+
 echo "START: Running Deploy"
 ./bin/stack-deploy
 echo "END: Running Deploy"

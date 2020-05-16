@@ -19,3 +19,4 @@ steps:
             - ENG_STATS_ENV
             - ROLE_ARN
             - STACK
+            - STAGE

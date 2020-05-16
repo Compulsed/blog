@@ -1,13 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-STACK_NAME="engstats-$STAGE-$AWS_REGION-bastion"
-
 echo "START: Delete Stack"
 # AWS_PAGER="" -- Container does not have 'less'
-AWS_PAGER="" aws cloudformation delete-stack --stack "$STACK_NAME"
+AWS_PAGER="" aws cloudformation delete-stack --stack "$STACK"
 echo "DONE: Delete Stack"
 
 echo "START: wait stack-delete-complete"
-aws cloudformation wait stack-delete-complete --stack "$STACK_NAME"
+aws cloudformation wait stack-delete-complete --stack "$STACK"
 echo "DONE: wait stack-delete-complete"

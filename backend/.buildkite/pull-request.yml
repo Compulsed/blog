@@ -21,16 +21,17 @@ steps:
   #     EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
 
   - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
-    command: "/bin/chamber exec ${STACK} -- ./bin/ci-test"
     agents:
       queue: default
     env:
       AWS_REGION: "us-east-1"
       AWS_DEFAULT_REGION: "us-east-1"
+      BUILDKITE_BUILD_NUMBER: ${BUILDKITE_BUILD_NUMBER}
       CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
       ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-      STACK: "engstats-test-${BUILDKITE_BUILD_NUMBER}-us-east-1"
-      STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
+      STACK: "engstats-test"
+      STAGE: "test"
+    command: "/bin/chamber exec ${STACK} -- ./bin/ci-test"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
@@ -42,6 +43,8 @@ steps:
             - AWS_SESSION_TOKEN
             - AWS_REGION
             - AWS_DEFAULT_REGION
+            - BUILDKITE_BUILD_NUMBER
             - CHAMBER_KMS_KEY_ALIAS
             - ROLE_ARN
             - STACK
+            - STAGE

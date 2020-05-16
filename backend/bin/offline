@@ -15,4 +15,4 @@ while [ $# -gt 0 ]; do
 done
 
 echo "Running serverless offline for stage: $STAGE"
-NODE_ENV=$STAGE ./node_modules/.bin/sls offline --stage "$STAGE" --region "$AWS_REGION"
+./node_modules/.bin/sls offline --stage "$STAGE" --region "$AWS_REGION"

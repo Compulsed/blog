@@ -11,7 +11,7 @@ steps:
         CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
         ENG_STATS_ENV: "staging"
         ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-        STACK: "engstats-staging-us-east-1"
+        STACK: "engstats-staging"
         STAGE: "staging"
   - label: "Production"
     trigger: "eng-stats-deploy"
@@ -25,5 +25,5 @@ steps:
         CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
         ENG_STATS_ENV: "production"
         ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-        STACK: "engstats-prod-us-east-1"
+        STACK: "engstats-prod"
         STAGE: "prod"
