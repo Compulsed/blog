@@ -15,8 +15,8 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
-            - AWS_DEFAULT_REGION
             - ENG_STATS_ENV
+            - CHAMBER_KMS_KEY_ALIAS
             - ROLE_ARN
             - STACK
             - STAGE

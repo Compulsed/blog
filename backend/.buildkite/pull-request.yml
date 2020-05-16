@@ -25,7 +25,6 @@ steps:
       queue: default
     env:
       AWS_REGION: "us-east-1"
-      AWS_DEFAULT_REGION: "us-east-1"
       BUILDKITE_BUILD_NUMBER: ${BUILDKITE_BUILD_NUMBER}
       CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
       ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
@@ -42,7 +41,6 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
-            - AWS_DEFAULT_REGION
             - BUILDKITE_BUILD_NUMBER
             - CHAMBER_KMS_KEY_ALIAS
             - ROLE_ARN
