@@ -8,7 +8,7 @@ echo "START: Create Stack"
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
-    --parameter-overrides "ParameterKey=ServiceStackName,ParameterValue=$STACK" "ParameterKey=EC2SSHKeyName,ParameterValue=$EC2_KEY_NAME" \
+    --parameter-overrides "ServiceStackName=$STACK" "EC2SSHKeyName=$EC2_KEY_NAME" \
     --no-fail-on-empty-changeset
 echo "DONE: Create Stack"
 
