@@ -39,8 +39,7 @@ module.exports = {
             acquireTimeoutMillis: 60000,
             idleTimeoutMillis: 60000,
             reapIntervalMillis: 1000,
-            createRetryIntervalMillis: 100,
-            propagateCreateError: false // Fixes: https://github.com/knex/knex/issues/2820
+            createRetryIntervalMillis: 100
         };
 
         return config;
