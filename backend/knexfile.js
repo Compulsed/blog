@@ -35,9 +35,9 @@ module.exports = {
             database : process.env.DATABASE_NAME,
             min: 2,
             max: 6,
-            createTimeoutMillis: 3000,
-            acquireTimeoutMillis: 30000,
-            idleTimeoutMillis: 30000,
+            createTimeoutMillis: 6000,
+            acquireTimeoutMillis: 60000,
+            idleTimeoutMillis: 60000,
             reapIntervalMillis: 1000,
             createRetryIntervalMillis: 100,
             propagateCreateError: false // Fixes: https://github.com/knex/knex/issues/2820

@@ -5,11 +5,13 @@ BASTION_STACK="$STACK-bastion"
 
 echo "START: Create Stack"
 # AWS_PAGER="" -- Container does not have 'less'
-AWS_PAGER="" aws cloudformation create-stack \
-    --template-body "file://./stacks/bastion.yml" \
+AWS_PAGER="" aws cloudformation deploy \
+    --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
-    --parameters "ParameterKey=ServiceStackName,ParameterValue=$STACK" "ParameterKey=EC2SSHKeyName,ParameterValue=$EC2_KEY_NAME"
+    --parameter-overrides "ParameterKey=ServiceStackName,ParameterValue=$STACK" "ParameterKey=EC2SSHKeyName,ParameterValue=$EC2_KEY_NAME" \
+    --no-fail-on-empty-changeset
 echo "DONE: Create Stack"
+
 
 echo "START: wait stack-create-complete"
 aws cloudformation wait stack-create-complete --stack "$BASTION_STACK"
