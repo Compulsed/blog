@@ -53,7 +53,7 @@ functions:
           method: post
           cors: true
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/SECRET_ARN_SSM } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
@@ -136,7 +136,7 @@ resources:
       Type: AWS::SSM::Parameter
       Properties:
         Type: String
-        Name: "/${self:provider.stackName}/SECRET_ARN_SSM"
+        Name: "/${self:provider.stackName}/secret_arn_ssm"
         Value: { Ref: DatabaseSecret }
 
     ################
