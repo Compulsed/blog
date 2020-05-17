@@ -3,9 +3,6 @@ set -euo pipefail
 
 BASTION_STACK="$STACK-bastion"
 
-echo "THIS SHOULD NOT HAVE A VALUE? $STACK"
-echo "THIS SHOULD NOT HAVE A VALUE? $EC2_KEY_NAME"
-
 echo "START: Create Stack"
 # AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation create-stack \

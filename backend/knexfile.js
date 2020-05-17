@@ -4,7 +4,7 @@ module.exports = {
     client: 'postgresql',
     connection: async () => {
         var cfParams = {
-            StackName: `engstats-${process.env.STAGE}-${process.env.AWS_REGION}`
+            StackName: `engstats-${process.env.STAGE}`
         };
         
         const { Stacks } = await (new AWS.CloudFormation())

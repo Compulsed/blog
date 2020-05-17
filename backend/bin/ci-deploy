@@ -1,9 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-export EC2_KEY_NAME=$EC2_KEY_NAME
-
-
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
 # FUNCTION: Error Handler
