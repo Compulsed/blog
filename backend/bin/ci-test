@@ -16,6 +16,10 @@ cleanup() {
   echo "START: Stack Delete"
   ./bin/stack-delete
   echo "DONE: Stack Delete"
+
+  echo "START: Chamber Delete"
+  chamber export "$STACK" |  jq 'keys[]' | xargs -I % sh -c "chamber delete $TEST_STACK %"
+  echo "Done: Chamber Delete"
 }
 trap cleanup 0
 
@@ -39,8 +43,14 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-# Replace so multiple builds can run in parallel
-export STACK="$STACK-$BUILDKITE_BUILD_NUMBER"
+export TEST_STACK="$STACK-$BUILDKITE_BUILD_NUMBER"
+export TEST_STAGE="$STAGE-$BUILDKITE_BUILD_NUMBER"
+
+### Import export
+chamber export "$STACK" | chamber import "$TEST_STACK" -
+
+export STACK="$TEST_STACK"
+export STAGE="$TEST_STAGE"
 
 echo "START: Running Deploy"
 ./bin/stack-deploy
