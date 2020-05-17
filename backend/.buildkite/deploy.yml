@@ -1,6 +1,6 @@
 steps:
   - label: "Deploying backend to ${ENG_STATS_ENV}"
-    command: "./bin/ci-deploy"
+    command: "/bin/chamber ${STACK} exec -- ./bin/ci-deploy"
     agents:
       queue: default
     concurrency: 1
@@ -14,13 +14,9 @@ steps:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
-            - AWS_DEFAULT_REGION=us-east-1
-            - AWS_REGION=us-east-1
+            - AWS_REGION
             - ENG_STATS_ENV
+            - CHAMBER_KMS_KEY_ALIAS
             - ROLE_ARN
-            - AWS_ACCOUNT_ID
+            - STACK
             - STAGE
-            - DATABASE_LOCAL_PORT
-            - DATABASE_NAME
-            - EC2_KEY_NAME
-            - EC2_KEY_S3_BUCKET

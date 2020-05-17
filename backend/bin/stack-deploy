@@ -14,5 +14,5 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-echo "Running serverless deployment for stage: $STAGE"
-NODE_ENV=$STAGE ./node_modules/.bin/sls deploy --stage "$STAGE" --region "$AWS_REGION" --verbose --aws-s3-accelerate
+echo "Running serverless deployment for stack: $STACK"
+chamber exec "$STACK" -- ./node_modules/.bin/sls deploy --stage "$STAGE" --region "$AWS_REGION" --verbose --aws-s3-accelerate

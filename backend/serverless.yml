@@ -4,7 +4,7 @@ service:
 provider:
   name: aws
   runtime: nodejs12.x
-  stackName: ${self:service}-${self:provider.stage}-${env:AWS_REGION}
+  stackName: ${self:service}-${self:provider.stage}
   stage: ${env:STAGE}
   region: ${env:AWS_REGION}
   iamRoleStatements:

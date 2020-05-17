@@ -15,4 +15,4 @@ while [ $# -gt 0 ]; do
 done
 
 echo "Removing serverless deployment for stage: $STAGE"
-NODE_ENV=$STAGE ./node_modules/.bin/sls remove --stage "$STAGE" --region "$AWS_REGION" --verbose --aws-s3-accelerate
+./node_modules/.bin/sls remove --stage "$STAGE" --region "$AWS_REGION" --verbose --aws-s3-accelerate
