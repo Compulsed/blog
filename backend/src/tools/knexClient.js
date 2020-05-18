@@ -1,10 +1,8 @@
 const util = require('util');
-
-const knex = require('knex');
 const PostgresClient = require('knex/lib/dialects/postgres');
-const Transaction = require('knex/lib/transaction')
+const Transaction = require('knex/lib/transaction');
 
-function DataAPIClient() {
+const DataAPIClient = () => {
     function ClientRDSDataAPI(config) {
         PostgresClient.call(this, config);
     }
@@ -64,7 +62,7 @@ function DataAPIClient() {
             };
 
             if (queryObject.options && queryObject.options.nestTables) {
-            query.includeResultMetadata = true;
+                query.includeResultMetadata = true;
             }
 
             if (connection.__knexTxId) {
@@ -89,17 +87,21 @@ function DataAPIClient() {
             }
 
             if (response.method === 'select') {
+                // If no nested tables
                 if (!response.options || !response.options.nestTables) {
                     response.response = response.response.records;
                 }
+                // Else if nested tables
                 else {
                     const res = [];
                     const { records, columnMetadata } = response.response;
 
+                    // Iterate through the data
                     for (let i = 0; i < columnMetadata.length; i++) {
                         const { tableName } = columnMetadata[i];
                         const { label } = columnMetadata[i];
 
+                        // Iterate through responses
                         for (let j = 0; j < records.length; j++) {
                             if (!res[j]) res[j] = {};
                             if (!res[j][tableName]) res[j][tableName] = {};
@@ -121,13 +123,13 @@ function DataAPIClient() {
     return ClientRDSDataAPI;
 }
 
-const knexClient = require("knex")({
-    client: dataAPIClient(),
+const knex = require('knex')({
+    client: DataAPIClient(),
     connection: {
         secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
         resourceArn: process.env.DB_ARN,
-        database: process.env.DATABASE_NAME,
+        database: process.env.DATABASE_NAME,    
     }
 });
 
-module.exports = { knexClient };
+module.exports = { knexClient: knex }
