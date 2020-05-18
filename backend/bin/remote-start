@@ -4,7 +4,7 @@ set -euo pipefail
 BASTION_STACK="$STACK-bastion"
 
 echo "START: Create Stack"
-# AWS_PAGER="" -- Container does not have 'less'
+# HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
@@ -32,7 +32,7 @@ echo "STOP: SSH Key Download"
 
 echo "START: SSH Tunnel"
 # Do I need to clean this up
-# -o trusts that the EC2 instance is not MTM
+# HACK: -o trusts that the EC2 instance is not MTM
 # -4 IPV4
 nohup ssh -i "./$EC2_KEY_NAME.pem" \
     -4 \
@@ -41,11 +41,12 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT" \
     "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
     > /dev/null 2> /dev/null < /dev/null &
-sleep 5 # Sleep 5 seconds to that it can connect before moving into next query
+sleep 5 # HACK: Sleep 5 seconds to that it can connect before moving into next query
+rm -rf "./$EC2_KEY_NAME.pem"
 echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET" # SECURITY: Should not be logged out, remove
 echo "DONE: SSH Tunnel"
 
-# Is required so that other querys that follow this command have a warm SQL instance to avoid timeouts
+# HACK: Is required so that other querys that follow this command have a warm SQL instance to avoid timeouts
 #   https://github.com/knex/knex/issues/2820
 echo "START: Running warming query"
 PGPASSWORD="$DATABASE_SECRET" \
@@ -53,5 +54,5 @@ PGPASSWORD="$DATABASE_SECRET" \
     -d "$DATABASE_DATABASE_NAME" \
     -p "$DATABASE_LOCAL_PORT" \
     -h localhost \
-    -c 'SELECT * FROM pg_catalog.pg_tables' >/dev/null || true # Sometimes can timeout, though warms the instance regardless
+    -c 'SELECT * FROM pg_catalog.pg_tables' >/dev/null || true # HACK: Sometimes can timeout, though warms the instance regardless
 echo "DONE: Running warming query"

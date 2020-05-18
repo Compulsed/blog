@@ -1,8 +1,52 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Serverless",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--inspect",
+                "./node_modules/.bin/serverless",
+                "offline",
+                "-s",
+                "${env:STAGE}"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/handler.js"
+            ],
+            "port": 9229,
+            "sourceMaps": true,
+            "args": [],
+            "envFile": "${workspaceFolder}/.secrets/.env.dev"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Function",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--inspect",
+                "./node_modules/.bin/serverless",
+                "invoke",
+                "local",
+                "-f",
+                "pipelines",
+                "--data",
+                "{}",
+                "-s",
+                "${env:STAGE}"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/handler.js"
+            ],
+            "port": 9229,
+            "sourceMaps": true,
+            "args": [],
+            "envFile": "${workspaceFolder}/.secrets/.env.dev"
+        }
     ]
 }

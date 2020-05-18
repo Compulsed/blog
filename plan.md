@@ -27,10 +27,9 @@
 - [x] Cfn-lint
 - [x] Buildkite Event Bridge investigation
 - [x] Json support postgres
-- [ ] Secrets storage -- chamber?
+- [x] Secrets storage -- chamber?
+- [ ] Show all the services
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
-
-
 
 ## Statistics features (Should be value)
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
@@ -46,6 +45,7 @@
 - [ ] If errors happen in sub scripts (outside of ci-test.yml), it errors in the error block (messing message, code, etc)
 
 ## Before Production
+- [ ] All `Security:` Tags
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 - [ ] DeletionPolicy: Delete, change this if production
@@ -68,11 +68,13 @@
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
-- [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] aws-vault
 
-## Bugs
-- [ ] Uploads extracted AWS SDK to lambda function
+## Awkward Code, and improvements
+- [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
+- [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
+- [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
+- [ ] Two sets of dot files (core, then chamber) -- Where should profile exist? Cannot be used on CI
 
 ## Optional
 - [ ] Serverless CI/CD
@@ -92,3 +94,6 @@ Limitations:
 - Lambda in VPC
 - RDS Data API
 - RDS Proxy
+
+## Challenges of DataApi
+- 
