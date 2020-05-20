@@ -30,6 +30,8 @@
 - [x] Secrets storage -- chamber?
 - [ ] Show all the services
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
+  
+
 
 ## Statistics features (Should be value)
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
@@ -49,6 +51,7 @@
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 - [ ] DeletionPolicy: Delete, change this if production
+- [ ] Organisation Slub is a variable
 
 ## Nice to have
 - [ ] Jira stories into repo

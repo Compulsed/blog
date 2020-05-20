@@ -1,5 +1,5 @@
 exports.up = async function(knex) {
-    await knex.schema.createTable('buildkite-pipeline', table => {
+    await knex.schema.createTable('buildkite-build', table => {
         table
           .uuid('uuid')
           .primary();
@@ -10,5 +10,5 @@ exports.up = async function(knex) {
 };
 
 exports.down = async function(knex) {
-    await knex.schema.dropTable('buildkite-pipeline');
+    await knex.schema.dropTable('buildkite-build');
 };
