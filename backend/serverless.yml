@@ -65,11 +65,11 @@ functions:
     dependsOn:
       - SecretARNSSM # Hack 1
   
-  eventBridge:
-    handler: src/lambda/pipelines.handler
+  eventBridgeLogger:
+    handler: src/lambda/printer.handler
     timeout: 30
     events:
-      - eventBridge:
+      - eventBridgeLogger:
           eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
           pattern: 
             detail-type: 
@@ -78,6 +78,19 @@ functions:
     dependsOn:
       - EventBus # Hack 2
 
+  buildPusher:
+    handler: src/lambda/printer.handler
+    timeout: 30
+    events:
+      - eventBridgeLogger:
+          eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
+          pattern: 
+            detail-type: 
+              - 
+                prefix: Build
+    dependsOn:
+      - EventBus # Hack 2
+      - SecretARNSSM # Hack 1
     environment:
       SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
@@ -88,8 +101,6 @@ functions:
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
       BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
       BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
-      EventBus_ARN: !GetAtt "EventBus.Arn"
-
 
   pipelines:
     handler: src/lambda/pipelines.handler

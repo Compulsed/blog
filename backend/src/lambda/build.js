@@ -83,6 +83,8 @@ const indexBuild = async (buildUuid) => {
         `,
         queryParams
     );
+
+    logger.info('indexBuild finished');
 };
 
 const indexPipelineBuilds = async pipelineSlug => {
