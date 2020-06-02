@@ -1,4 +1,4 @@
-const indexBuild = require('../services/build');
+const { indexBuild } = require('../services/build');
 
 const handler = async (event, context) => {
   console.log(JSON.stringify({ event, context }));
