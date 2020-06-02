@@ -30,8 +30,6 @@
 - [x] Secrets storage -- chamber?
 - [ ] Show all the services
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
-  
-
 
 ## Statistics features (Should be value)
 - [ ] Showing what is currently being deployed to vs what is not (service activity)
@@ -72,6 +70,7 @@
 - [ ] DNS on API
 - [ ] IAM Auth on database
 - [ ] aws-vault
+- [ ] Proper logger support
 
 ## Awkward Code, and improvements
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)

@@ -1,6 +1,7 @@
 const util = require('util');
 const PostgresClient = require('knex/lib/dialects/postgres');
 const Transaction = require('knex/lib/transaction');
+const { logger } = require('./logger');
 
 const DataAPIClient = () => {
     function ClientRDSDataAPI(config) {
@@ -41,6 +42,8 @@ const DataAPIClient = () => {
         },
 
         async _query(connection, queryObject) {
+            logger.info('Knex Data API Query');
+
             if (!queryObject || typeof queryObject === 'string') {
                 queryObject = { sql: queryObject };
             }

@@ -1,0 +1,32 @@
+Resources:
+  EventBus:
+    Type: "AWS::Events::EventBus"
+    Properties:
+      Name: CloudformationEventBus #required
+  
+  EventBusRule:
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: String
+      EventBusName:
+        !Ref EventBus
+      EventPattern:
+        detail-type: 
+          - 
+            prefix: Build
+      Name: CloudformationEventBusRule
+      RoleArn: "arn:aws:iam::583855972723:role/service-role/Amazon_EventBridge_Invoke_Event_Bus_507478852"
+      State: "ENABLED"
+  
+  EventBusPolicy:
+    Type: "AWS::Events::EventBusPolicy"
+    Properties:
+      EventBusName:
+        !Ref EventBus
+      StatementId: "orgo-pfvi62lki4"
+      Action: "events:PutEvents"
+      Principal: "*"
+      Condition: 
+        Type: "StringEquals"
+        Key: "aws:PrincipalOrgID"
+        Value: "o-pfvi62lki4"
