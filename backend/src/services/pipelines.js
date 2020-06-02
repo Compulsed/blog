@@ -78,8 +78,4 @@ const writePipelines = async () => {
     return buildInserts;
 }
 
-const handler = async (event, context) => {
-    await writePipelines();
-};
-
-module.exports = { handler };
+module.exports = { writePipelines };
