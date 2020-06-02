@@ -103,7 +103,7 @@ functions:
       BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
 
   pipelines:
-    handler: src/lambda/pipelines.handler
+    handler: src/lambda/indexPipelines.handler
     timeout: 30
     environment:
       SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
