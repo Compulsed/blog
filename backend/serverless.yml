@@ -69,7 +69,7 @@ functions:
     handler: src/lambda/printer.handler
     timeout: 30
     events:
-      - eventBridgeLogger:
+      - eventBridge:
           eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
           pattern: 
             detail-type: 
@@ -82,7 +82,7 @@ functions:
     handler: src/lambda/indexBuild.handler
     timeout: 30
     events:
-      - eventBridgeLogger:
+      - eventBridge:
           eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
           pattern: 
             detail-type: 
