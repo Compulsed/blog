@@ -135,7 +135,7 @@ resources:
       Properties:
         EventBusName:
           !Ref EventBus
-        StatementId: "orgo-pfvi62lki4" # TODO: Replace
+        StatementId: ${self:provider.stackName}-orgo-pfvi62lki4
         Action: "events:PutEvents"
         Principal: "*"
         Condition: 
