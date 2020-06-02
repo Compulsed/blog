@@ -44,3 +44,8 @@ CREATE INDEX idxgindata ON cards USING gin (data);
 EXPLAIN ANALYZE SELECT count(*) FROM cards
 WHERE
   data @> '{"tags": ["Clean", "Kitchen"]}';
+
+insert into "buildkite-pipeline" ("data", "uuid") values ('{\"id\":\"UGlwZWxpbmUtLS0wMGI2ZjRkYi0wNjFjLTRiNTQtYmE0ZC0wZDA3NjU0YWI5MGI=\",\"uuid\":\"00b6f4db-061c-4b54-ba4d-0d07654ab90b\",\"url\":\"https://buildkite.com/dale-salter/eng-stats-merge\",\"name\":\"eng-stats-merge\"}', '00b6f4db-061c-4b54-ba4d-0d07654ab90b')
+
+
+select "uuid", "data" from "buildkite-pipeline" where "data"->>'name'='eng-stats-merge'

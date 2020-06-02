@@ -4,7 +4,7 @@ set -euo pipefail
 BASTION_STACK="$STACK-bastion"
 
 echo "START: Remote Stop Delete Stack"
-# AWS_PAGER="" -- Container does not have 'less'
+# HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation delete-stack --stack "$BASTION_STACK"
 echo "DONE: Remote Stop Delete Stack"
 

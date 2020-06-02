@@ -1,0 +1,34 @@
+{
+    "version": "0",
+    "id": "588cf359-5ab5-3c59-b505-2d7428c0c8fd",
+    "detail-type": "Build Finished",
+    "source": "aws.partner/buildkite.com/dale-salter/a53520a4-affd-4b7d-96f7-e39731b7d321",
+    "account": "878489430596",
+    "time": "2020-05-20T12:18:48Z",
+    "region": "us-east-1",
+    "resources": [],
+    "detail": {
+        "version": 1,
+        "build": {
+            "uuid": "45c8801c-5a04-4f3f-9798-968778adace3",
+            "graphql_id": "QnVpbGQtLS00NWM4ODAxYy01YTA0LTRmM2YtOTc5OC05Njg3NzhhZGFjZTM=",
+            "number": 263,
+            "commit": "fc35f4aedcee0adceea75ea78329b37ead4520bc",
+            "message": "ADDED: Some queries",
+            "branch": "feat/buildkite-data",
+            "state": "passed",
+            "source": "webhook",
+            "started_at": "2020-05-20 12:03:04 UTC",
+            "finished_at": "2020-05-20 12:18:48 UTC"
+        },
+        "pipeline": {
+            "uuid": "bc2fe34a-a350-403c-afff-d977e740d159",
+            "graphql_id": "UGlwZWxpbmUtLS1iYzJmZTM0YS1hMzUwLTQwM2MtYWZmZi1kOTc3ZTc0MGQxNTk=",
+            "slug": "eng-stats-pr"
+        },
+        "organization": {
+            "uuid": "13d3da51-c3d5-4f27-9391-bbb6d20f3de2",
+            "graphql_id": "T3JnYW5pemF0aW9uLS0tMTNkM2RhNTEtYzNkNS00ZjI3LTkzOTEtYmJiNmQyMGYzZGUy",
+            "slug": "dale-salter"
+        }
+    }

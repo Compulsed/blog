@@ -58,8 +58,63 @@ functions:
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
-      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address"
-      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"
+      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
+      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
+    dependsOn:
+      - SecretARNSSM # Hack 1
+  
+  eventBridgeLogger:
+    handler: src/lambda/printer.handler
+    timeout: 30
+    events:
+      - eventBridgeLogger:
+          eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
+          pattern: 
+            detail-type: 
+              - 
+                prefix: Build
+    dependsOn:
+      - EventBus # Hack 2
+
+  buildPusher:
+    handler: src/lambda/printer.handler
+    timeout: 30
+    events:
+      - eventBridgeLogger:
+          eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
+          pattern: 
+            detail-type: 
+              - 
+                prefix: Build
+    dependsOn:
+      - EventBus # Hack 2
+      - SecretARNSSM # Hack 1
+    environment:
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN_REF: !Ref DatabaseSecret
+      DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
+      DATABASE_NAME: ${self:custom.RDS.databaseName}
+      DATABASE_USER: ${self:custom.RDS.databaseUser}
+      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
+      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
+
+  pipelines:
+    handler: src/lambda/pipelines.handler
+    timeout: 30
+    environment:
+      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN_REF: !Ref DatabaseSecret
+      DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
+      DATABASE_NAME: ${self:custom.RDS.databaseName}
+      DATABASE_USER: ${self:custom.RDS.databaseUser}
+      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
+      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
     dependsOn:
       - SecretARNSSM # Hack 1
 
@@ -69,6 +124,24 @@ resources:
       Type: AWS::ApiGateway::RestApi
       Properties:
         Name: ${self:provider.stackName}-api
+
+    EventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: ${self:provider.stackName}-eventbridge
+
+    EventBusPolicy:
+      Type: AWS::Events::EventBusPolicy
+      Properties:
+        EventBusName:
+          !Ref EventBus
+        StatementId: "orgo-pfvi62lki4" # TODO: Replace
+        Action: "events:PutEvents"
+        Principal: "*"
+        Condition: 
+          Type: "StringEquals"
+          Key: "aws:PrincipalOrgID"
+          Value: "o-pfvi62lki4" # TODO: Replace
 
     DatabaseSecret:
       Type: AWS::SecretsManager::Secret
