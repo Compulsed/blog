@@ -77,4 +77,8 @@ curl --request POST \
   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
 echo "END: Running API Test"
 
+echo "START: Backfilling Database"
+yarn sls invoke -f pipelines -s "$STAGE"
+echo "END: Backfilling Database"
+
 echo "🎉 Done! 🎉"
