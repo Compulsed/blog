@@ -79,7 +79,7 @@ functions:
       - EventBus # Hack 2
 
   buildPusher:
-    handler: src/lambda/build.handler
+    handler: src/lambda/indexBuild.handler
     timeout: 30
     events:
       - eventBridgeLogger:
