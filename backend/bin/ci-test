@@ -78,7 +78,7 @@ curl --request POST \
 echo "END: Running API Test"
 
 echo "START: Backfilling Database"
-yarn sls invoke -f pipelines -s "$STAGE"
+yarn sls invoke local -f pipelines -s "$STAGE"
 echo "END: Backfilling Database"
 
 echo "🎉 Done! 🎉"
