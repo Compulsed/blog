@@ -79,7 +79,7 @@ functions:
       - EventBus # Hack 2
 
   buildPusher:
-    handler: src/lambda/printer.handler
+    handler: src/lambda/indexBuild.handler
     timeout: 30
     events:
       - eventBridgeLogger:
@@ -135,7 +135,7 @@ resources:
       Properties:
         EventBusName:
           !Ref EventBus
-        StatementId: "orgo-pfvi62lki4" # TODO: Replace
+        StatementId: ${self:provider.stackName}-orgo-pfvi62lki4
         Action: "events:PutEvents"
         Principal: "*"
         Condition: 
