@@ -56,9 +56,9 @@ const writePipelines = async () => {
     const pipelineInserts = pipelines.map(node => {
         const query = knexClient.raw(`
             insert into "buildkite-pipeline"
-            ("data", "uuid")
+            ("data", "id")
             values (?, ?)
-            ON CONFLICT (uuid)
+            ON CONFLICT (id)
             DO UPDATE SET data = excluded.data
             RETURNING *`, [
                 JSON.stringify(node),
