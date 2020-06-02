@@ -48,7 +48,7 @@ yarn knex migrate:latest --env "$STAGE"
 echo "END: Running Migration"
 
 echo "START: Backfilling Database"
-yarn sls invoke local -f pipelines -s "$STAGE"
+yarn sls invoke -f pipelines -s "$STAGE"
 echo "END: Backfilling Database"
 
 
