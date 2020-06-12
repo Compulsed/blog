@@ -72,6 +72,11 @@
 - [ ] aws-vault
 - [ ] Proper logger support
 
+## Insights
+- By team, individual, etc
+- Trendlines (how do I even do these?)
+- 
+
 ## Awkward Code, and improvements
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
