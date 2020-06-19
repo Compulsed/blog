@@ -1,6 +1,6 @@
 steps:
   - label: "Staging"
-    command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
+    command: "/bin/chamber exec engstats-staging -- yarn sls invoke local -f pipelines -s staging"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"
@@ -17,7 +17,7 @@ steps:
             - STACK
             - STAGE
   - label: "Production"
-    command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
+    command: "/bin/chamber exec engstats-prod -- yarn sls invoke local -f pipelines -s prod"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"
