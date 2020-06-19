@@ -8,7 +8,8 @@ provider:
   stage: ${env:STAGE}
   region: ${env:AWS_REGION}
   iamRoleStatements:
-    - Effect: Allow
+    - 
+      Effect: Allow
       Action: '*'
       Resource: '*'
       Sid: 'SecretsManagerDbCredentialsAccess'
@@ -22,7 +23,8 @@ provider:
         - 'secretsmanager:TagResource'
       Resource: 'arn:aws:secretsmanager:*:*:secret:rds-db-credentials/*'
       Sid: 'RDSDataServiceAccess'
-    - Effect: 'Allow'
+    - 
+      Effect: 'Allow'
       Action: 
         - 'secretsmanager:CreateSecret'
         - 'secretsmanager:ListSecrets'
