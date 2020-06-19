@@ -1,12 +1,6 @@
 steps:
   - label: "Staging"
     command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
-    build:
-      env:
-        AWS_REGION: "us-east-1"
-        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
-        ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-        STAGE: "staging"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"
@@ -24,12 +18,6 @@ steps:
             - STAGE
   - label: "Production"
     command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
-    build:
-      env:
-        AWS_REGION: "us-east-1"
-        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
-        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-        STAGE: "prod"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"
