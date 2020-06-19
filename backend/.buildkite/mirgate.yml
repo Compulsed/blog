@@ -3,7 +3,7 @@ steps:
     command: "/bin/chamber exec engstats-staging -- yarn sls invoke local -f pipelines -s staging"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
-          role: "$ROLE_ARN"
+          role: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
       - docker-compose#v3.1.0:
           run: backend
           env:
@@ -20,7 +20,7 @@ steps:
     command: "/bin/chamber exec engstats-prod -- yarn sls invoke local -f pipelines -s prod"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
-          role: "$ROLE_ARN"
+          role: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
       - docker-compose#v3.1.0:
           run: backend
           env:
