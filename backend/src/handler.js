@@ -1,6 +1,4 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
-
-const AWS = require('aws-sdk');
 const _ = require('lodash');
 
 const typeDefs = gql`

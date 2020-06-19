@@ -43,7 +43,6 @@ nohup ssh -i "./$EC2_KEY_NAME.pem" \
     > /dev/null 2> /dev/null < /dev/null &
 sleep 5 # HACK: Sleep 5 seconds to that it can connect before moving into next query
 rm -rf "./$EC2_KEY_NAME.pem"
-echo "-> Connect with losthost, port $DATABASE_LOCAL_PORT, secret: $DATABASE_SECRET" # SECURITY: Should not be logged out, remove
 echo "DONE: SSH Tunnel"
 
 # HACK: Is required so that other querys that follow this command have a warm SQL instance to avoid timeouts
