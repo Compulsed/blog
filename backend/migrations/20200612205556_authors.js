@@ -1,5 +1,6 @@
 
 exports.up = async function(knex) {
+  console.log('Init authors');
   await knex.raw(`
     CREATE TABLE "engineer" (
       engineerName TEXT PRIMARY KEY NOT NULL
@@ -35,5 +36,10 @@ exports.up = async function(knex) {
 };
 
 exports.down = async function(knex) {
-  
+  await knex.raw(`
+    DROP TABLE "engineer-team";
+    DROP TABLE "engineer";
+    DROP TABLE "team";
+    `
+  );
 };

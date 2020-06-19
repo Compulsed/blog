@@ -1,5 +1,8 @@
 exports.up = async function(knex) {
+    console.log('Start: Init pipelines');
     await knex.schema.createTable('buildkite-pipeline', table => {
+        console.log('Process: Init Pipelines Create Table');
+
         table
           .uuid('id')
           .primary();
@@ -7,6 +10,8 @@ exports.up = async function(knex) {
         table
           .jsonb('data');
     });
+
+    console.log('End: Init pipelines');
 };
 
 exports.down = async function(knex) {

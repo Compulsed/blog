@@ -1,4 +1,5 @@
 exports.up = async function(knex) {
+  console.log('Init views');
   await knex.raw(`
     CREATE OR REPLACE VIEW "buildkite-build-view" AS  select
       build.id,
@@ -27,6 +28,9 @@ exports.up = async function(knex) {
   `);
 };
 
-exports.down = function(knex) {
-  
+exports.down = async function(knex) {
+  await knex.raw(`
+      DROP VIEW "buildkite-build-view";
+    `
+  );
 };

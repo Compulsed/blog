@@ -1,4 +1,5 @@
 exports.up = async function(knex) {
+    console.log('Init builds');
     await knex.schema.createTable('buildkite-build', table => {
         table
           .uuid('id')

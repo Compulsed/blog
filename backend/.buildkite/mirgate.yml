@@ -1,0 +1,47 @@
+steps:
+  - label: "Staging"
+    command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
+    build:
+      env:
+        AWS_REGION: "us-east-1"
+        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
+        ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
+        STAGE: "staging"
+    plugins:
+      - cultureamp/aws-assume-role#v0.1.0:
+          role: "$ROLE_ARN"
+      - docker-compose#v3.1.0:
+          run: backend
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION
+            - ENG_STATS_ENV
+            - CHAMBER_KMS_KEY_ALIAS
+            - ROLE_ARN
+            - STACK
+            - STAGE
+  - label: "Production"
+    command: "/bin/chamber exec ${STACK} -- yarn sls invoke local -f pipelines -s ${STAGE}"
+    build:
+      env:
+        AWS_REGION: "us-east-1"
+        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
+        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
+        STAGE: "prod"
+    plugins:
+      - cultureamp/aws-assume-role#v0.1.0:
+          role: "$ROLE_ARN"
+      - docker-compose#v3.1.0:
+          run: backend
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION
+            - ENG_STATS_ENV
+            - CHAMBER_KMS_KEY_ALIAS
+            - ROLE_ARN
+            - STACK
+            - STAGE

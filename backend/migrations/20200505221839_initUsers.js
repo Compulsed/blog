@@ -1,5 +1,6 @@
 
 exports.up = async function(knex) {
+  console.log('Init users');
   await knex.schema.createTable("users", table => {
       table
         .increments("user_id")
