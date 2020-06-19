@@ -28,11 +28,11 @@
 - [x] Buildkite Event Bridge investigation
 - [x] Json support postgres
 - [x] Secrets storage -- chamber?
-- [ ] Show all the services
-- [ ] Showing what is currently being deployed to vs what is not (service activity)
+- [x] Show all the services
+- [x] Showing what is currently being deployed to vs what is not (service activity)
 
 ## Statistics features (Should be value)
-- [ ] Showing what is currently being deployed to vs what is not (service activity)
+- [x] Showing what is currently being deployed to vs what is not (service activity)
 - [ ] Types of commits being used
   - [ ] GitHub commits into repo
 - [ ] Frontend View

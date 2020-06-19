@@ -18,8 +18,8 @@ provider:
         - 'secretsmanager:DescribeSecret'
         - 'secretsmanager:TagResource'
       Resource: 'arn:aws:secretsmanager:*:*:secret:rds-db-credentials/*'
-      Sid: 'RDSDataServiceAccess'
-    - Effect: 'Allow'
+    - Sid: 'RDSDataServiceAccess'
+      Effect: 'Allow'
       Action: 
         - 'secretsmanager:CreateSecret'
         - 'secretsmanager:ListSecrets'
