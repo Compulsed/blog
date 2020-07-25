@@ -18,7 +18,8 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-BASTION_STACK="$STAGE-bastion"
+SERVICE_STACK_STACK="engstats-$STAGE"
+BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 
 echo "START: Remote Stop Delete Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'

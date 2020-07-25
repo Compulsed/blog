@@ -6,8 +6,8 @@ provider:
   runtime: nodejs12.x
   stackName: ${self:service}-${self:provider.stage}
   stage: ${opt:stage}
-  configPath: /${opt:stage}/engstats/config
-  secretPath: /${opt:stage}/engstats/secret
+  configPath: ${opt:stage}/engstats/config
+  secretPath: ${opt:stage}/engstats/secret
   region: ${env:AWS_REGION}
   iamRoleStatements:
     - Sid: 'SecretsManagerDbCredentialsAccess'
@@ -75,7 +75,7 @@ functions:
           method: post
           cors: true
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.configPath}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN: ${ssm:/${self:provider.configPath}/SECRET_ARN_SSM } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
@@ -114,7 +114,7 @@ functions:
       - EventBus # Hack 2
       - SecretARNSSM # Hack 1
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.configPath}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN: ${ssm:/${self:provider.configPath}/SECRET_ARN_SSM } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
@@ -128,7 +128,7 @@ functions:
     handler: src/lambda/indexPipelines.handler
     timeout: 30
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.configPath}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
+      SECRET_ARN: ${ssm:/${self:provider.configPath}/SECRET_ARN_SSM } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
@@ -227,12 +227,12 @@ resources:
     # Serverless offline does not allow you to use Ref, which our lambda depends on the secret ARN
     #   We can save the value on the first deploy in SSM, and then use the SSM value in serverless offline
     # https://github.com/dherault/serverless-offline/issues/688
-    SecretARNSSM:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Type: String
-        Name: "/${self:provider.stackName}/secret_arn_ssm"
-        Value: { Ref: DatabaseSecret }
+    # SecretARNSSM:
+    #   Type: AWS::SSM::Parameter
+    #   Properties:
+    #     Type: String
+    #     Name: "/${self:provider.stackName}/SECRET_ARN_SSM"
+    #     Value: { Ref: DatabaseSecret }
 
     ################
     # Networking
