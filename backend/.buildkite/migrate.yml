@@ -3,6 +3,7 @@ steps:
     command: "yarn sls invoke local -f pipelines -s staging"
     env:
       AWS_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "745453995866"
       ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
       STACK: "engstats-staging"
       STAGE: "staging"
@@ -16,11 +17,13 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
+            - AWS_ACCOUNT_ID
             - ROLE_ARN
   - label: "Production"
     command: "yarn sls invoke local -f pipelines -s prod"
     env:
       AWS_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "755220514429"
       ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
       STACK: "engstats-prod"
       STAGE: "prod"
@@ -32,6 +35,7 @@ steps:
           env:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
+            - AWS_ACCOUNT_ID
             - AWS_SESSION_TOKEN
             - AWS_REGION
             - ROLE_ARN
