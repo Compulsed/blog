@@ -37,8 +37,9 @@ cleanup() {
 
   # TODO: Oprah value delete
   echo "START: Oprah Delete"
-  cat "/tmp/oprah-exports.json" | jq ".configs | keys[]" | xargs -I % sh -c "aws ssm delete-parameter --name /$TEST_STAGE/engstats/config/%";
-  cat "/tmp/oprah-exports.json" | jq ".secrets | keys[]" | xargs -I % sh -c "aws ssm delete-parameter --name /$TEST_STAGE/engstats/secret/%";
+  # HACK: AWS_PAGER="" -- Container does not have 'less'
+  cat "/tmp/oprah-exports.json" | jq ".configs | keys[]" | xargs -I % sh -c "AWS_PAGER="" aws ssm delete-parameter --name /$TEST_STAGE/engstats/config/%";
+  cat "/tmp/oprah-exports.json" | jq ".secrets | keys[]" | xargs -I % sh -c "AWS_PAGER="" aws ssm delete-parameter --name /$TEST_STAGE/engstats/secret/%";
   echo "Done: Oprah Delete"
 }
 trap cleanup 0
