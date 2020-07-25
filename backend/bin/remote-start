@@ -1,14 +1,33 @@
 #!/bin/bash
 set -euo pipefail
 
-BASTION_STACK="$STACK-bastion"
+STAGE=""
+
+usage="USAGE: $(basename "$0") [-s|--stage] <stage>
+where:
+    -s | --stage        stage for deployment (required)
+    -h | --help         show this help text"
+
+while [ $# -gt 0 ]; do
+    if [[ $1 =~ "--"* ]]; then
+        case $1 in
+            --help|-h) echo "$usage"; exit; ;;
+            --stage|-s) STAGE=$2;;
+        esac
+    fi
+    shift
+done
+
+BASTION_STACK="$STAGE-bastion"
+
+EC2_KEY_NAME=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/EC2_KEY_NAME -s "$STAGE")
 
 echo "START: Create Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
-    --parameter-overrides "ServiceStackName=$STACK" "EC2SSHKeyName=$EC2_KEY_NAME" \
+    --parameter-overrides "ServiceStackName=$BASTION_STACK" "EC2SSHKeyName=$EC2_KEY_NAME" \
     --no-fail-on-empty-changeset
 echo "DONE: Create Stack"
 
@@ -24,6 +43,9 @@ DATABASE_SECRET_ARN=$(aws cloudformation describe-stacks --stack-name "$BASTION_
 DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."password" )
 DATABASE_USERNAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."username" )
 DATABASE_DATABASE_NAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."dbname" )
+
+EC2_KEY_S3_BUCKET=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/EC2_KEY_S3_BUCKET -s "$STAGE")
+
 
 echo "START: SSH Key Download"
 aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"

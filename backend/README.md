@@ -22,10 +22,15 @@ Knex w/ Data API Client issues:
 
 
 ### Chamber -> Oprah Migration
-- [ ] Upload local oprah values to dev
-- [ ] Serverless.yml (using oprah rather than env)
-- [ ] stack-deploy
+- [x] Upload local oprah values to dev
+- [x] Serverless.yml (using oprah rather than env)
+- [ ] bin
 - [ ] pull-request.yml
 - [ ] migrate.yml
 - [ ] ci-test (hard)
-- [ ] Upload test / production values
+- [x] Upload test / staging / production values
+
+Values still required as env:
+- AWS_ACCOUNT_ID
+- AWS_REGION
+- AWS_PROFILE

@@ -1,9 +1,8 @@
 steps:
   - label: "Staging"
-    command: "/bin/chamber exec engstats-staging -- yarn sls invoke local -f pipelines -s staging"
+    command: "yarn sls invoke local -f pipelines -s staging"
     env:
       AWS_REGION: "us-east-1"
-      ENG_STATS_ENV: "staging"
       ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
       STACK: "engstats-staging"
       STAGE: "staging"
@@ -17,15 +16,11 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
-            - ENG_STATS_ENV
             - ROLE_ARN
-            - STACK
-            - STAGE
   - label: "Production"
-    command: "/bin/chamber exec engstats-prod -- yarn sls invoke local -f pipelines -s prod"
+    command: "yarn sls invoke local -f pipelines -s prod"
     env:
       AWS_REGION: "us-east-1"
-      ENG_STATS_ENV: "prod"
       ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
       STACK: "engstats-prod"
       STAGE: "prod"
@@ -39,7 +34,4 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
-            - ENG_STATS_ENV
             - ROLE_ARN
-            - STACK
-            - STAGE

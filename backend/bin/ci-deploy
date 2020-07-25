@@ -1,6 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
+STAGE=""
+
+usage="USAGE: $(basename "$0") [-s|--stage] <stage>
+where:
+    -s | --stage        stage for deployment (required)
+    -h | --help         show this help text"
+
+while [ $# -gt 0 ]; do
+    if [[ $1 =~ "--"* ]]; then
+        case $1 in
+            --help|-h) echo "$usage"; exit; ;;
+            --stage|-s) STAGE=$2;;
+        esac
+    fi
+    shift
+done
+
+
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
 # FUNCTION: Error Handler
@@ -10,7 +28,7 @@ cleanup() {
   echo "Running clean up"
 
   echo "START: Remote Stop"
-  ./bin/remote-stop
+  ./bin/remote-stop -s "$STAGE"
   echo "DONE: Remote Stop"
 }
 trap cleanup 0
@@ -36,11 +54,11 @@ trap 'error ${LINENO}' ERR
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
 echo "STAR: Running Deploy"
-./bin/stack-deploy
+./bin/stack-deploy -s "$STAGE"
 echo "END: Running Deploy"
 
 echo "START: Setting up remote database connection"
-./bin/remote-start
+./bin/remote-start -s "$STAGE"
 echo "END: Setting up remote database connection"
 
 echo "START: Running Migration"
