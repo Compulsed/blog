@@ -1,45 +1,25 @@
-  # steps:
-  # - label: Run PR
-  #   command:
-  #     - "echo 'Pull requesting!'"
-  #   agents:
-  #     queue: default
-  #   plugins:
-  #     - docker-compose#v3.0.1:
-  #         run: backend   
-  #   env:
-  #     ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-  #     AWS_DEFAULT_REGION: "us-east-1"
-  #     AWS_REGION: "us-east-1"
-  #     AWS_ACCOUNT_ID: "335713476045"
-  #     STAGE: "test-${BUILDKITE_BUILD_NUMBER}"
-  #     DATABASE_LOCAL_PORT: "5433"
-  #     DATABASE_NAME: "engstats"
-  #     BASTION: "true"
-  #     EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
-  #     EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
-
-  # - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
-  #   agents:
-  #     queue: default
-  #   env:
-  #     AWS_REGION: "us-east-1"
-  #     BUILDKITE_BUILD_NUMBER: ${BUILDKITE_BUILD_NUMBER}
-  #     CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
-  #     ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-  #     STACK: "engstats-test"
-  #     STAGE: "test"
-  #   command: "/bin/chamber exec engstats-test -- ./bin/ci-test"
-  #   plugins:
-  #     - cultureamp/aws-assume-role#v0.1.0:
-  #         role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
-  #     - docker-compose#v3.1.0:
-  #         run: backend
-  #         env:
-  #           - AWS_ACCESS_KEY_ID
-  #           - AWS_SECRET_ACCESS_KEY
-  #           - AWS_SESSION_TOKEN
-  #           - AWS_REGION
-  #           - BUILDKITE_BUILD_NUMBER
-  #           - CHAMBER_KMS_KEY_ALIAS
-  #           - ROLE_ARN
+  steps:
+  - label: "Testing stack build test-${BUILDKITE_BUILD_NUMBER}"
+    agents:
+      queue: default
+    env:
+      AWS_REGION: "us-east-1"
+      AWS_ACCOUNT_ID: "335713476045"
+      BUILDKITE_BUILD_NUMBER: ${BUILDKITE_BUILD_NUMBER}
+      ROLE_ARN: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
+      STAGE: "test"
+    command: "./bin/ci-test -s test"
+    plugins:
+      - cultureamp/aws-assume-role#v0.1.0:
+          role: "arn:aws:iam::335713476045:role/eng-stats-test-ci-role"
+      - docker-compose#v3.1.0:
+          run: backend
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION
+            - AWS_ACCOUNT_ID
+            - BUILDKITE_BUILD_NUMBER
+            - STAGE
+            - ROLE_ARN
