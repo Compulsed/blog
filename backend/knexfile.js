@@ -1,8 +1,23 @@
 const AWS = require('aws-sdk');
 
+const knex = require('knex');
+
 module.exports = {
     client: 'postgresql',
-    connection: async () => {
+    connection: async (arg1) => {       
+        const parameterResponse = await (new AWS.SSM()).getParameters({
+            Names: [
+                `/${process.env.STAGE}/engstats/config/DATABASE_LOCAL_PORT`,
+                `/${process.env.STAGE}/engstats/config/DATABASE_NAME`,
+            ]
+        })
+        .promise();
+
+        const [ localPortResponse, databaseNameResponse ] = parameterResponse.Parameters;
+
+        const { Value: localPort } = localPortResponse;
+        const { Value: databaseName } = databaseNameResponse;
+
         var cfParams = {
             StackName: `engstats-${process.env.STAGE}`
         };
@@ -29,10 +44,10 @@ module.exports = {
 
         const config =  {
             host: `localhost`,
-            port: process.env.DATABASE_LOCAL_PORT,
+            port: localPort,
             user: username,
             password : password,
-            database : process.env.DATABASE_NAME,
+            database : databaseName,
             min: 2,
             max: 6,
             createTimeoutMillis: 6000,

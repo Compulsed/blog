@@ -4,6 +4,33 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Debug Knex",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--inspect-brk=9229",
+                "--nolazy",
+                "./node_modules/.bin/knex",
+                "migrate:latest",
+                "--env",
+                "dev"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/handler.js"
+            ],
+            "port": 9229,
+            "sourceMaps": true,
+            "args": [],
+            "env": {
+                "AWS_REGION": "us-east-1",
+                "AWS_PROFILE": "engstats-dev",
+                "AWS_SDK_LOAD_CONFIG": "1",
+                "STAGE": "dev"
+            }
+        },    
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Debug Serverless",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "node",
