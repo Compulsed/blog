@@ -15,5 +15,6 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
+            - AWS_ACCOUNT_ID
             - STAGE
             - ROLE_ARN

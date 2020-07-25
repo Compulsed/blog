@@ -7,6 +7,7 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
+        AWS_ACCOUNT_ID: "745453995866"
         ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
         STAGE: "staging"
   - label: "Production"
@@ -17,5 +18,6 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
+        AWS_ACCOUNT_ID: "745453995866"
         ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
         STAGE: "prod"
