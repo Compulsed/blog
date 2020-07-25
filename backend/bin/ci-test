@@ -84,7 +84,7 @@ STAGE=$TEST_STAGE yarn knex migrate:latest --env "$TEST_STAGE"
 echo "END: Running Migration"
 
 echo "START: Running Seeding"
-yarn knex seed:run
+STAGE=$TEST_STAGE yarn knex seed:run
 echo "END: Running Seeding"
 
 echo "START: Running API Test"
