@@ -1,80 +1,97 @@
-#!/bin/bash
-set -euo pipefail
+# #!/bin/bash
+# set -euo pipefail
 
-###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-#
-# FUNCTION: Error Handler
-#
-###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-cleanup() {
-  echo "Running clean up"
+# STAGE=""
 
-  echo "START: Remote Stop"
-  ./bin/remote-stop
-  echo "DONE: Remote Stop"
+# usage="USAGE: $(basename "$0") [-s|--stage] <stage>
+# where:
+#     -s | --stage        stage for deployment (required)
+#     -h | --help         show this help text"
 
-  echo "START: Stack Delete"
-  ./bin/stack-delete
-  echo "DONE: Stack Delete"
+# while [ $# -gt 0 ]; do
+#     if [[ $1 =~ "--"* ]]; then
+#         case $1 in
+#             --help|-h) echo "$usage"; exit; ;;
+#             --stage|-s) STAGE=$2;;
+#         esac
+#     fi
+#     shift
+# done
 
-  echo "START: Chamber Delete"
-  chamber export "$STACK" |  jq 'keys[]' | xargs -I % sh -c "chamber delete $TEST_STACK %"
-  echo "Done: Chamber Delete"
-}
-trap cleanup 0
+# ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+# #
+# # FUNCTION: Error Handler
+# #
+# ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+# cleanup() {
+#   echo "Running clean up"
 
-error() {
-  local parent_lineno="$1"
-  local message="$2"
-  local code="${3:-1}"
-  if [[ -n "$message" ]] ; then
-    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
-  else
-    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
-  fi
-  exit "${code}"
-}
+#   echo "START: Remote Stop"
+#   ./bin/remote-stop -s "$STAGE"
+#   echo "DONE: Remote Stop"
 
-trap 'error ${LINENO}' ERR
+#   echo "START: Stack Delete"
+#   ./bin/stack-delete -s "$STAGE"
+#   echo "DONE: Stack Delete"
 
-###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-#
-# FUNCTION: Integration Test
-#
-###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#   # TODO: Oprah value delete
+#   echo "START: Chamber Delete"
+#   chamber export "$STACK" |  jq 'keys[]' | xargs -I % sh -c "chamber delete $TEST_STACK %"
+#   echo "Done: Chamber Delete"
+# }
+# trap cleanup 0
 
-export TEST_STACK="$STACK-$BUILDKITE_BUILD_NUMBER"
-export TEST_STAGE="$STAGE-$BUILDKITE_BUILD_NUMBER"
+# error() {
+#   local parent_lineno="$1"
+#   local message="$2"
+#   local code="${3:-1}"
+#   if [[ -n "$message" ]] ; then
+#     echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+#   else
+#     echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+#   fi
+#   exit "${code}"
+# }
 
-### Import export
-chamber export "$STACK" | chamber import "$TEST_STACK" -
+# trap 'error ${LINENO}' ERR
 
-export STACK="$TEST_STACK"
-export STAGE="$TEST_STAGE"
+# ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+# #
+# # FUNCTION: Integration Test
+# #
+# ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-echo "START: Running Deploy"
-./bin/stack-deploy
-echo "END: Running Deploy"
+# export TEST_STAGE="$STAGE-$BUILDKITE_BUILD_NUMBER"
 
-echo "START: Setting up remote database connection"
-./bin/remote-start
-echo "END: Setting up remote database connection"
+# ### Import export
+# chamber export "$STACK" | chamber import "$TEST_STACK" -
 
-echo "START: Running Migration"
-yarn knex migrate:latest --env "$STAGE"
-echo "END: Running Migration"
+# export STACK="engstats-$TEST_STACK"
+# export STAGE="$TEST_STAGE"
 
-echo "START: Running Seeding"
-yarn knex seed:run
-echo "END: Running Seeding"
+# echo "START: Running Deploy"
+# ./bin/stack-deploy -s "$STAGE"
+# echo "END: Running Deploy"
 
-echo "START: Running API Test"
-GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+# echo "START: Setting up remote database connection"
+# ./bin/remote-start -s "$STAGE"
+# echo "END: Setting up remote database connection"
 
-curl --request POST \
-  --url "$GRAPHQL_URL" \
-  --header 'content-type: application/json' \
-  --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
-echo "END: Running API Test"
+# echo "START: Running Migration"
+# yarn knex migrate:latest --env "$STAGE"
+# echo "END: Running Migration"
 
-echo "🎉 Done! 🎉"
+# echo "START: Running Seeding"
+# yarn knex seed:run
+# echo "END: Running Seeding"
+
+# echo "START: Running API Test"
+# GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$STACK" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
+
+# curl --request POST \
+#   --url "$GRAPHQL_URL" \
+#   --header 'content-type: application/json' \
+#   --data '{"query":"query {\n  users {\n    email\n    first_name\n    last_name\n  }\n}"}'
+# echo "END: Running API Test"
+
+# echo "🎉 Done! 🎉"

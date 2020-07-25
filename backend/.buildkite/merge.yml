@@ -7,10 +7,7 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
-        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
-        ENG_STATS_ENV: "staging"
         ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-        STACK: "engstats-staging"
         STAGE: "staging"
   - label: "Production"
     trigger: "eng-stats-deploy"
@@ -20,8 +17,5 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
-        CHAMBER_KMS_KEY_ALIAS: "aws/ssm"
-        ENG_STATS_ENV: "prod"
         ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-        STACK: "engstats-prod"
         STAGE: "prod"

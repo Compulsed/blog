@@ -1,0 +1,25 @@
+service: engstats
+provider:
+  name: ssm
+
+config:
+  path: /${stage}/engstats/config
+  defaults:
+    DATABASE_NAME: "engstats"
+    EC2_KEY_NAME: "2020-05-08-eng-stats-dev-ec2-key"
+    EC2_KEY_S3_BUCKET: "eng-stats-dev-ec2-key"
+    DATABASE_LOCAL_PORT: "5433"
+    BUILDKITE_GRAPHQL_URL: "https://graphql.buildkite.com/v1"
+
+  test:
+    EC2_KEY_NAME: "2020-05-08-eng-stats-test-ec2-key"
+    EC2_KEY_S3_BUCKET: "eng-stats-test-ec2-key"
+
+  production:
+    EC2_KEY_NAME: "2020-05-08-eng-stats-prod-ec2-key"
+    EC2_KEY_S3_BUCKET: "eng-stats-prod-ec2-key"
+
+secret:
+  path: /${stage}/engstats/secret
+  required:
+    BUILDKITE_GRAPHQL_API_INTEGRATION: "Buildkite API Key"

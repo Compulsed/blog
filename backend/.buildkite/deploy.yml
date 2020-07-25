@@ -1,10 +1,10 @@
 steps:
-  - label: "Deploying backend to ${ENG_STATS_ENV}"
-    command: "/bin/chamber exec ${STACK} -- ./bin/ci-deploy"
+  - label: "Deploying backend to ${STAGE}"
+    command: "./bin/ci-deploy -s ${STAGE}"
     agents:
       queue: default
     concurrency: 1
-    concurrency_group: "eng-stats-deploy-${ENG_STATS_ENV}"
+    concurrency_group: "eng-stats-deploy-${STAGE}"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"
@@ -15,8 +15,5 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION
-            - ENG_STATS_ENV
-            - CHAMBER_KMS_KEY_ALIAS
-            - ROLE_ARN
-            - STACK
             - STAGE
+            - ROLE_ARN

@@ -5,7 +5,9 @@ provider:
   name: aws
   runtime: nodejs12.x
   stackName: ${self:service}-${self:provider.stage}
-  stage: ${env:STAGE}
+  stage: ${opt:stage}
+  configPath: ${opt:stage}/engstats/config
+  secretPath: ${opt:stage}/engstats/secret
   region: ${env:AWS_REGION}
   iamRoleStatements:
     - Sid: 'SecretsManagerDbCredentialsAccess'
@@ -73,17 +75,14 @@ functions:
           method: post
           cors: true
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
-    dependsOn:
-      - SecretARNSSM # Hack 1
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
   
   eventBridgeLogger:
     handler: src/lambda/printer.handler
@@ -110,33 +109,28 @@ functions:
                 prefix: Build
     dependsOn:
       - EventBus # Hack 2
-      - SecretARNSSM # Hack 1
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
 
   pipelines:
     handler: src/lambda/indexPipelines.handler
     timeout: 30
     environment:
-      SECRET_ARN: ${ssm:/${self:provider.stackName}/secret_arn_ssm } # ${opt:stage, self:provider.stage}, consider overrides
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
       DATABASE_NAME: ${self:custom.RDS.databaseName}
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.stackName}/buildkite_graphql_url~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.stackName}/buildkite_graphql_api_integration~true }
-    dependsOn:
-      - SecretARNSSM # Hack 1
+      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
+      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
 
 resources:
   Resources:
@@ -218,19 +212,6 @@ resources:
         SecretId: { Ref: DatabaseSecret }
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
-
-    ###############
-    # Hack 1
-    ###############
-    # Serverless offline does not allow you to use Ref, which our lambda depends on the secret ARN
-    #   We can save the value on the first deploy in SSM, and then use the SSM value in serverless offline
-    # https://github.com/dherault/serverless-offline/issues/688
-    SecretARNSSM:
-      Type: AWS::SSM::Parameter
-      Properties:
-        Type: String
-        Name: "/${self:provider.stackName}/secret_arn_ssm"
-        Value: { Ref: DatabaseSecret }
 
     ################
     # Networking
