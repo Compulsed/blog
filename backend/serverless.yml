@@ -63,7 +63,6 @@ custom:
 
 plugins:
   - serverless-offline
-  - serverless-pseudo-parameters
 
 functions:
   graphql:
@@ -131,6 +130,11 @@ functions:
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
       BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
       BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
+
+package:
+  include:
+    - src/**
+    - node_modules/**
 
 resources:
   Resources:
