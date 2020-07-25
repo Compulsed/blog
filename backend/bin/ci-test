@@ -80,7 +80,7 @@ echo "START: Setting up remote database connection"
 echo "END: Setting up remote database connection"
 
 echo "START: Running Migration"
-yarn knex migrate:latest --env "$TEST_STAGE"
+STAGE=$TEST_STAGE yarn knex migrate:latest --env "$TEST_STAGE"
 echo "END: Running Migration"
 
 echo "START: Running Seeding"
