@@ -53,6 +53,8 @@ aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
 chmod 0400 "./$EC2_KEY_NAME.pem"
 echo "STOP: SSH Key Download"
 
+DATABASE_LOCAL_PORT=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/DATABASE_LOCAL_PORT -s "$STAGE")
+
 echo "START: SSH Tunnel"
 # Do I need to clean this up
 # HACK: -o trusts that the EC2 instance is not MTM
