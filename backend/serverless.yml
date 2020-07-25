@@ -131,11 +131,6 @@ functions:
       BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
       BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
 
-package:
-  include:
-    - src/**
-    - node_modules/**
-
 resources:
   Resources:
     ApiGatewayRestApi:
