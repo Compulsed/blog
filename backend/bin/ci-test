@@ -87,6 +87,10 @@ echo "START: Running Seeding"
 STAGE=$TEST_STAGE yarn knex seed:run
 echo "END: Running Seeding"
 
+echo "START: Backfill"
+yarn sls invoke local -f pipelines -s "$TEST_STAGE" --data "{}"
+echo "END: Backfill"
+
 echo "START: Running API Test"
 GRAPHQL_URL=$(aws cloudformation describe-stacks --stack-name "$TEST_STACK" --query "Stacks[0].Outputs[?OutputKey=='GraphQLUrl'].OutputValue" --output text)
 
