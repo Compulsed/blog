@@ -21,4 +21,5 @@ if [ -z "${STAGE}" ]; then
 fi
 
 echo "Running migrate on ${STAGE}"
+export AWS_ACCOUNT_ID
 yarn sls invoke local -f pipelines -s "${STAGE}"
