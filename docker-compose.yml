@@ -3,3 +3,15 @@ services:
   backend:
     build:
       context: ./backend
+    volumes:
+      - /usr/bin/buildkite-agent:/bin/buildkite-agent
+    environment:
+      - BUILDKITE_AGENT_ACCESS_TOKEN
+      - BUILDKITE_BUILD_NUMBER
+      - BUILDKITE_JOB_ID
+      - BUILDKITE_BUILD_ID
+      - BUILDKITE_PIPELINE_SLUG
+      - BUILDKITE_PULL_REQUEST
+      - BUILDKITE_COMMIT
+      - BUILDKITE_BRANCH
+      - BUILDKITE_AGENT_META_DATA_QUEUE
