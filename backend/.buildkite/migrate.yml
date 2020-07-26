@@ -1,41 +1,45 @@
 steps:
-  - label: "Staging"
-    command: "yarn sls invoke local -f pipelines -s staging"
-    env:
-      AWS_REGION: "us-east-1"
-      AWS_ACCOUNT_ID: "745453995866"
-      ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-      STACK: "engstats-staging"
-      STAGE: "staging"
+  - block: "Run command"
+    prompt: "Please select the account and enter the command you wish to execute"
+    fields:
+      - select: "Select Account Id"
+        key: accountId
+        required: true
+        options:
+          - label: "Test"
+            value: "745453995866"
+          - label: "Production"
+            value: "755220514429"
+      - select: "Select Role"
+        key: role
+        required: true
+        options:
+          - label: "Test"
+            value: "arn:aws:iam::745453995866:role/eng-stats-staging-ci-role"
+          - label: "Production"
+            value: "arn:aws:iam::755220514429:role/eng-stats-prod-ci-role"
+      - select: "Select Stage"
+        key: stage
+        required: true
+        options:
+          - label: "Test"
+            value: "test"
+          - label: "Production"
+            value: "production"
+  - label: "Running script"
+    command: "yarn sls invoke local -f pipelines -s ${STAGE}"
     plugins:
-      - cultureamp/aws-assume-role#v0.1.0:
-          role: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
-      - docker-compose#v3.1.0:
+      - acloudguru/metadata-env:
+          keys:
+            - role=AWS_ASSUME_ROLE_ARN
+            - accountId=AWS_ACCOUNT_ID
+            - stage=STAGE
+      - acloudguru/aws-assume-role:
+      - docker-compose#v2.0.0:
           run: backend
           env:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
-            - AWS_REGION
+            - AWS_REGION=us-east-1
             - AWS_ACCOUNT_ID
-            - ROLE_ARN
-  - label: "Production"
-    command: "yarn sls invoke local -f pipelines -s prod"
-    env:
-      AWS_REGION: "us-east-1"
-      AWS_ACCOUNT_ID: "755220514429"
-      ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-      STACK: "engstats-prod"
-      STAGE: "prod"
-    plugins:
-      - cultureamp/aws-assume-role#v0.1.0:
-          role: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
-      - docker-compose#v3.1.0:
-          run: backend
-          env:
-            - AWS_ACCESS_KEY_ID
-            - AWS_SECRET_ACCESS_KEY
-            - AWS_ACCOUNT_ID
-            - AWS_SESSION_TOKEN
-            - AWS_REGION
-            - ROLE_ARN

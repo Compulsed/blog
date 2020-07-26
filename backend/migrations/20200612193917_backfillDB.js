@@ -14,12 +14,6 @@ exports.up = async function(knex) {
         '38a38813-abf8-431d-80b8-e4627c0a9600'
     ]
   );
-
-  console.log('Backfill insert dummy data');
-
-  shell.exec(`yarn sls invoke local -f pipelines -s "$STAGE" --data "{}"`);
-
-  console.log('Backfill finished running backfill');
 };
 
 exports.down = async function(knex) {
