@@ -2,14 +2,6 @@ steps:
   - block: "Run command"
     prompt: "Please select the account and enter the command you wish to execute"
     fields:
-      - select: "Select Account Id"
-        key: accountId
-        required: true
-        options:
-          - label: "Staging"
-            value: "745453995866"
-          - label: "Production"
-            value: "755220514429"
       - select: "Select Role"
         key: role
         required: true
@@ -25,14 +17,13 @@ steps:
           - label: "Staging"
             value: "staging"
           - label: "Production"
-            value: "production"
+            value: "prod"
   - label: "Running script"
-    command: "yarn sls invoke local -f pipelines -s ${STAGE}"
+    command: "./bin/migrate"
     plugins:
       - acloudguru/metadata-env:
           keys:
             - role=AWS_ASSUME_ROLE_ARN
-            - accountId=AWS_ACCOUNT_ID
             - stage=STAGE
       - acloudguru/aws-assume-role:
       - docker-compose#v2.0.0:
@@ -42,4 +33,3 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION=us-east-1
-            - AWS_ACCOUNT_ID
