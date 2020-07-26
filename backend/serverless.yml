@@ -150,13 +150,13 @@ resources:
       Properties:
         EventBusName:
           !Ref EventBus
-        StatementId: ${self:provider.stackName}-orgo-pfvi62lki4
+        StatementId: ${self:provider.stackName}-${ssm:/${self:provider.configPath}/AWS_ORGANISATION_ID }
         Action: "events:PutEvents"
         Principal: "*"
         Condition: 
           Type: "StringEquals"
           Key: "aws:PrincipalOrgID"
-          Value: "o-pfvi62lki4" # TODO: Replace
+          Value: ${ssm:/${self:provider.configPath}/AWS_ORGANISATION_ID }
 
     DatabaseSecret:
       Type: AWS::SecretsManager::Secret
