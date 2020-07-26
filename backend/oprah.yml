@@ -23,6 +23,9 @@ config:
     EC2_KEY_NAME: "2020-05-08-eng-stats-prod-ec2-key"
     EC2_KEY_S3_BUCKET: "eng-stats-prod-ec2-key"
 
+  required:
+    AWS_ORGANISATION_ID: "Eg. o-xxxx"
+
 secret:
   path: /${stage}/engstats/secret
   required:

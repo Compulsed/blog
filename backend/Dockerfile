@@ -9,9 +9,11 @@ COPY package*.json yarn.lock ./
 
 RUN yarn install --pure-lockfile
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
+RUN cd /tmp &&\
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &&\
     unzip awscliv2.zip &&\
-    ./aws/install
+    ./aws/install &&\
+    cd -;
 
 RUN apt-get update && apt-get upgrade -y 
 RUN apt-get install jq postgresql-client -y

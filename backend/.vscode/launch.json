@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
@@ -65,7 +66,7 @@
                 "--data",
                 "{}",
                 "-s",
-                "${env:STAGE}"
+                "dev"
             ],
             "outFiles": [
                 "${workspaceFolder}/handler.js"
@@ -73,7 +74,13 @@
             "port": 9229,
             "sourceMaps": true,
             "args": [],
-            "envFile": "${workspaceFolder}/.secrets/.env.dev"
+            "env": {
+                "AWS_REGION": "us-east-1",
+                "AWS_PROFILE": "engstats-dev",
+                "AWS_SDK_LOAD_CONFIG": "1",
+                "AWS_ACCOUNT_ID": "583855972723",
+                "STAGE": "dev"
+            }            
         }
     ]
 }
