@@ -2,6 +2,8 @@ const util = require('util');
 const PostgresClient = require('knex/lib/dialects/postgres');
 const Transaction = require('knex/lib/transaction');
 const { logger } = require('./logger');
+const { getDatabaseSecretArn } = require('./getDatabaseSecretArn');
+const knex = require('knex');
 
 const DataAPIClient = () => {
     function ClientRDSDataAPI(config) {
@@ -126,13 +128,20 @@ const DataAPIClient = () => {
     return ClientRDSDataAPI;
 }
 
-const knex = require('knex')({
-    client: DataAPIClient(),
-    connection: {
-        secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
-        resourceArn: process.env.DB_ARN,
-        database: process.env.DATABASE_NAME,    
-    }
-});
+const makeKnexClient = async () => {
+    const databaseSecretARN = await getDatabaseSecretArn();
 
-module.exports = { knexClient: knex }
+    return knex({
+        client: DataAPIClient(),
+        connection: {
+            secretArn: databaseSecretARN,
+            resourceArn: process.env.DB_ARN,
+            database: process.env.DATABASE_NAME,    
+        }
+    });
+};
+
+// Cached per container
+const knexClientPromise = makeKnexClient();
+
+module.exports = { knexClient: knexClientPromise }

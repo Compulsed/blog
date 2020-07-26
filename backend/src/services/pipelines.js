@@ -53,8 +53,8 @@ const writePipelines = async () => {
         ];
     } while (pipelineResponse.organization.pipelines.pageInfo.hasNextPage);
 
-    const pipelineInserts = pipelines.map(node => {
-        const query = knexClient.raw(`
+    const pipelineInserts = pipelines.map(async (node) => {
+        const query = (await knexClient).raw(`
             insert into "buildkite-pipeline"
             ("data", "id")
             values (?, ?)

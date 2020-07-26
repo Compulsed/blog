@@ -33,6 +33,8 @@ provider:
         - 'rds-data:ExecuteStatement'
         - 'rds-data:RollbackTransaction'
       Resource: '*'
+  environment:
+    STACK_NAME: ${self:provider.stackName}
 
   apiGateway:
     restApiId:
