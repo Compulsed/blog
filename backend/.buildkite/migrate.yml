@@ -6,7 +6,7 @@ steps:
         key: accountId
         required: true
         options:
-          - label: "Test"
+          - label: "Staging"
             value: "745453995866"
           - label: "Production"
             value: "755220514429"
@@ -14,7 +14,7 @@ steps:
         key: role
         required: true
         options:
-          - label: "Test"
+          - label: "Staging"
             value: "arn:aws:iam::745453995866:role/eng-stats-staging-ci-role"
           - label: "Production"
             value: "arn:aws:iam::755220514429:role/eng-stats-prod-ci-role"
@@ -22,8 +22,8 @@ steps:
         key: stage
         required: true
         options:
-          - label: "Test"
-            value: "test"
+          - label: "Staging"
+            value: "staging"
           - label: "Production"
             value: "production"
   - label: "Running script"
