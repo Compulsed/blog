@@ -4,7 +4,6 @@
 - [] Set up buildkite pipelines
 - [] Set up local AWS Profiles
 
-
 ## Statistics features (Should be value)
 
 ## Testing Improvements
@@ -36,16 +35,11 @@
 - [ ] DNS on database
 - [ ] DNS on API
 - [ ] IAM Auth on database
-- [ ] aws-vault
 - [ ] Proper logger support
 
-## Insights
-- By team, individual, etc
-- Trendlines (how do I even do these?)
-
 ## Automate
-- New AWS account set up
-- Buildkite pipeline
+- [x] Buildkite pipeline creation
+- [ ] New AWS account set up
 
 ## Awkward Code, and improvements
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
@@ -57,8 +51,8 @@
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
-- [] Use aws-vault
-- [] Consider commiting ~/.aws/config to source control
+- [ ] Use aws-vault
+- [ ] Consider commiting ~/.aws/config to source control
 
 ## Unknowns: 
 - [ ] Should key names in outputs, resources, contain 'engstats' prefix for better naming? Creates more semantic names
