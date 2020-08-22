@@ -1,19 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
-function create_merge_pipeline() {
-  local token=$1
-  local repo=$2
+function merge_pipeline() {
   local pipeline="blog-merge"
-  local command="buildkite-agent pipeline upload .buildkite/merge.yml"
+  local command="buildkite-agent pipeline upload ./backend/.buildkite/merge.yml"
+  local method=$([ "$ACTION" == "create" ] && echo "POST" || echo "PATCH")
+  local urlPrefix=$([ "$ACTION" == "create" ] && echo "pipelines" || echo "pipelines/${pipeline}")
 
-  echo "Creating merge pipeline: $pipeline ..."
+  echo "Merge pipeline: $pipeline ..."
 
-  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  curl -X "$method" "https://api.buildkite.com/v2/organizations/dale-salter/$urlPrefix" \
   -H "Authorization: Bearer $BUILDKITE_TOKEN" \
   -d '{
     "name": "'"$pipeline"'",
-    "repository": "'"$repo"'",
+    "repository": "'"$REPO"'",
     "steps": [
       {
         "type": "script",
@@ -29,22 +29,22 @@ function create_merge_pipeline() {
       "publish_commit_status": true,
       "publish_commit_status_per_step": true
     }
-  }'
+  }' | jq
 }
 
-function create_deploy_pipeline() {
-  local token=$1
-  local repo=$2
+function deploy_pipeline() {
   local pipeline="blog-deploy"
-  local command="buildkite-agent pipeline upload .buildkite/deploy.yml"
+  local command="buildkite-agent pipeline upload ./backend/.buildkite/deploy.yml"
+  local method=$([ "$ACTION" == "create" ] && echo "POST" || echo "PATCH")
+  local urlPrefix=$([ "$ACTION" == "create" ] && echo "pipelines" || echo "pipelines/${pipeline}")
 
-  echo "Creating deploy pipeline: $pipeline ..."
+  echo "Meploy pipeline: $pipeline ..."
 
-  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  curl -X "$method" "https://api.buildkite.com/v2/organizations/dale-salter/$urlPrefix" \
   -H "Authorization: Bearer $BUILDKITE_TOKEN" \
   -d '{
     "name": "'"$pipeline"'",
-    "repository": "'"$repo"'",
+    "repository": "'"$REPO"'",
     "steps": [
       {
         "type": "script",
@@ -56,22 +56,22 @@ function create_deploy_pipeline() {
     "provider_settings": {
       "trigger_mode": "none"
     }
-  }'
+  }' | jq
 }
 
-function create_pr_pipeline() {
-  local token=$1
-  local repo=$2
+function pr_pipeline() {
   local pipeline="blog-pr"
-  local command="buildkite-agent pipeline upload .buildkite/pr.yml"
+  local command="buildkite-agent pipeline upload ./backend/.buildkite/pr.yml"
+  local method=$([ "$ACTION" == "create" ] && echo "POST" || echo "PATCH")
+  local urlPrefix=$([ "$ACTION" == "create" ] && echo "pipelines" || echo "pipelines/${pipeline}")
 
-  echo "Creating pr pipeline: $pipeline ..."
+  echo "Pipeline: $pipeline ..."
 
-  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  curl -X "$method" "https://api.buildkite.com/v2/organizations/dale-salter/$urlPrefix" \
   -H "Authorization: Bearer $BUILDKITE_TOKEN" \
   -d '{
     "name": "'"$pipeline"'",
-    "repository": "'"$repo"'",
+    "repository": "'"$REPO"'",
     "steps": [
       {
         "type": "script",
@@ -91,23 +91,23 @@ function create_pr_pipeline() {
       "publish_commit_status": true,
       "publish_commit_status_per_step": true
     }
-  }'
+  }' | jq
 }
 
 
-function create_migrate_pipeline() {
-  local token=$1
-  local repo=$2
+function migrate_pipeline() {
   local pipeline="blog-migrate"
-  local command="buildkite-agent pipeline upload .buildkite/mirgrate.yml"
+  local command="buildkite-agent pipeline upload ./backend/.buildkite/migrate.yml"
+  local method=$([ "$ACTION" == "create" ] && echo "POST" || echo "PATCH")
+  local urlPrefix=$([ "$ACTION" == "create" ] && echo "pipelines" || echo "pipelines/${pipeline}")
 
-  echo "Creating migrate pipeline: $pipeline ..."
+  echo "Migrate pipeline: $pipeline ..."
 
-  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  curl -X "$method" "https://api.buildkite.com/v2/organizations/dale-salter/$urlPrefix" \
   -H "Authorization: Bearer $BUILDKITE_TOKEN" \
   -d '{
     "name": "'"$pipeline"'",
-    "repository": "'"$repo"'",
+    "repository": "'"$REPO"'",
     "steps": [
       {
         "type": "script",
@@ -121,37 +121,42 @@ function create_migrate_pipeline() {
     "provider_settings": {
       "trigger_mode": "none"
     }
-  }'
+  }' | jq
 }
 
 SERVICE="blog"
 REPO=""
 BUILDKITE_TOKEN=""
+ACTION=""
 
 usage="USAGE: $(basename "$0")
 where:
+    -a | --ACTION       'create' or 'update' (required)
     -t | --token        buildkite token (required) 
-    -r | --repo         git repository (required) eg. git@github.com:Compulsed/blog.git
+    -r | --REPO         git repository (required) eg. git@github.com:Compulsed/blog.git
     -h | --help         show this help text"
 
 while [ $# -gt 0 ]; do
     if [[ $1 =~ "--"* ]]; then
         case $1 in
             --help|-h) echo "$usage"; exit; ;;
-            --repo|-r) REPO=$2;;
+            --REPO|-r) REPO=$2;;
             --token|-t) BUILDKITE_TOKEN=$2;;
+            --action|-a) ACTION=$2;;
         esac
     fi
     shift
 done
 
-echo "🔧 Starting create"
-create_merge_pipeline "$BUILDKITE_TOKEN" "$REPO"
-create_deploy_pipeline "$BUILDKITE_TOKEN" "$REPO"
-create_pr_pipeline "$BUILDKITE_TOKEN" "$REPO"
-create_migrate_pipeline "$BUILDKITE_TOKEN" "$REPO"
-echo "🎉 Done create"
+echo "🔧 Starting pipeline action"
+merge_pipeline
+deploy_pipeline
+pr_pipeline
+migrate_pipeline
+echo "🎉 Done action"
 
-echo "Next steps - Integrate the Web Hook into the Merge and PR pipelines"
-echo "- https://buildkite.com/dale-salter/blog-merge/settings/setup/github"
-echo "- https://buildkite.com/dale-salter/blog-pr/settings/setup/github"
+if [[ $ACTION == "create" ]]; then
+    echo "Next steps - Integrate the Web Hook into the Merge and PR pipelines"
+    echo "- https://buildkite.com/dale-salter/blog-merge/settings/setup/github"
+    echo "- https://buildkite.com/dale-salter/blog-pr/settings/setup/github"
+fi
