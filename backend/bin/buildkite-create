@@ -1,0 +1,157 @@
+#!/bin/bash
+set -euo pipefail
+
+function create_merge_pipeline() {
+  local token=$1
+  local repo=$2
+  local pipeline="blog-merge"
+  local command="buildkite-agent pipeline upload .buildkite/merge.yml"
+
+  echo "Creating merge pipeline: $pipeline ..."
+
+  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  -H "Authorization: Bearer $BUILDKITE_TOKEN" \
+  -d '{
+    "name": "'"$pipeline"'",
+    "repository": "'"$repo"'",
+    "steps": [
+      {
+        "type": "script",
+        "name": ":buildkite:",
+        "command": "'"$command"'"
+      }
+    ],
+    "default_branch": "master",
+    "branch_configuration": "master",
+    "provider_settings": {
+      "trigger_mode": "code",
+      "build_pull_requests": false,
+      "publish_commit_status": true,
+      "publish_commit_status_per_step": true
+    }
+  }'
+}
+
+function create_deploy_pipeline() {
+  local token=$1
+  local repo=$2
+  local pipeline="blog-deploy"
+  local command="buildkite-agent pipeline upload .buildkite/deploy.yml"
+
+  echo "Creating deploy pipeline: $pipeline ..."
+
+  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  -H "Authorization: Bearer $BUILDKITE_TOKEN" \
+  -d '{
+    "name": "'"$pipeline"'",
+    "repository": "'"$repo"'",
+    "steps": [
+      {
+        "type": "script",
+        "name": ":buildkite:",
+        "command": "'"$command"'"
+      }
+    ],
+    "default_branch": "master",
+    "provider_settings": {
+      "trigger_mode": "none"
+    }
+  }'
+}
+
+function create_pr_pipeline() {
+  local token=$1
+  local repo=$2
+  local pipeline="blog-pr"
+  local command="buildkite-agent pipeline upload .buildkite/pr.yml"
+
+  echo "Creating pr pipeline: $pipeline ..."
+
+  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  -H "Authorization: Bearer $BUILDKITE_TOKEN" \
+  -d '{
+    "name": "'"$pipeline"'",
+    "repository": "'"$repo"'",
+    "steps": [
+      {
+        "type": "script",
+        "name": ":buildkite:",
+        "command": "'"$command"'"
+      }
+    ],
+    "default_branch": "",
+    "cancel_running_branch_builds": true,
+    "branch_configuration": "!master",
+    "provider_settings": {
+      "trigger_mode": "code",
+      "pull_request_branch_filter_enabled": true,
+      "pull_request_branch_filter_configuration": "!master",
+      "publish_blocked_as_pending": true,
+      "separate_pull_request_statuses": true,
+      "publish_commit_status": true,
+      "publish_commit_status_per_step": true
+    }
+  }'
+}
+
+
+function create_migrate_pipeline() {
+  local token=$1
+  local repo=$2
+  local pipeline="blog-migrate"
+  local command="buildkite-agent pipeline upload .buildkite/mirgrate.yml"
+
+  echo "Creating migrate pipeline: $pipeline ..."
+
+  curl -X POST "https://api.buildkite.com/v2/organizations/dale-salter/pipelines" \
+  -H "Authorization: Bearer $BUILDKITE_TOKEN" \
+  -d '{
+    "name": "'"$pipeline"'",
+    "repository": "'"$repo"'",
+    "steps": [
+      {
+        "type": "script",
+        "name": ":buildkite:",
+        "command": "'"$command"'"
+      }
+    ],
+    "default_branch": "",
+    "cancel_running_branch_builds": true,
+    "branch_configuration": "!master",
+    "provider_settings": {
+      "trigger_mode": "none"
+    }
+  }'
+}
+
+SERVICE="blog"
+REPO=""
+BUILDKITE_TOKEN=""
+
+usage="USAGE: $(basename "$0")
+where:
+    -t | --token        buildkite token (required) 
+    -r | --repo         git repository (required) eg. git@github.com:Compulsed/blog.git
+    -h | --help         show this help text"
+
+while [ $# -gt 0 ]; do
+    if [[ $1 =~ "--"* ]]; then
+        case $1 in
+            --help|-h) echo "$usage"; exit; ;;
+            --repo|-r) REPO=$2;;
+            --token|-t) BUILDKITE_TOKEN=$2;;
+        esac
+    fi
+    shift
+done
+
+echo "🔧 Starting create"
+create_merge_pipeline "$BUILDKITE_TOKEN" "$REPO"
+create_deploy_pipeline "$BUILDKITE_TOKEN" "$REPO"
+create_pr_pipeline "$BUILDKITE_TOKEN" "$REPO"
+create_migrate_pipeline "$BUILDKITE_TOKEN" "$REPO"
+echo "🎉 Done create"
+
+echo "Next steps - Integrate the Web Hook into the Merge and PR pipelines"
+echo "- https://buildkite.com/dale-salter/blog-merge/settings/setup/github"
+echo "- https://buildkite.com/dale-salter/blog-pr/settings/setup/github"
