@@ -7,9 +7,9 @@ steps:
         required: true
         options:
           - label: "Staging"
-            value: "arn:aws:iam::088746931051:role/blog-staging-ci-role"
+            value: "arn:aws:iam::088746931051:role/buildkite"
           - label: "Production"
-            value: "arn:aws:iam::926179289874:role/blog-prod-ci-role"
+            value: "arn:aws:iam::926179289874:role/buildkite"
       - select: "Select Stage"
         key: stage
         required: true
@@ -17,7 +17,7 @@ steps:
           - label: "Staging"
             value: "staging"
           - label: "Production"
-            value: "prod"
+            value: "production"
   - label: "Running script"
     command: "./bin/migrate"
     plugins:

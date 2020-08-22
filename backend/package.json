@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "sls offline --stage dev",
-    "deploy-prod": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage prod",
+    "deploy-production": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage production",
     "deploy-test": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage test",
     "deploy-dev": "npm install && /bin/bash ./bin/permissions && ./bin/deploy --stage dev"
   }

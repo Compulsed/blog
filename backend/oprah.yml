@@ -19,9 +19,9 @@ config:
     EC2_KEY_NAME: "2020-05-08-blog-stats-staging-ec2-key"
     EC2_KEY_S3_BUCKET: "blog-stats-staging-ec2-key"
     
-  prod:
-    EC2_KEY_NAME: "2020-05-08-blog-stats-prod-ec2-key"
-    EC2_KEY_S3_BUCKET: "blog-stats-prod-ec2-key"
+  production:
+    EC2_KEY_NAME: "2020-05-08-blog-stats-production-ec2-key"
+    EC2_KEY_S3_BUCKET: "blog-stats-production-ec2-key"
 
   required:
     AWS_ORGANISATION_ID: "Eg. o-xxxx"
