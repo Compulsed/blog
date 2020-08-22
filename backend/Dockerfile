@@ -20,6 +20,7 @@ RUN apt-get update && \
     apt-get install \
         jq \
         postgresql-client \
+        python \
         -y && \
     pip --no-cache-dir install --upgrade awscli
 
