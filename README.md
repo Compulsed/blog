@@ -14,7 +14,7 @@
 Required:
 - [] Set up AWS Accounts (OrganizationAccountAccessRole, Billing: 145722906259, BuildKite: 085226998778)
 - [] Set up buildkite pipelines
-- [] Set up local AWS Profiles
+- [x] Set up local AWS Profiles
 
 Bonus:
 - [] Use aws-vault
