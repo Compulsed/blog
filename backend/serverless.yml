@@ -74,62 +74,11 @@ functions:
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
-  
-  eventBridgeLogger:
-    handler: src/lambda/printer.handler
-    timeout: 30
-    events:
-      - eventBridge:
-          eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
-          pattern: 
-            detail-type: 
-              - 
-                prefix: Build
-    dependsOn:
-      - EventBus # Hack 2
-
-  buildPusher:
-    handler: src/lambda/indexBuild.handler
-    timeout: 30
-    events:
-      - eventBridge:
-          eventBus: arn:aws:events:${self:provider.region}:${env:AWS_ACCOUNT_ID}:event-bus/${self:provider.stackName}-eventbridge # !GetAtt "EventBus.Arn" - does not work, # Hack 2
-          pattern: 
-            detail-type: 
-              - 
-                prefix: Build
-    dependsOn:
-      - EventBus # Hack 2
-    environment:
-      SECRET_ARN_REF: !Ref DatabaseSecret
-      DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
-      DATABASE_NAME: ${self:custom.RDS.databaseName}
-      DATABASE_USER: ${self:custom.RDS.databaseUser}
-      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
-      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
-
-  pipelines:
-    handler: src/lambda/indexPipelines.handler
-    timeout: 30
-    environment:
-      SECRET_ARN_REF: !Ref DatabaseSecret
-      DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
-      DATABASE_NAME: ${self:custom.RDS.databaseName}
-      DATABASE_USER: ${self:custom.RDS.databaseUser}
-      DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
-      DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
-      BUILDKITE_GRAPHQL_URL: ${ssm:/${self:provider.configPath}/BUILDKITE_GRAPHQL_URL~true }
-      BUILDKITE_GRAPHQL_API_INTEGRATION: ${ssm:/${self:provider.secretPath}/BUILDKITE_GRAPHQL_API_INTEGRATION~true }
 
 package:
   include:
     - src/
     - node_modules/
-
 
 resources:
   Resources:
@@ -137,24 +86,6 @@ resources:
       Type: AWS::ApiGateway::RestApi
       Properties:
         Name: ${self:provider.stackName}-api
-
-    EventBus:
-      Type: AWS::Events::EventBus
-      Properties:
-        Name: ${self:provider.stackName}-eventbridge
-
-    EventBusPolicy:
-      Type: AWS::Events::EventBusPolicy
-      Properties:
-        EventBusName:
-          !Ref EventBus
-        StatementId: ${self:provider.stackName}-${ssm:/${self:provider.configPath}/AWS_ORGANISATION_ID }
-        Action: "events:PutEvents"
-        Principal: "*"
-        Condition: 
-          Type: "StringEquals"
-          Key: "aws:PrincipalOrgID"
-          Value: ${ssm:/${self:provider.configPath}/AWS_ORGANISATION_ID }
 
     DatabaseSecret:
       Type: AWS::SecretsManager::Secret

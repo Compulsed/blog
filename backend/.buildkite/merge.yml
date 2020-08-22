@@ -7,8 +7,8 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
-        AWS_ACCOUNT_ID: "745453995866"
-        ROLE_ARN: arn:aws:iam::745453995866:role/blog-staging-ci-role
+        AWS_ACCOUNT_ID: "088746931051"
+        ROLE_ARN: arn:aws:iam::088746931051:role/blog-staging-ci-role
         STAGE: "staging"
   - label: "Production"
     trigger: "blog-deploy"
@@ -18,6 +18,6 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
-        AWS_ACCOUNT_ID: "745453995866"
-        ROLE_ARN: arn:aws:iam::755220514429:role/blog-prod-ci-role
+        AWS_ACCOUNT_ID: "926179289874"
+        ROLE_ARN: arn:aws:iam::926179289874:role/blog-prod-ci-role
         STAGE: "prod"
