@@ -1,44 +1,11 @@
 ## Plan
 - [x] asdf set up
-- [x] Dotenv set up
-- [x] Backend completely in CF
-- [x] Deploy a single stage
-- [x] Query via TablePlus
-- [x] VPC Bastion host
-  - [x] Conditionally launch Bastion host -- EC2_KEY_NAME included
-  - [x] Clean up bastion rules
-- [x] GraphQL returning a value in client
-- [x] GraphQL querying Serverless Aurora
-- [x] Database migration script
-- [x] Database Seed (Does can this be done with DataAPI?)
-- [x] Data Faker
-- [x] CI / CD Pipeline (Multi account)
-- [x] CI / CD Pipeline (Deploy new instance on CI, validates CF)
-- [x] CI / Trigger migration
-- [x] Trigger API call on deploy
-- [x] GraphQL triggered by test
-- [x] Ec2 Wait or Creation policy
-- [x] Tests should fail when in error handler (rollback)
-- [x] EC2 key to log into bastion host in cloudformation
-- [x] Manual  snapshots get added -- turn these off https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
-- [x] Deploys always Run Up / Script
-- [x] Custom VPC (Project does not have off default VPC)
-- [x] Bastion defined as separate cloudformation stack
-- [x] Cfn-lint
-- [x] Buildkite Event Bridge investigation
-- [x] Json support postgres
-- [x] Secrets storage -- chamber?
-- [x] Show all the services
-- [x] Showing what is currently being deployed to vs what is not (service activity)
+- [] Set up AWS Accounts (OrganizationAccountAccessRole, Billing: 145722906259, BuildKite: 085226998778)
+- [] Set up buildkite pipelines
+- [] Set up local AWS Profiles
+
 
 ## Statistics features (Should be value)
-- [x] Showing what is currently being deployed to vs what is not (service activity)
-- [ ] Types of commits being used
-  - [ ] GitHub commits into repo
-- [ ] Frontend View
-  - [ ] Authentication (cognito?)
-  - [ ] Buildkite commits into repo (Event Bridge)
-  - [ ] API Authentication when an API exists
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
@@ -75,18 +42,24 @@
 ## Insights
 - By team, individual, etc
 - Trendlines (how do I even do these?)
-- 
+
+## Automate
+- New AWS account set up
+- Buildkite pipeline
 
 ## Awkward Code, and improvements
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
 - [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
 - [ ] Two sets of dot files (core, then chamber) -- Where should profile exist? Cannot be used on CI
+- [ ] AWS Cli in docker
 
 ## Optional
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
-  
+- [] Use aws-vault
+- [] Consider commiting ~/.aws/config to source control
+
 ## Unknowns: 
 - [ ] Should key names in outputs, resources, contain 'engstats' prefix for better naming? Creates more semantic names
 - [ ] Consider putting any names under `custom:` so that they consistently contain stack name

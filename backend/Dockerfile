@@ -15,8 +15,14 @@ RUN cd /tmp &&\
     ./aws/install &&\
     cd -;
 
-RUN apt-get update && apt-get upgrade -y 
-RUN apt-get install jq postgresql-client -y
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install \
+        jq \
+        postgresql-client \
+        python3 \
+        -y && \
+    pip3 --no-cache-dir install --upgrade awscli
 
 # Bundle app source
 COPY . .
