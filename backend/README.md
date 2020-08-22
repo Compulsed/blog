@@ -1,4 +1,4 @@
-# Engineering Statistics
+# Blog
 
 ### Set up locally
 

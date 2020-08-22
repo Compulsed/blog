@@ -18,10 +18,10 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-SERVICE_STACK_STACK="engstats-$STAGE"
+SERVICE_STACK_STACK="blog-$STAGE"
 BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 
-EC2_KEY_NAME=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/EC2_KEY_NAME -s "$STAGE")
+EC2_KEY_NAME=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/EC2_KEY_NAME -s "$STAGE")
 
 echo "START: Create Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
@@ -45,7 +45,7 @@ DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SEC
 DATABASE_USERNAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."username" )
 DATABASE_DATABASE_NAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."dbname" )
 
-EC2_KEY_S3_BUCKET=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/EC2_KEY_S3_BUCKET -s "$STAGE")
+EC2_KEY_S3_BUCKET=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/EC2_KEY_S3_BUCKET -s "$STAGE")
 
 
 echo "START: SSH Key Download"
@@ -53,7 +53,7 @@ aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
 chmod 0400 "./$EC2_KEY_NAME.pem"
 echo "STOP: SSH Key Download"
 
-DATABASE_LOCAL_PORT=$(yarn --silent oprah fetch -k /"$STAGE"/engstats/config/DATABASE_LOCAL_PORT -s "$STAGE")
+DATABASE_LOCAL_PORT=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/DATABASE_LOCAL_PORT -s "$STAGE")
 
 echo "START: SSH Tunnel"
 # Do I need to clean this up

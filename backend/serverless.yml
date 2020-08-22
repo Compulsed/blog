@@ -1,13 +1,13 @@
 service:
-  name: engstats
+  name: blog
 
 provider:
   name: aws
   runtime: nodejs12.x
   stackName: ${self:service}-${self:provider.stage}
   stage: ${opt:stage}
-  configPath: ${opt:stage}/engstats/config
-  secretPath: ${opt:stage}/engstats/secret
+  configPath: ${opt:stage}/blog/config
+  secretPath: ${opt:stage}/blog/secret
   region: ${env:AWS_REGION}
   iamRoleStatements:
     - Sid: 'SecretsManagerDbCredentialsAccess'

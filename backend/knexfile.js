@@ -7,8 +7,8 @@ module.exports = {
     connection: async (arg1) => {       
         const parameterResponse = await (new AWS.SSM()).getParameters({
             Names: [
-                `/${process.env.STAGE}/engstats/config/DATABASE_LOCAL_PORT`,
-                `/${process.env.STAGE}/engstats/config/DATABASE_NAME`,
+                `/${process.env.STAGE}/blog/config/DATABASE_LOCAL_PORT`,
+                `/${process.env.STAGE}/blog/config/DATABASE_NAME`,
             ]
         })
         .promise();
@@ -19,7 +19,7 @@ module.exports = {
         const { Value: databaseName } = databaseNameResponse;
 
         var cfParams = {
-            StackName: `engstats-${process.env.STAGE}`
+            StackName: `blog-${process.env.STAGE}`
         };
         
         const { Stacks } = await (new AWS.CloudFormation())

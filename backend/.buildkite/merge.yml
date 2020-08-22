@@ -1,6 +1,6 @@
 steps:
   - label: "Staging"
-    trigger: "eng-stats-deploy"
+    trigger: "blog-deploy"
     build:
       commit: "$BUILDKITE_COMMIT"
       message: "$BUILDKITE_MESSAGE"
@@ -8,10 +8,10 @@ steps:
       env:
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "745453995866"
-        ROLE_ARN: arn:aws:iam::745453995866:role/eng-stats-staging-ci-role
+        ROLE_ARN: arn:aws:iam::745453995866:role/blog-staging-ci-role
         STAGE: "staging"
   - label: "Production"
-    trigger: "eng-stats-deploy"
+    trigger: "blog-deploy"
     build:
       commit: "$BUILDKITE_COMMIT"
       message: "$BUILDKITE_MESSAGE"
@@ -19,5 +19,5 @@ steps:
       env:
         AWS_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "745453995866"
-        ROLE_ARN: arn:aws:iam::755220514429:role/eng-stats-prod-ci-role
+        ROLE_ARN: arn:aws:iam::755220514429:role/blog-prod-ci-role
         STAGE: "prod"

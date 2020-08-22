@@ -4,7 +4,7 @@ steps:
     agents:
       queue: default
     concurrency: 1
-    concurrency_group: "eng-stats-deploy-${STAGE}"
+    concurrency_group: "blog-deploy-${STAGE}"
     plugins:
       - cultureamp/aws-assume-role#v0.1.0:
           role: "$ROLE_ARN"

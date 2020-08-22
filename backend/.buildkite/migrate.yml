@@ -7,9 +7,9 @@ steps:
         required: true
         options:
           - label: "Staging"
-            value: "arn:aws:iam::745453995866:role/eng-stats-staging-ci-role"
+            value: "arn:aws:iam::745453995866:role/blog-staging-ci-role"
           - label: "Production"
-            value: "arn:aws:iam::755220514429:role/eng-stats-prod-ci-role"
+            value: "arn:aws:iam::755220514429:role/blog-prod-ci-role"
       - select: "Select Stage"
         key: stage
         required: true

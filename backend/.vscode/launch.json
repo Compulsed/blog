@@ -24,7 +24,7 @@
             "args": [],
             "env": {
                 "AWS_REGION": "us-east-1",
-                "AWS_PROFILE": "engstats-dev",
+                "AWS_PROFILE": "blog-dev",
                 "AWS_SDK_LOAD_CONFIG": "1",
                 "STAGE": "dev"
             }
@@ -76,7 +76,7 @@
             "args": [],
             "env": {
                 "AWS_REGION": "us-east-1",
-                "AWS_PROFILE": "engstats-dev",
+                "AWS_PROFILE": "blog-dev",
                 "AWS_SDK_LOAD_CONFIG": "1",
                 "AWS_ACCOUNT_ID": "583855972723",
                 "STAGE": "dev"
