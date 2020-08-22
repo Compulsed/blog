@@ -20,9 +20,9 @@ RUN apt-get update && \
     apt-get install \
         jq \
         postgresql-client \
-        python \
+        python3 \
         -y && \
-    pip --no-cache-dir install --upgrade awscli
+    pip3 --no-cache-dir install --upgrade awscli
 
 # Bundle app source
 COPY . .
