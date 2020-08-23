@@ -19,7 +19,7 @@ while [ $# -gt 0 ]; do
 done
 
 SERVICE_STACK_STACK="blog-$STAGE"
-EC2_KEY_STACK="$SERVICE_STACK_STACK-bastion-ec2key"
+BASTION_EC2_KEY_STACK="$SERVICE_STACK_STACK-bastion-ec2key"
 BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
@@ -31,13 +31,13 @@ echo "START: Create Bastion EC2 Key Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion-ec2key.yml" \
-    --stack-name "$EC2_KEY_STACK" \
+    --stack-name "$BASTION_EC2_KEY_STACK" \
     --capabilities CAPABILITY_NAMED_IAM \
     --no-fail-on-empty-changeset
 echo "DONE: Create Bastion EC2 Key Stack"
 
 echo "START: wait stack-create-complete"
-aws cloudformation wait stack-create-complete --stack "$BASTION_STACK"
+aws cloudformation wait stack-create-complete --stack "$BASTION_EC2_KEY_STACK"
 echo "DONE: wait stack-create-complete"
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
