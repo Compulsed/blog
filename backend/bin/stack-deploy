@@ -19,4 +19,4 @@ while [ $# -gt 0 ]; do
 done
 
 echo "Running serverless deployment for: $STAGE"
-./node_modules/.bin/sls deploy --stage "$STAGE" --region "$AWS_REGION" --verbose --aws-s3-accelerate
+./node_modules/.bin/sls deploy --stage "$STAGE" --verbose --aws-s3-accelerate
