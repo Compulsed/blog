@@ -27,14 +27,14 @@ BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 # FUNCTION: Bastion Host
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-echo "START: Create Stack"
+echo "START: Create Bastion Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
     --parameter-overrides "ServiceStackName=$SERVICE_STACK_STACK" \
     --no-fail-on-empty-changeset
-echo "DONE: Create Stack"
+echo "DONE: Create Bastion Stack"
 
 echo "START: wait stack-create-complete"
 aws cloudformation wait stack-create-complete --stack "$BASTION_STACK"

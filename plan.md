@@ -1,21 +1,27 @@
 ## Plan
+- [x] Install AWS Cli through Pip 
+- [x] Buildkite pipeline creation
 - [x] asdf set up
 - [x] Set up AWS Accounts (OrganizationAccountAccessRole, Billing: 145722906259, BuildKite: 085226998778)
 - [x] Set up buildkite pipelines
 - [x] Set up local AWS Profiles
+- [x] EC2 SSH Keys using SSM
+
+
+# Frontend Plan
+- [] Ziet CRA
+- 
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
-- [ ] If errors happen in sub scripts (outside of ci-test.yml), it errors in the error block (messing message, code, etc)
 
 ## Before Production
-- [ ] All `Security:` Tags
 - [ ] Limit Execution role in serverless.yml as it is *
 - [ ] Remove * CIDR from BastionSecurityGroup
 - [ ] DeletionPolicy: Delete, change this if production
 - [ ] Organisation Slub is a variable
 
-## Nice to have
+## Nice to have upcoming
 - [ ] Jira stories into repo
 - [ ] Logging framework
   - [ ] Database logs
@@ -35,18 +41,17 @@
 - [ ] IAM Auth on database
 - [ ] Proper logger support
 
-## Automate
-- [x] Buildkite pipeline creation
+## Automate (AUTOMATE:)
 - [ ] New AWS account set up
 
-## Awkward Code, and improvements
+## Awkward Code, and improvements (IMPROVEMENT:)
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
 - [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
 - [ ] Two sets of dot files (core, then chamber) -- Where should profile exist? Cannot be used on CI
 - [ ] AWS Cli in docker
 
-## Optional
+## Optional (OPTIONAL:)
 - [ ] Serverless CI/CD
 - [ ] Serverless Platform
 - [ ] Use aws-vault
