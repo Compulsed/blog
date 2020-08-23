@@ -31,6 +31,22 @@ echo "START: Create Bastion Stack"
 aws s3 ls
 echo "DONE: Create Bastion Stack"
 
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Bastion EC2 Key
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+echo "START: Create Bastion EC2 Key Stack"
+# HACK: AWS_PAGER="" -- Container does not have 'less'
+AWS_PAGER="" aws cloudformation deploy \
+    --template-file "./stacks/bastion-ec2key.yml" \
+    --stack-name "$EC2_KEY_STACK" \
+    --no-fail-on-empty-changeset
+echo "DONE: Create Bastion EC2 Key Stack"
+
+echo "START: wait stack-create-complete"
+aws cloudformation wait stack-create-complete --stack "$BASTION_STACK"
+echo "DONE: wait stack-create-complete"
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
