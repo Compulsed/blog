@@ -4,14 +4,31 @@ Parameters:
   LatestAmiId:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
     Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
-
-  ServiceStackName:
-    Type: String
   
-  EC2SSHKeyName:
+  ServiceStackName:
     Type: String
 
 Resources:
+  EC2SSHPrivateKey:
+    Type: Custom::RSAKey
+    Properties:
+      Name: !Sub '/${AWS::StackName}/rsa-key' # SSM Path Name
+      Version: v1
+      NoEcho: False
+      ServiceToken: 
+        Fn::ImportValue: !Sub '${AWS::StackName}-ec2key-function'
+  
+  EC2SSHKeyPair:
+    Type: Custom::KeyPair
+    DependsOn:
+      - EC2SSHPrivateKey
+    Properties:
+      Name: !Sub '${AWS::StackName}-custom-key-pair' # Name of the EC2 key SSH key in the console
+      NoEcho: False
+      PublicKeyMaterial: !GetAtt 'EC2SSHPrivateKey.PublicKey'
+      ServiceToken: 
+        Fn::ImportValue: !Sub '${AWS::StackName}-ec2key-function'
+
   BastionSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -56,7 +73,7 @@ Resources:
       DisableApiTermination: false
       ImageId: !Ref LatestAmiId
       InstanceType: t2.nano
-      KeyName: !Ref EC2SSHKeyName
+      KeyName: !GetAtt 'EC2SSHKeyPair.Name'
       Monitoring: false
       UserData:
         Fn::Base64: !Sub |
@@ -102,3 +119,15 @@ Outputs:
       Fn::ImportValue: !Sub '${ServiceStackName}-databaseSecretArn'
     Export:
       Name: !Sub '${AWS::StackName}-databaseSecretArn'
+
+  EC2SSHKeyPairName:
+    Value:
+      !GetAtt EC2SSHKeyPair.Name
+    Export:
+      Name: !Sub '${AWS::StackName}-EC2SSHKeyPairName'
+
+  EC2SSHPrivateKeyArn:
+    Value:
+      !GetAtt EC2SSHPrivateKey.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-EC2SSHPrivateKeyName'

@@ -19,19 +19,22 @@ while [ $# -gt 0 ]; do
 done
 
 SERVICE_STACK_STACK="blog-$STAGE"
+EC2_KEY_STACK="$SERVICE_STACK_STACK-bastion-ec2key"
 BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 
-EC2_KEY_NAME=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/EC2_KEY_NAME -s "$STAGE")
-
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
+# FUNCTION: Bastion Host
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 echo "START: Create Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
 AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
-    --parameter-overrides "ServiceStackName=$SERVICE_STACK_STACK" "EC2SSHKeyName=$EC2_KEY_NAME" \
+    --parameter-overrides "ServiceStackName=$SERVICE_STACK_STACK" \
     --no-fail-on-empty-changeset
 echo "DONE: Create Stack"
-
 
 echo "START: wait stack-create-complete"
 aws cloudformation wait stack-create-complete --stack "$BASTION_STACK"
@@ -45,38 +48,42 @@ DATABASE_SECRET=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SEC
 DATABASE_USERNAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."username" )
 DATABASE_DATABASE_NAME=$(aws secretsmanager get-secret-value --secret-id "$DATABASE_SECRET_ARN" | jq --raw-output .SecretString | jq -r ."dbname" )
 
-EC2_KEY_S3_BUCKET=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/EC2_KEY_S3_BUCKET -s "$STAGE")
+# SSH Key
+echo "START: Key download"
+EC2_SSH_PRIVATE_KEY_ARN=$(aws cloudformation describe-stacks --stack-name "$BASTION_STACK" --query "Stacks[0].Outputs[?OutputKey=='EC2SSHPrivateKeyArn'].OutputValue" --output text)
+EC2_SSH_PRIVATE_KEY_PATH="/${EC2_SSH_PRIVATE_KEY_ARN#*\/}"
 
+rm -rf "./key.pem" && AWS_PAGER="" aws ssm get-parameter \
+    --with-decryption \
+    --name "${EC2_SSH_PRIVATE_KEY_PATH}" \
+    | jq --raw-output .Parameter.Value > "./key.pem"
 
-echo "START: SSH Key Download"
-aws s3 cp "s3://$EC2_KEY_S3_BUCKET/$EC2_KEY_NAME.pem" "./$EC2_KEY_NAME.pem"
-chmod 0400 "./$EC2_KEY_NAME.pem"
-echo "STOP: SSH Key Download"
-
-DATABASE_LOCAL_PORT=$(yarn --silent oprah fetch -k /"$STAGE"/blog/config/DATABASE_LOCAL_PORT -s "$STAGE")
+chmod 0400 "./key.pem"
+echo "DONE: Key download"
 
 echo "START: SSH Tunnel"
 # Do I need to clean this up
 # HACK: -o trusts that the EC2 instance is not MTM
 # -4 IPV4
-nohup ssh -i "./$EC2_KEY_NAME.pem" \
+nohup ssh -i "./key.pem" \
     -4 \
     -o "StrictHostKeyChecking=no" \
     -N -L \
-    "$DATABASE_LOCAL_PORT:$DATABASE_HOST_NAME:$DATABASE_PORT" \
-    "ec2-user@$BASTION_PUBLIC_DNS_NAME" \
-    > /dev/null 2> /dev/null < /dev/null &
+    "5433:$DATABASE_HOST_NAME:$DATABASE_PORT" \
+    "ec2-user@$BASTION_PUBLIC_DNS_NAME" > /dev/null 2> /dev/null < /dev/null &
 sleep 5 # HACK: Sleep 5 seconds to that it can connect before moving into next query
-rm -rf "./$EC2_KEY_NAME.pem"
+rm -rf "./key.pem"
 echo "DONE: SSH Tunnel"
 
-# HACK: Is required so that other querys that follow this command have a warm SQL instance to avoid timeouts
-#   https://github.com/knex/knex/issues/2820
+# # HACK: Is required so that other querys that follow this command have a warm SQL instance to avoid timeouts
+# #   https://github.com/knex/knex/issues/2820
 echo "START: Running warming query"
 PGPASSWORD="$DATABASE_SECRET" \
     psql -U "$DATABASE_USERNAME" \
     -d "$DATABASE_DATABASE_NAME" \
-    -p "$DATABASE_LOCAL_PORT" \
+    -p "5433" \
     -h localhost \
     -c 'SELECT * FROM pg_catalog.pg_tables' >/dev/null || true # HACK: Sometimes can timeout, though warms the instance regardless
 echo "DONE: Running warming query"
+
+

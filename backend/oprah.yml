@@ -6,27 +6,4 @@ config:
   path: /${stage}/blog/config
   defaults:
     DATABASE_NAME: "blog"
-    EC2_KEY_NAME: "2020-05-08-blog-stats-dev-ec2-key"
-    EC2_KEY_S3_BUCKET: "blog-stats-dev-ec2-key"
     DATABASE_LOCAL_PORT: "5433"
-    BUILDKITE_GRAPHQL_URL: "https://graphql.buildkite.com/v1"
-
-  test:
-    EC2_KEY_NAME: "2020-05-08-blog-stats-test-ec2-key"
-    EC2_KEY_S3_BUCKET: "blog-stats-test-ec2-key"
-
-  staging:
-    EC2_KEY_NAME: "2020-05-08-blog-stats-staging-ec2-key"
-    EC2_KEY_S3_BUCKET: "blog-stats-staging-ec2-key"
-    
-  production:
-    EC2_KEY_NAME: "2020-05-08-blog-stats-production-ec2-key"
-    EC2_KEY_S3_BUCKET: "blog-stats-production-ec2-key"
-
-  required:
-    AWS_ORGANISATION_ID: "Eg. o-xxxx"
-
-secret:
-  path: /${stage}/blog/secret
-  required:
-    BUILDKITE_GRAPHQL_API_INTEGRATION: "Buildkite API Key"
