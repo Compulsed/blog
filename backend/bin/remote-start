@@ -29,7 +29,7 @@ BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 echo "START: AWS CLI Check"
 aws s3 ls
-echo env
+env
 echo "DONE: AWS CLI Check"
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##

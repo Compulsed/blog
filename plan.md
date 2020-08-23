@@ -6,14 +6,17 @@
 - [x] Set up buildkite pipelines
 - [x] Set up local AWS Profiles
 - [x] EC2 SSH Keys using SSM
+- [x] Return some posts through the GraphQL API (Static)
 
 # Frontend Plan
-- [] Ziet Frontend
-- [] Segment Frontend
-- [] AppCues Frontend
+- [ ] Ziet Frontend
+- [ ] Segment Frontend
+- [ ] AppCues Frontend
 
 # Backend Plan
-- [] Return some posts through the GraphQL API (Static)
+- [ ] Wire up posts to read directly from the database
+- [ ] Mutation to create a new post
+- [ ] Mutation to update a post
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
