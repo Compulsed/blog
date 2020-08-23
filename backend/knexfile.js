@@ -7,15 +7,13 @@ module.exports = {
     connection: async (arg1) => {       
         const parameterResponse = await (new AWS.SSM()).getParameters({
             Names: [
-                `/${process.env.STAGE}/blog/config/DATABASE_LOCAL_PORT`,
                 `/${process.env.STAGE}/blog/config/DATABASE_NAME`,
             ]
         })
         .promise();
 
-        const [ localPortResponse, databaseNameResponse ] = parameterResponse.Parameters;
+        const [  databaseNameResponse ] = parameterResponse.Parameters;
 
-        const { Value: localPort } = localPortResponse;
         const { Value: databaseName } = databaseNameResponse;
 
         var cfParams = {
@@ -44,7 +42,7 @@ module.exports = {
 
         const config =  {
             host: `localhost`,
-            port: localPort,
+            port: 5433,
             user: username,
             password : password,
             database : databaseName,

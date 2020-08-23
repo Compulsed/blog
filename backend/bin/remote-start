@@ -24,12 +24,22 @@ BASTION_STACK="$SERVICE_STACK_STACK-bastion"
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
+# FUNCTION: AWS CLI Check
+#
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+echo "START: Create Bastion Stack"
+aws s3 ls
+echo "DONE: Create Bastion Stack"
+
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+#
 # FUNCTION: Bastion Host
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 echo "START: Create Bastion Stack"
 # HACK: AWS_PAGER="" -- Container does not have 'less'
-AWS_PAGER="" AWS_REGION=$AWS_REGION aws cloudformation deploy \
+AWS_PAGER="" aws cloudformation deploy \
     --template-file "./stacks/bastion.yml" \
     --stack-name "$BASTION_STACK" \
     --parameter-overrides "ServiceStackName=$SERVICE_STACK_STACK" \
