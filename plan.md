@@ -56,6 +56,7 @@
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
 - [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
+- [ ] Move to AWS_DEFAULT_REGION rather than AWS_REGION
 
 ## Optional (OPTIONAL:)
 - [ ] Serverless CI/CD
