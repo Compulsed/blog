@@ -7,6 +7,7 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
+        AWS_DEFAULT_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "088746931051"
         ROLE_ARN: arn:aws:iam::088746931051:role/buildkite
         STAGE: "staging"
@@ -18,6 +19,7 @@ steps:
       branch: "$BUILDKITE_BRANCH"
       env:
         AWS_REGION: "us-east-1"
+        AWS_DEFAULT_REGION: "us-east-1"
         AWS_ACCOUNT_ID: "926179289874"
         ROLE_ARN: arn:aws:iam::926179289874:role/buildkite
         STAGE: "production"

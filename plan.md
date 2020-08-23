@@ -10,6 +10,7 @@
 
 # Frontend Plan
 - [ ] Ziet Frontend
+- [ ] Display All Posts
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
 
@@ -51,11 +52,10 @@
 - [ ] New AWS account set up
 
 ## Awkward Code, and improvements (IMPROVEMENT:)
+- [ ] Should make for env files to be specified as AWS_REGION, AWS_SDK.. etc are needed
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
 - [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
-- [ ] Two sets of dot files (core, then chamber) -- Where should profile exist? Cannot be used on CI
-- [ ] AWS Cli in docker
 
 ## Optional (OPTIONAL:)
 - [ ] Serverless CI/CD
