@@ -7,10 +7,13 @@
 - [x] Set up local AWS Profiles
 - [x] EC2 SSH Keys using SSM
 
-
 # Frontend Plan
-- [] Ziet CRA
-- 
+- [] Ziet Frontend
+- [] Segment Frontend
+- [] AppCues Frontend
+
+# Backend Plan
+- [] Return some posts through the GraphQL API (Static)
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
@@ -71,6 +74,3 @@ Limitations:
 - Lambda in VPC
 - RDS Data API
 - RDS Proxy
-
-## Challenges of DataApi
-- 
