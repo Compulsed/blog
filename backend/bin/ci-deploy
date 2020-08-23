@@ -53,6 +53,11 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
+echo "STAR: Oprah Run"
+yarn oprah run -s "$STAGE"
+echo "END: Oprah Run"
+
+
 echo "STAR: Running Deploy"
 ./bin/stack-deploy -s "$STAGE"
 echo "END: Running Deploy"

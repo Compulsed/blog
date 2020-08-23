@@ -6,4 +6,3 @@ config:
   path: /${stage}/blog/config
   defaults:
     DATABASE_NAME: "blog"
-    DATABASE_LOCAL_PORT: "5433"

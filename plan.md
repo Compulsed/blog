@@ -1,10 +1,8 @@
 ## Plan
 - [x] asdf set up
-- [] Set up AWS Accounts (OrganizationAccountAccessRole, Billing: 145722906259, BuildKite: 085226998778)
-- [] Set up buildkite pipelines
-- [] Set up local AWS Profiles
-
-## Statistics features (Should be value)
+- [x] Set up AWS Accounts (OrganizationAccountAccessRole, Billing: 145722906259, BuildKite: 085226998778)
+- [x] Set up buildkite pipelines
+- [x] Set up local AWS Profiles
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
