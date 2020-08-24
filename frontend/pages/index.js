@@ -1,16 +1,104 @@
 import Head from 'next/head'
 
+import fetch from 'isomorphic-unfetch';
+import gql from 'graphql-tag';
 
-export async function getStaticProps() {
-  return {
-    props: {
-      url: process.env.GRAPHQL_URL,
-    },
-  }
+export async function getStandaloneApolloClient() {
+  const { ApolloClient, InMemoryCache, HttpLink } = await import(
+    "@apollo/client"
+  );
+  return new ApolloClient({
+    link: new HttpLink({
+      uri: process.env.GRAPHQL_URL,
+      fetch
+    }),
+    cache: new InMemoryCache()
+  });
 }
 
-export default function Home({ url }) {
+export const getStaticProps = async ({ params }) => {
+  const client = await getStandaloneApolloClient();
+ await client.query({
+    query: gql`
+      query {
+        hello
+        post {
+          title
+          body
+          createdAt
+          updatedAt
+        }
+      }
+    `,
+    variables: { input: { slug: params?.slug } }
+  });
+  return {
+    props: {
+      apolloStaticCache: client.cache.extract()
+    }
+  };
+};
 
+let globalApolloClient;
+
+function initApolloClient(initialState) {
+  if (!globalApolloClient) {
+    globalApolloClient = new ApolloClient({
+
+      link: new HttpLink({
+        uri: "process.env.GRAPHQL_URL",
+        fetch
+      }),
+
+      cache: new InMemoryCache().restore(initialState || {})
+    });
+  }
+  // client side page transition to an SSG page => update Apollo cache
+  else if (initialState) {
+    globalApolloClient.cache.restore({
+      ...globalApolloClient.cache.extract(),
+      ...initialState
+    });
+  }
+  return globalApolloClient;
+}
+
+export function withApollo(PageComponent) {
+  const WithApollo = ({
+    apolloStaticCache,
+    ...pageProps
+  }) => {
+    const client = initApolloClient(apolloStaticCache);
+
+    return (
+      <ApolloProvider client={client}>
+        <PageComponent {...pageProps} />
+      </ApolloProvider>
+    );
+  };
+
+  if (PageComponent.getInitialProps) {
+    WithApollo.getInitialProps = async () => {
+      // Run wrapped getInitialProps methods
+      let pageProps = {};
+      if (PageComponent.getInitialProps) {
+        pageProps = await PageComponent.getInitialProps(ctx);
+      }
+      return pageProps;
+    };
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    const displayName =
+      PageComponent.displayName || PageComponent.name || "Component";
+
+    WithApollo.displayName = `withApollo(${displayName})`;
+  }
+  return WithApollo;
+}
+
+
+export default function Home(obj) {
   return (
     <div className="container">
       <Head>
@@ -24,7 +112,7 @@ export default function Home({ url }) {
         </h1>
 
         <p className="description">
-          Value { url }
+          Value { obj.apolloStaticCache.ROOT_QUERY.hello }
         </p>
 
         <div className="grid">
