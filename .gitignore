@@ -4,3 +4,4 @@ node_modules/
 vscode-workspace.code-workspace
 *.pem
 .secrets/
+.vercel
