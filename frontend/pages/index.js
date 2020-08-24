@@ -1,6 +1,10 @@
 import Head from 'next/head'
 
 export default function Home() {
+  const url = process.env.GRAPHQL_URL;
+
+  debugger;
+
   return (
     <div className="container">
       <Head>
@@ -14,7 +18,7 @@ export default function Home() {
         </h1>
 
         <p className="description">
-          Get started by editing <code>pages/index.js</code>
+          Value { url }
         </p>
 
         <div className="grid">
