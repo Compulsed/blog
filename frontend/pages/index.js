@@ -1,9 +1,15 @@
 import Head from 'next/head'
 
-export default function Home() {
-  const url = process.env.GRAPHQL_URL;
 
-  debugger;
+export async function getStaticProps() {
+  return {
+    props: {
+      url: process.env.GRAPHQL_URL,
+    },
+  }
+}
+
+export default function Home({ url }) {
 
   return (
     <div className="container">
