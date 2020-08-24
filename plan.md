@@ -50,6 +50,7 @@
 
 ## Automate (AUTOMATE:)
 - [ ] New AWS account set up
+- [ ] Setting up Vercel & Route 53 for each environment
 
 ## Awkward Code, and improvements (IMPROVEMENT:)
 - [ ] Should make for env files to be specified as AWS_REGION, AWS_SDK.. etc are needed
@@ -57,6 +58,7 @@
 - [ ] Uploads extracted AWS SDK to lambda function (docker image with AWS CLI)
 - [ ] process.env.SECRET_ARN || process.env.SECRET_ARN_REF in code
 - [ ] Move to AWS_DEFAULT_REGION rather than AWS_REGION
+- [ ] Vercel project for each stage
 
 ## Optional (OPTIONAL:)
 - [ ] Serverless CI/CD
