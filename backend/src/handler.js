@@ -65,7 +65,49 @@ const resolvers = {
                     body: POST_BODY,
                     createdAt: '2020-08-23T12:17:17.278Z',
                     updatedAt: '2020-08-24T12:17:17.278Z'
-                }                                
+                },
+                {
+                    title: 'Title - 4',
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                },
+                {
+                    title: 'Title - 5', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                },
+                {
+                    title: 'Title - 6', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                }       
+                {
+                    title: 'Title - 7',
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                },
+                {
+                    title: 'Title - 8', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                },
+                {
+                    title: 'Title - 9', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
+                    body: POST_BODY,
+                    createdAt: '2020-08-23T12:17:17.278Z',
+                    updatedAt: '2020-08-24T12:17:17.278Z'
+                }                                                            
             ]
         },
         

@@ -3,6 +3,14 @@ import Head from 'next/head'
 import gql from 'graphql-tag';
 import { getStandaloneApolloClient } from '../libs/get-standalone-apollo-client';
 
+import {
+  Container,
+  Row,
+  Col,
+  Button
+} from 'react-bootstrap';
+
+
 export const getStaticProps = async ({ params }) => {
   const client = await getStandaloneApolloClient();
 
@@ -10,7 +18,7 @@ export const getStaticProps = async ({ params }) => {
     query: gql`
       query {
         hello
-        post {
+        posts {
           title
           body
           createdAt
@@ -30,7 +38,7 @@ export const getStaticProps = async ({ params }) => {
 
 
 export default function Home(obj) {
-  const { hello, post } = obj.apolloStaticCache.ROOT_QUERY;
+  const { hello, posts } = obj.apolloStaticCache.ROOT_QUERY;
 
   return (
     <div className="container">
@@ -44,13 +52,23 @@ export default function Home(obj) {
           Welcome to <a href="https://nextjs.org">Dale Salter 2</a>
         </h1>
 
-        <p className="description">
-          Value { hello }
-        </p>
+        <Container>
+          <Row>
+            { posts.map(p => (
+                <Col>
+                  <a href="https://nextjs.org/docs" className="card">
+                    <h3>{p.title}</h3>
+                    <p>{p.body}</p>
+                  </a>                
+                </Col>
+            ))
+            }
+          </Row>
+        </Container>
 
         <div className="grid">
           {
-            post.map(p => (
+            posts.map(p => (
               <a href="https://nextjs.org/docs" className="card">
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
