@@ -11,6 +11,7 @@ const typeDefs = gql`
     type Post {
         title: String
         body: String
+        shortDescription: String
         createdAt: String
         updatedAt: String
     }
@@ -45,19 +46,22 @@ const resolvers = {
         posts: () => {
             return [
                 {
-                    title: 'Title - 1', 
+                    title: 'Title - 1',
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
                     body: POST_BODY,
                     createdAt: '2020-08-23T12:17:17.278Z',
                     updatedAt: '2020-08-24T12:17:17.278Z'
                 },
                 {
                     title: 'Title - 2', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
                     body: POST_BODY,
                     createdAt: '2020-08-23T12:17:17.278Z',
                     updatedAt: '2020-08-24T12:17:17.278Z'
                 },
                 {
                     title: 'Title - 3', 
+                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
                     body: POST_BODY,
                     createdAt: '2020-08-23T12:17:17.278Z',
                     updatedAt: '2020-08-24T12:17:17.278Z'
