@@ -7,7 +7,7 @@ import {
   Container,
   Row,
   Col,
-  Button
+  Card 
 } from 'react-bootstrap';
 
 
@@ -20,6 +20,7 @@ export const getStaticProps = async ({ params }) => {
         hello
         posts {
           title
+          shortDescription
           body
           createdAt
           updatedAt
@@ -37,8 +38,8 @@ export const getStaticProps = async ({ params }) => {
 };
 
 
-export default function Home(obj) {
-  const { hello, posts } = obj.apolloStaticCache.ROOT_QUERY;
+export default function Home(query) {
+  const { posts } = query.apolloStaticCache.ROOT_QUERY;
 
   return (
     <div className="container">
@@ -53,30 +54,28 @@ export default function Home(obj) {
         </h1>
 
         <Container>
-          <Row>
             { posts.map(p => (
-                <Col>
-                  <a href="https://nextjs.org/docs" className="card">
-                    <h3>{p.title}</h3>
-                    <p>{p.body}</p>
-                  </a>                
+              <Row>
+                <Col style={{ padding: 10 }}>
+                  <a href="/" style={{ textDecoration: 'none' }}>
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>Card Title</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+                        <Card.Text>
+                          Some quick example text to build on the card title and make up the bulk of
+                          the card's content.
+                        </Card.Text>
+                        <Card.Link href="#">Card Link</Card.Link>
+                        <Card.Link href="#">Another Link</Card.Link>
+                      </Card.Body>
+                    </Card>
+                  </a>
                 </Col>
+              </Row>
             ))
             }
-          </Row>
         </Container>
-
-        <div className="grid">
-          {
-            posts.map(p => (
-              <a href="https://nextjs.org/docs" className="card">
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
-              </a>
-            ))
-          }
-
-        </div>
       </main>
 
       <style jsx>{``}</style>
