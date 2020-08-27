@@ -24,7 +24,7 @@ const typeDefs = gql`
     type Query {
         hello: String!
         users: [User]
-        post: [Post]
+        posts: [Post]
     }
 
     type Mutation {
@@ -42,7 +42,7 @@ const resolvers = {
     Query: {
         hello: () => 'Hello',
 
-        post: () => {
+        posts: () => {
             return [
                 {
                     title: 'Title - 1', 

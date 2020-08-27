@@ -7,10 +7,10 @@
 - [x] Set up local AWS Profiles
 - [x] EC2 SSH Keys using SSM
 - [x] Return some posts through the GraphQL API (Static)
-- [ ] Ziet Frontend
+- [x] Ziet Frontend
+- [ ] Display All Posts
 
 # Frontend Plan
-- [ ] Display All Posts
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
 
