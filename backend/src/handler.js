@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const _ = require('lodash');
+const { posts } = require('./data/posts');
 
 const typeDefs = gql`
     type User {
@@ -9,6 +10,7 @@ const typeDefs = gql`
     }
 
     type Post {
+        postId: String
         title: String
         body: String
         shortDescription: String
@@ -25,7 +27,9 @@ const typeDefs = gql`
     type Query {
         hello: String!
         users: [User]
+        
         posts: [Post]
+        post(postId: String!): Post!
     }
 
     type Mutation {
@@ -33,83 +37,16 @@ const typeDefs = gql`
     }
 `;
 
-const POST_BODY = `
-    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-`;
 
 const resolvers = {
     Query: {
-        hello: () => 'Hello',
-
-        posts: () => {
-            return [
-                {
-                    title: 'Title - 1',
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 2', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 3', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 4',
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 5', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 6', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 7',
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 8', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                },
-                {
-                    title: 'Title - 9', 
-                    shortDescription: 'Lorem Ipsum is simply dummy text of the printing', 
-                    body: POST_BODY,
-                    createdAt: '2020-08-23T12:17:17.278Z',
-                    updatedAt: '2020-08-24T12:17:17.278Z'
-                }                                                            
-            ]
+        post: (root, { postId }) => {
+            console.log(JSON.stringify(_.find(posts, { postId })));
+            
+            return _.find(posts, { postId });
         },
+
+        posts: () => posts,
         
         users: async () => {
             const data = require('data-api-client')({
