@@ -1,82 +1,78 @@
-// import Head from 'next/head'
+import Head from 'next/head';
 
-// import gql from 'graphql-tag';
-// import { getStandaloneApolloClient } from '../../libs/get-standalone-apollo-client';
+import { gql, useQuery } from '@apollo/client';
+import { withRouter } from 'next/router'
 
-// import {
-//   Container,
-//   Row,
-//   Col,
-//   Card 
-// } from 'react-bootstrap';
+import { publicRuntimeConfig  } from 'next/config'
 
 
-// export const getServerSideProps = async ({ params }) => {
-//   const client = await getStandaloneApolloClient();
+import {
+  Container,
+  Row,
+  Col,
+  Card 
+} from 'react-bootstrap';
 
-//   await client.query({
-//     query: gql`
-//       query($postId: String!) {
-//         post(postId: $postId) {
-//           postId
-//           title
-//           shortDescription
-//           body
-//           createdAt
-//           updatedAt
-//         }
-//       }
-//     `,
-//     variables: { postId: params?.id }
-//   });
+const GET_POSTS = gql`
+  query($postId: String!) {
+    post(postId: $postId) {
+      postId
+      title
+      shortDescription
+      body
+      createdAt
+      updatedAt
+    }
+  }
+`;
 
-//   return {
-//     props: {
-//       apolloStaticCache: client.cache.extract()
-//     }
-//   };
-// };
+function Post({ router }) {
+  const { loading, error, data } = useQuery(
+    GET_POSTS,
+    { variables: { postId: router.query.id } }
+  );
 
+  if (loading || !data) {
+    return <div></div>;
+  }
 
-// export default function Post(query) {
-//   // const { post } = query.apolloStaticCache.ROOT_QUERY;
-//   const post = {};
+  const post = data.post;
 
-//   console.log(query);
+  return (
+    <div>
+      <Head>
+        <title>Dale Salter</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-//   return (
-//     <div>
-//       <Head>
-//         <title>Dale Salter</title>
-//         <link rel="icon" href="/favicon.ico" />
-//       </Head>
+      <main>
+        <Container style={{ marginTop: 30 }}>
+          <h1 className="title">
+            Dale Salter
+          </h1>
+        </Container>
 
-//       <main>
-//         <Container style={{ marginTop: 30 }}>
-//           <h1 className="title">
-//             Dale Salter
-//           </h1>
-//         </Container>
+        <Container>
+            <Row>
+                <Col style={{ padding: 10 }}>
+                    <Card>
+                        <Card.Body>
+                        <Card.Title>{ post.title }</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{ post.shortDescription }</Card.Subtitle>
+                        <Card.Text>
+                            { post.body }
+                        </Card.Text>
+                        <Card.Link href="#">Card Link</Card.Link>
+                        <Card.Link href="#">Another Link</Card.Link>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
 
-//         <Container>
-//             <Row>
-//                 <Col style={{ padding: 10 }}>
-//                     <Card>
-//                         <Card.Body>
-//                         <Card.Title>{ post.title }</Card.Title>
-//                         <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-//                         <Card.Text>
-//                             Some quick example text to build on the card title and make up the bulk of
-//                             the card's content.
-//                         </Card.Text>
-//                         <Card.Link href="#">Card Link</Card.Link>
-//                         <Card.Link href="#">Another Link</Card.Link>
-//                         </Card.Body>
-//                     </Card>
-//                 </Col>
-//             </Row>
-//         </Container>
-//       </main>
-//     </div>
-//   )
-// }
+      </main>
+    </div>
+  )
+}
+
+export default withRouter(Post);

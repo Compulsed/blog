@@ -29,6 +29,7 @@
 - [ ] Organisation Slub is a variable
 
 ## Nice to have upcoming
+- [ ] Fix error link on frontend
 - [ ] Jira stories into repo
 - [ ] Logging framework
   - [ ] Database logs
