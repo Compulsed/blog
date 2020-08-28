@@ -66,7 +66,18 @@ functions:
       - http:
           path: ${self:custom.GraphQL.path}
           method: post
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+            maxAge: 86400
+
     environment:
       SECRET_ARN_REF: !Ref DatabaseSecret
       DB_ARN: arn:aws:rds:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cluster:${self:custom.RDS.clusterIdentifierName}
