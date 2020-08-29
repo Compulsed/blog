@@ -3,12 +3,6 @@ const _ = require('lodash');
 const { getPosts } = require('./data/posts');
 
 const typeDefs = gql`
-    type User {
-        email: String
-        first_name: String
-        last_name: String
-    }
-
     type Post {
         postId: String
         title: String
@@ -20,22 +14,11 @@ const typeDefs = gql`
         updatedAt: String
     }
 
-    type TableData {
-        table_catalog: String
-        table_schema: String
-        table_name: String
-    }
-
     type Query {
         hello: String!
-        users: [User]
-        
+
         posts: [Post]
         post(postId: String!): Post!
-    }
-
-    type Mutation {
-        run: [TableData]
     }
 `;
 
@@ -49,38 +32,6 @@ const resolvers = {
         },
 
         posts: () => getPosts(),
-        
-        users: async () => {
-            const data = require('data-api-client')({
-                secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
-                resourceArn: process.env.DB_ARN,
-                database: process.env.DATABASE_NAME,
-            });
-
-            const result = await data.query(`
-                SELECT * FROM users
-            `);
-
-            return result.records;
-
-        }
-    },
-    Mutation: {
-        run: async (root, args, context) => {
-            const data = require('data-api-client')({
-                secretArn: process.env.SECRET_ARN || process.env.SECRET_ARN_REF,
-                resourceArn: process.env.DB_ARN,
-                database: process.env.DATABASE_NAME,
-            });
-
-            const result = await data.query(`
-                SELECT *
-                FROM information_schema.tables
-                ORDER BY table_name;
-            `);
-
-            return result.records;
-        },
     }
 };
 
