@@ -61,6 +61,10 @@ echo "STAR: Running Deploy"
 ./bin/stack-deploy -s "$STAGE"
 echo "END: Running Deploy"
 
+echo "STAR: Uploading Test Image"
+aws s3 cp "./images/lambda-logo.png" "s3://blog-${STAGE}-image-bucket/lambda-logo.png" --acl public-read
+echo "END: Uploading Test Image"
+
 echo "START: Setting up remote database connection"
 ./bin/remote-start -s "$STAGE"
 echo "END: Setting up remote database connection"
