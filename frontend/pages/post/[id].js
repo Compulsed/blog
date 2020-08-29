@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link'
 
 import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
@@ -13,6 +14,9 @@ const GET_POSTS = gql`
     post(postId: $postId) {
       postId
       title
+      shortDescription
+      longDescription
+      imageUrl
       body
       createdAt
       updatedAt
@@ -43,9 +47,31 @@ function Post({ router }) {
         <Header />
 
         <Container>
+          <Row key={post.postId}>
+            <Col style={{ padding: 10 }}>
+              <Link href="/post/[id]" as={`/post/${post.postId}`} passHref>
+                <ArticleLink>
+                  <ArticleCard>
+                    <Row>
+                      <Col sm={10}>
+                        <h3>{post.title}</h3>
+                        <h5 className="mb-2 text-muted">{post.shortDescription}</h5>
+                        <p>{ post.longDescription }</p>
+                      </Col>
+                      <Col sm={2}>
+                        <ArticleImage src={post.imageUrl} /> 
+                      </Col>
+                    </Row>
+                  </ArticleCard>
+                </ArticleLink>
+              </Link>
+            </Col>
+          </Row>
+        </Container>
+
+        <Container>
             <Row>
                 <Col style={{ padding: 10 }}>
-                  <Title>{ post.title }</Title>
                   <StyledReactMarkdown source={post.body} />
                 </Col>
             </Row>
@@ -56,18 +82,41 @@ function Post({ router }) {
   )
 }
 
-const Title = styled.h2`
-  margin-bottom: 20px;
-`
-
 const StyledReactMarkdown = styled(ReactMarkdown)`
-  border: 1px solid #e3e3e3;
   padding 20px;
-  border-radius: 5px;
   box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
 
   h1 {
     font-size: 20px;
+  }
+`
+
+const ArticleImage = styled.img`
+  width: 100%;
+`
+
+const ArticleLink = styled.a`
+  text-decoration: none;
+  color: inherit;
+  outline: 0;
+  cursor: auto;
+
+  :hover {
+    text-decoration: none;
+    color: inherit;
+    outline: 0;
+    cursor: auto;
+  }
+`
+
+const ArticleCard = styled.div`
+  padding 20px;
+  border-radius: 5px;
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
+  border: 1px solid #d0d0d0;
+
+  :hover {
+    cursor: pointer;
   }
 `
 
