@@ -1,4 +1,14 @@
 {
+    "builds": [
+        {
+          "src": "next.config.js",
+          "use": "@vercel/next"
+        },
+        {
+          "src": "static/**",
+          "use": "@vercel/static"
+        }
+    ],
     "presets": ["next/babel"],
     "plugins": [
         [
