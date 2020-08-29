@@ -18,6 +18,9 @@ soap_gigabyte = text_memory.user(pipeline_icf, web.heat_rj(5 *
         systray_toggle), sata_flops_boot + character);
 \`\`\`
 
+
+![alt text](https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png "Logo Title Text 1")
+
 Ebrius ostia non, nato [non durat](http://www.aiacem.net/tulisset) poenas
 tumebat cultum meritum homines premunt. Ardet hederis, viro, alas saepius,
 Priamus duratur. Quia sic choreas, suos: ceperunt vaticinor hoc et illi

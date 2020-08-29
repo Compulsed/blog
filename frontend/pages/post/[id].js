@@ -105,6 +105,13 @@ const StyledReactMarkdown = styled(ReactMarkdown)`
   h5 {
     font-size: 12px;
   }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+  }
 `
 
 const ArticleImage = styled.img`
