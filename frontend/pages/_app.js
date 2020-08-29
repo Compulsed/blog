@@ -1,3 +1,5 @@
+import App from 'next/app'
+
 import { ThemeProvider } from 'styled-components'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,12 +11,15 @@ const theme = {
     },
 }
 
-function MyApp({ Component, pageProps }) {
-    return (
+class MyApp extends App {
+    render() {
+      const { Component, pageProps } = this.props
+      return (
         <ThemeProvider theme={theme}>
-            <Component {...pageProps} />
+          <Component {...pageProps} />
         </ThemeProvider>
-    )
-}
+      )
+    }
+  }
 
 export default withApollo({ ssr: true })(MyApp);
