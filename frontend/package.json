@@ -22,7 +22,7 @@
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
-    "vercel": "^19.2.0",
-    "babel-plugin-styled-components": "^1.11.1"
+    "babel-plugin-styled-components": "^1.11.1",
+    "vercel": "^19.2.0"
   }
 }
