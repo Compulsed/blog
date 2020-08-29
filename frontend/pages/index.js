@@ -41,19 +41,21 @@ export default function Home() {
               return (
                 <Row key={post.postId}>
                   <Col style={{ padding: 10 }}>
-                    <Link href="/post/[id]" as={`/post/${post.postId}`} >
-                      <HoverLink>
-                        <HoverCard>
-                          <Card.Img variant="bottom" src={post.imageUrl} />
-                          <Card.Body>
-                            <Card.Title>{post.title}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{post.shortDescription}</Card.Subtitle>
-                            <Card.Text>
-                              { post.longDescription }
-                            </Card.Text>
-                          </Card.Body>
-                        </HoverCard>
-                      </HoverLink>
+                    <Link href="/post/[id]" as={`/post/${post.postId}`} passHref>
+                      <ArticleLink>
+                        <ArticleCard>
+                          <Row>
+                            <Col sm={10}>
+                              <h3>{post.title}</h3>
+                              <h5 className="mb-2 text-muted">{post.shortDescription}</h5>
+                              <p>{ post.longDescription }</p>
+                            </Col>
+                            <Col sm={2}>
+                              <ArticleImage src={post.imageUrl} />
+                            </Col>
+                          </Row>
+                        </ArticleCard>
+                      </ArticleLink>
                     </Link>
                   </Col>
                 </Row>
@@ -65,7 +67,11 @@ export default function Home() {
   )
 }
 
-const HoverLink = styled.a`
+const ArticleImage = styled.img`
+  width: 100%;
+`
+
+const ArticleLink = styled.a`
   text-decoration: none;
   color: inherit;
   outline: 0;
@@ -79,8 +85,9 @@ const HoverLink = styled.a`
   }
 `
 
-const HoverCard = styled(Card)`
+const ArticleCard = styled.div`
   border: 1px solid transparent;
+  padding: 20px;
 
   :hover {
     border: 1px solid #d0d0d0;
