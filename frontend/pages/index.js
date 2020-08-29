@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client';
 
-import { Container, Row, Col, Card  } from 'react-bootstrap';
+import { Container, Row, Col  } from 'react-bootstrap';
 import styled from 'styled-components'
 
 import { Header } from '../components/layout/header';
@@ -30,7 +30,7 @@ export default function Home() {
     <div>
       <Head>
         <title>Dale Salter</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="https://blog-dev-image-bucket.s3.amazonaws.com/logo.png" />
       </Head>
 
       <main>

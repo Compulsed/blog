@@ -40,7 +40,7 @@ function Post({ router }) {
     <div>
       <Head>
         <title>Dale Salter</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="https://blog-dev-image-bucket.s3.amazonaws.com/logo.png" />
       </Head>
 
       <main>
