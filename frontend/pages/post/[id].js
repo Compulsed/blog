@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-// import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
 
 import { Container, Row, Col, Card } from 'react-bootstrap';
@@ -21,16 +21,16 @@ const GET_POSTS = gql`
 `;
 
 function Post({ router }) {
-  // const { loading, error, data } = useQuery(
-  //   GET_POSTS,
-  //   { variables: { postId: router.query.id } }
-  // );
+  const { loading, error, data } = useQuery(
+    GET_POSTS,
+    { variables: { postId: router.query.id } }
+  );
 
-  // if (loading || !data) {
+  if (loading || !data) {
     return <div></div>;
-  // }
+  }
 
-  // const post = data.post;
+  const post = data.post;
 
   return (
     <div>
