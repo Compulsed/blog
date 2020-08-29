@@ -17,4 +17,5 @@ function MyApp({ Component, pageProps }) {
     )
 }
 
-export default withApollo({ ssr: true })(MyApp);
+// export default withApollo({ ssr: true })(MyApp);
+export default MyApp;
