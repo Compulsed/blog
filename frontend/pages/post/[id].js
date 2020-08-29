@@ -5,13 +5,14 @@ import { withRouter } from 'next/router'
 
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Header } from '../../components/layout/header';
+import ReactMarkdown from 'react-markdown';
+import styled from 'styled-components'
 
 const GET_POSTS = gql`
   query($postId: String!) {
     post(postId: $postId) {
       postId
       title
-      shortDescription
       body
       createdAt
       updatedAt
@@ -44,15 +45,8 @@ function Post({ router }) {
         <Container>
             <Row>
                 <Col style={{ padding: 10 }}>
-                    <Card>
-                        <Card.Body>
-                          <Card.Title>{ post.title }</Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">{ post.shortDescription }</Card.Subtitle>
-                          <Card.Text>
-                              { post.body }
-                          </Card.Text>
-                        </Card.Body>
-                    </Card>
+                  <Title>{ post.title }</Title>
+                  <StyledReactMarkdown source={post.body} />
                 </Col>
             </Row>
         </Container>
@@ -61,5 +55,20 @@ function Post({ router }) {
     </div>
   )
 }
+
+const Title = styled.h2`
+  margin-bottom: 20px;
+`
+
+const StyledReactMarkdown = styled(ReactMarkdown)`
+  border: 1px solid #e3e3e3;
+  padding 20px;
+  border-radius: 5px;
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
+
+  h1 {
+    font-size: 20px;
+  }
+`
 
 export default withRouter(Post);

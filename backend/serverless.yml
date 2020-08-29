@@ -155,6 +155,30 @@ resources:
         TargetType: AWS::RDS::DBCluster
 
     ################
+    # Image Storage
+    ################
+    ImageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.stackName}-image-bucket
+        AccelerateConfiguration:
+          AccelerationStatus: Enabled  
+
+    # ImageBucketAllowPublicReadPolicy:
+    #   Type: AWS::S3::BucketPolicy
+    #   Properties:
+    #     Bucket: !Ref ImageBucket
+    #     PolicyDocument:
+    #       Version: "2012-10-17"
+    #       Statement: 
+    #         - Effect: Allow
+    #           Action: 
+    #             - "s3:GetObject"
+    #           Resource: 
+    #             - !Join ['/', [!Ref ImageBucket, 'public']]
+    #           Principal: "*"
+
+    ################
     # Networking
     ################
     VPC:

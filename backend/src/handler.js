@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const _ = require('lodash');
-const { posts } = require('./data/posts');
+const { getPosts } = require('./data/posts');
 
 const typeDefs = gql`
     type User {
@@ -14,6 +14,8 @@ const typeDefs = gql`
         title: String
         body: String
         shortDescription: String
+        longDescription: String
+        imageUrl: String
         createdAt: String
         updatedAt: String
     }
@@ -41,12 +43,12 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         post: (root, { postId }) => {
-            console.log(JSON.stringify(_.find(posts, { postId })));
+            console.log(JSON.stringify(_.find(getPosts(), { postId })));
             
-            return _.find(posts, { postId });
+            return _.find(getPosts(), { postId });
         },
 
-        posts: () => posts,
+        posts: () => getPosts(),
         
         users: async () => {
             const data = require('data-api-client')({

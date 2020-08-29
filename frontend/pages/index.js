@@ -13,6 +13,8 @@ const GET_POSTS = gql`
       postId
       title
       shortDescription
+      longDescription
+      imageUrl
       body
       createdAt
       updatedAt
@@ -42,11 +44,12 @@ export default function Home() {
                     <Link href="/post/[id]" as={`/post/${post.postId}`} >
                       <HoverLink>
                         <HoverCard>
+                          <Card.Img variant="bottom" src={post.imageUrl} />
                           <Card.Body>
                             <Card.Title>{post.title}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">{post.shortDescription}</Card.Subtitle>
                             <Card.Text>
-                              { post.body }
+                              { post.longDescription }
                             </Card.Text>
                           </Card.Body>
                         </HoverCard>
