@@ -26,6 +26,8 @@ const GET_POSTS = gql`
 export default function Home() {
   // const { loading, error, data } = useQuery(GET_POSTS);
 
+  const data = {};
+
   return (
     <div>
       <Head>
