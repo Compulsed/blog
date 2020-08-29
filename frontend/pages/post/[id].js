@@ -87,7 +87,23 @@ const StyledReactMarkdown = styled(ReactMarkdown)`
   box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
 
   h1 {
+    font-size: 24px;
+  }
+
+  h2 {
     font-size: 20px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  h4 {
+    font-size: 14px;
+  }
+
+  h5 {
+    font-size: 12px;
   }
 `
 
