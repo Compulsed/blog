@@ -51,7 +51,7 @@ export default function Home() {
                               <p>{ post.longDescription }</p>
                             </Col>
                             <Col sm={2}>
-                              <ArticleImage src={post.imageUrl} />
+                              <ArticleImage src={post.imageUrl} /> 
                             </Col>
                           </Row>
                         </ArticleCard>
