@@ -87,7 +87,9 @@ const ArticleLink = styled.a`
 
 const ArticleCard = styled.div`
   border: 1px solid transparent;
-  padding: 20px;
+  padding 20px;
+  border-radius: 5px;
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
 
   :hover {
     border: 1px solid #d0d0d0;
