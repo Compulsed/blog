@@ -1,5 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { ThemeProvider } from 'styled-components'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { withApollo } from '../libs/with-apollo';
 
