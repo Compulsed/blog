@@ -46,13 +46,11 @@ function Post({ router }) {
                 <Col style={{ padding: 10 }}>
                     <Card>
                         <Card.Body>
-                        <Card.Title>{ post.title }</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{ post.shortDescription }</Card.Subtitle>
-                        <Card.Text>
-                            { post.body }
-                        </Card.Text>
-                        <Card.Link href="#">Card Link</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
+                          <Card.Title>{ post.title }</Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">{ post.shortDescription }</Card.Subtitle>
+                          <Card.Text>
+                              { post.body }
+                          </Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
