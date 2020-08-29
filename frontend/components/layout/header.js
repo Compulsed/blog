@@ -1,19 +1,30 @@
 import Link from 'next/link'
 
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col  } from 'react-bootstrap';
 import styled from 'styled-components'
 
 export const Header = () => {
     return (
         <SpacedContainer>
-            <Link href="/" as='/' passHref >
-                <TitleLink>
-                    <h1 className="title">
-                        Dale Salter
-                    </h1>
-                </TitleLink>
-            </Link>
-            <h6>Serverless, Software Engineering, Leadership, DevOps</h6>
+            <Row>
+                <Col style={{flex: '0 0 50px', padding: 0, alignSelf: 'center' }} >
+                    <Link href="/" as='/' passHref >
+                        <a>
+                            <img style={{ width: '100%' }} src="https://blog-dev-image-bucket.s3.amazonaws.com/logo.png" />
+                        </a>
+                    </Link>
+                </Col>
+                <Col>
+                    <Link href="/" as='/' passHref >
+                        <TitleLink>
+                            <h1 className="title">
+                                Dale Salter
+                            </h1>
+                        </TitleLink>
+                    </Link>
+                    <h6 className="mb-2 text-muted">Serverless, Software Engineering, Leadership, DevOps</h6>          
+                </Col>
+            </Row>
         </SpacedContainer>
     );
 }
