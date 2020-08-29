@@ -8,14 +8,20 @@
 - [x] EC2 SSH Keys using SSM
 - [x] Return some posts through the GraphQL API (Static)
 - [x] Ziet Frontend
-- [ ] Display All Posts
+- [x] Display All Posts
+- [ ] Wire up posts to read directly from the database
+  - [ ] design table schema
+  - [ ] create migration script
+  - [ ] populate with dummy data on staging
+  - [ ] hook up with API
 
 # Frontend Plan
+- [ ] Render markdown contents
+- [ ] Integrate google analytics
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
 
 # Backend Plan
-- [ ] Wire up posts to read directly from the database
 - [ ] Mutation to create a new post
 - [ ] Mutation to update a post
 
@@ -27,6 +33,10 @@
 - [ ] Remove * CIDR from BastionSecurityGroup
 - [ ] DeletionPolicy: Delete, change this if production
 - [ ] Organisation Slub is a variable
+
+## Automate (AUTOMATE:)
+- [ ] New AWS account set up
+- [ ] Setting up Vercel & Route 53 for each environment
 
 ## Nice to have upcoming
 - [ ] Fix error link on frontend
@@ -49,9 +59,6 @@
 - [ ] IAM Auth on database
 - [ ] Proper logger support
 
-## Automate (AUTOMATE:)
-- [ ] New AWS account set up
-- [ ] Setting up Vercel & Route 53 for each environment
 
 ## Awkward Code, and improvements (IMPROVEMENT:)
 - [ ] Should make for env files to be specified as AWS_REGION, AWS_SDK.. etc are needed

@@ -1,15 +1,11 @@
 import Head from 'next/head';
 import Link from 'next/link'
-
 import { gql, useQuery } from '@apollo/client';
 
-import {
-  Container,
-  Row,
-  Col,
-  Card 
-} from 'react-bootstrap';
+import { Container, Row, Col, Card  } from 'react-bootstrap';
+import styled from 'styled-components'
 
+import { Header } from '../components/layout/header';
 
 const GET_POSTS = gql`
   query {
@@ -36,11 +32,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <Container style={{ marginTop: 30 }}>
-          <h1 className="title">
-            Dale Salter
-          </h1>
-        </Container>
+        <Header />
 
         <Container>
             { (data && data.posts || []).map(p => {
@@ -48,7 +40,7 @@ export default function Home() {
                 <Row key={p.postId}>
                   <Col style={{ padding: 10 }}>
                     <Link href="/post/[id]" as={`/post/${p.postId}`}>
-                      <Card>
+                      <HoverCard>
                         <Card.Body>
                           <Card.Title>{p.title}</Card.Title>
                           <Card.Subtitle className="mb-2 text-muted">{p.shortDescription}</Card.Subtitle>
@@ -58,7 +50,7 @@ export default function Home() {
                           <Card.Link href="#">Card Link</Card.Link>
                           <Card.Link href="#">Another Link</Card.Link>
                         </Card.Body>
-                      </Card>
+                      </HoverCard>
                     </Link>
                   </Col>
                 </Row>
@@ -69,3 +61,7 @@ export default function Home() {
     </div>
   )
 }
+
+const HoverCard = styled(Card)`
+
+`

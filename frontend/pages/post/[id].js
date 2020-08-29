@@ -3,15 +3,8 @@ import Head from 'next/head';
 import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
 
-import { publicRuntimeConfig  } from 'next/config'
-
-
-import {
-  Container,
-  Row,
-  Col,
-  Card 
-} from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Header } from '../../components/layout/header';
 
 const GET_POSTS = gql`
   query($postId: String!) {
@@ -46,11 +39,7 @@ function Post({ router }) {
       </Head>
 
       <main>
-        <Container style={{ marginTop: 30 }}>
-          <h1 className="title">
-            Dale Salter
-          </h1>
-        </Container>
+        <Header />
 
         <Container>
             <Row>
