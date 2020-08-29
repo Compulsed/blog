@@ -19,15 +19,15 @@ export const Header = () => {
 }
 
 const TitleLink = styled.a`
-  color: inherit;
+  /* color: inherit;
 
   :hover {
       text-decoration: none;
       color: inherit;
-  }
+  } */
 `
 
-const SpacedContainer = styled(Container)`
+const SpacedContainer = styled(Container)`/*
     margin-top: 30px;
     margin-bottom: 30px;
-`
+*/`
