@@ -47,6 +47,8 @@ const typeDefs = gql`
 const resolvers = {
     Post: {
         id: ({ postId }) => postId,
+        createdAt: ({ createdAt }) => createdAt && createdAt.replace(' ', 'T') + 'Z', // Convert to ISO string form postgres
+        updatedAt: ({ updatedAt }) => updatedAt && updatedAt.replace(' ', 'T') + 'Z', // Convert to ISO string form postgres
     },
 
     Query: {
