@@ -18,24 +18,24 @@
 - [x] Image support
 
 # Frontend Plan
+- [ ] Form sumission errors when missing secret
 - [ ] Integrate google analytics
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
+- [ ] Build out an about me page
 
 # Backend Plan
 - [ ] Mutation to create a new post
 - [ ] Mutation to update a post
 - [ ] Back up data
 - [ ] Set production to always on
+- [ ] Fix duplication between types querying data (put into service / repo layer)
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
 
 ## Before Production
-- [ ] Limit Execution role in serverless.yml as it is *
-- [ ] Remove * CIDR from BastionSecurityGroup
-- [ ] DeletionPolicy: Delete, change this if production
-- [ ] Organisation Slub is a variable
+- [ ] Remove automatic seeding data
 
 ## Automate (AUTOMATE:)
 - [ ] New AWS account set up
