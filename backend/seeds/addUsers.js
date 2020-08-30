@@ -56,7 +56,7 @@ const getPosts = () =>
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
-        createdAt: '2020-08-23T12:17:17.278Z',
+        createdAt: new Date().toISOString(),
         updatedAt: '2020-08-24T12:17:17.278Z'
     },
     {
