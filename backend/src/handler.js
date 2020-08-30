@@ -26,10 +26,13 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        post: (root, { postId }) => {
-            console.log(JSON.stringify(_.find(getPosts(), { postId })));
-            
-            return _.find(getPosts(), { postId });
+        post: async (root, { postId }) => {       
+            const result = await query(
+                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
+                { postId }
+            );
+
+            return result.records[0];
         },
 
         posts: async () => {
