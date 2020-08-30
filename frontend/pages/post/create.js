@@ -13,6 +13,7 @@ const CREATE_POST = gql`
         createPost (postInput: $postInput, secret: $secret) {
             status
             post {
+                id
                 postId
                 title
                 shortDescription

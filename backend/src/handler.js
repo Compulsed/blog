@@ -38,8 +38,15 @@ const typeDefs = gql`
         post: Post
     }
 
+    type UpdatePostResponse {
+        status: Boolean!
+        errorMessage: String
+        post: Post
+    }
+
     type Mutation {
         createPost (postInput: PostInput!, secret: String!): CreatePostResponse!
+        updatePost (postInput: PostInput!, secret: String!): UpdatePostResponse!
     }
 `;
 
@@ -68,11 +75,25 @@ const resolvers = {
         },
     },
 
-    // # TODO: Remove duplication
     CreatePostResponse: {
         post: async ({ postId }) => {
             if (!postId) return null;
 
+            // # TODO: Remove duplication
+            const result = await query(
+                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
+                { postId }
+            );
+
+            return result && result.records && result.records[0] || null;
+        }
+    },
+
+    UpdatePostResponse: {
+        post: async ({ postId }) => {
+            if (!postId) return null;
+
+            // # TODO: Remove duplication
             const result = await query(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
@@ -138,7 +159,53 @@ const resolvers = {
                     errorMessage: err.message,
                 };
             }
-        }
+        },
+        updatePost: async (root, args, context) => {
+            if (args.secret !== 'let me in') {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const post = {
+                postId: args.postInput.postId,
+                title: args.postInput.title || null,
+                body: args.postInput.body || null,
+                shortDescription: args.postInput.shortDescription || null,
+                longDescription: args.postInput.longDescription || null,
+                imageUrl: args.postInput.imageUrl || null,
+                updatedAt: new Date().toISOString(),
+            }
+
+            try {
+                await query(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "title"             = :title::text,
+                        "body"              = :body::text,
+                        "shortDescription"  = :shortDescription::text,
+                        "longDescription"   = :longDescription::text,
+                        "imageUrl"          = :imageUrl::text,
+                        "updatedAt"         = :updatedAt::timestamp
+                    WHERE
+                        "postId" = :postId::uuid;
+                    `,
+                    [ post ]
+                );
+
+                return {
+                    status: true,
+                    postId: post.postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        }        
     }
 };
 

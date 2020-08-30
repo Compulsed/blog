@@ -14,7 +14,12 @@ export const PostCard = ({ post, highlightHover = false }) => {
                 <h3>{post.title}</h3>
                 <h5 className="mb-2 text-muted">{post.shortDescription}</h5>
                 <p>{ post.longDescription }</p>
-                <p className="small">Posted { moment(post.createdAt).fromNow(true) } ago</p>   
+                <p className="small">
+                    Posted { moment(post.createdAt).fromNow(true) } ago
+                    { post.updatedAt 
+                     ? ', last updated ' + moment(post.updatedAt).fromNow(true) + ' ago.'
+                     : '' }
+                </p>   
               </Col>
               <Col sm={2}>
                 <ArticleImage src={post.imageUrl} /> 

@@ -14,6 +14,7 @@ import { CenterSpinner } from '../../components/spinner';
 const GET_POSTS = gql`
   query($postId: String!) {
     post(postId: $postId) {
+      id
       postId
       title
       shortDescription

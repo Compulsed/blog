@@ -67,7 +67,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: '811d6441-fe5d-4c3e-946a-989e41f1de7e',
@@ -87,7 +87,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: 'b3b6772a-2795-4e2b-a44f-20db74452b54',
@@ -97,7 +97,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: '53ffe3a0-d720-4dee-b477-2c39e8afb4e6',
@@ -107,7 +107,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: 'bab5efe1-2b11-49b9-9445-1683f5d2c450',
@@ -117,7 +117,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: '0b3aeb49-ea04-4d0a-82d0-8e728905d027',
@@ -127,7 +127,7 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     },
     {
         postId: '0d10bbf3-aafb-4f5c-b830-28603d7c9975',
@@ -137,6 +137,6 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: null,
     }                                                            
 ];
