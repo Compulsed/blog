@@ -74,4 +74,9 @@ echo "START: Running Migration"
 yarn knex migrate:latest --env "$STAGE"
 echo "END: Running Migration"
 
+echo "START: Running Seed"
+yarn knex seed:run --env "$STAGE"
+echo "END: Running Seed"
+
+
 echo "🎉 Done! 🎉"

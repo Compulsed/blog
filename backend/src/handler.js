@@ -1,6 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const _ = require('lodash');
 const { getPosts } = require('./data/posts');
+const { query } = require('./tools/dataApiClient');
 
 const typeDefs = gql`
     type Post {
@@ -12,7 +13,7 @@ const typeDefs = gql`
         imageUrl: String
         createdAt: String
         updatedAt: String
-    }
+    }   
 
     type Query {
         hello: String!
@@ -31,7 +32,11 @@ const resolvers = {
             return _.find(getPosts(), { postId });
         },
 
-        posts: () => getPosts(),
+        posts: async () => {
+            const result = await query(`SELECT * FROM "post"`);
+        
+            return result.records;
+        },
     }
 };
 

@@ -15,7 +15,7 @@ const makedataAPIClient = async () => {
 const dataAPIClientPromise = makedataAPIClient();
 
 const query = async (...args) => {
-    logger.info('Data API Query: ', args[0], args[1].length);
+    logger.info('Data API Query: ', args[0], args[1] && args[1].length);
 
     const dataApiClient = await dataAPIClientPromise;
     
