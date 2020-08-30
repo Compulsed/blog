@@ -6,7 +6,7 @@ exports.seed = async function(knex) {
     .insert(getPosts());
 };
 
-const POST_BODY = `
+const POST_BODY = `\
 # Sub Lenaee
 
 ## Flumina temptantes semianimes esse corpore
