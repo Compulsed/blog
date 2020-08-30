@@ -4,6 +4,9 @@ import Link from 'next/link'
 
 import { Row, Col  } from 'react-bootstrap';
 
+// new Date(dateString);
+
+
 export const PostCard = ({ post, highlightHover = false }) => {
     return (
       <Link href="/post/[id]" as={`/post/${post.postId}`} passHref>
