@@ -60,7 +60,7 @@ const resolvers = {
         },
 
         posts: async () => {
-            const result = await query(`SELECT * FROM "post"`);
+            const result = await query(`SELECT * FROM "post" ORDER BY "createdAt" DESC`);
         
             return result.records;
         },
