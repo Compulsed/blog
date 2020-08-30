@@ -1,13 +1,15 @@
 import Head from 'next/head';
-import Link from 'next/link'
 
 import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
 
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import { Header } from '../../components/layout/header';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components'
+
+import { Container, Row, Col } from 'react-bootstrap';
+import { Header } from '../../components/layout/header';
+import { PostCard } from '../../components/card';
+import { CenterSpinner } from '../../components/spinner';
 
 const GET_POSTS = gql`
   query($postId: String!) {
@@ -30,11 +32,7 @@ function Post({ router }) {
     { variables: { postId: router.query.id } }
   );
 
-  if (loading || !data) {
-    return <div></div>;
-  }
-
-  const post = data.post;
+  const post = data && data.post;
 
   return (
     <div>
@@ -47,34 +45,22 @@ function Post({ router }) {
         <Header />
 
         <Container>
-          <Row key={post.postId}>
-            <Col style={{ padding: 10 }}>
-              <Link href="/post/[id]" as={`/post/${post.postId}`} passHref>
-                <ArticleLink>
-                  <ArticleCard>
-                    <Row>
-                      <Col sm={10}>
-                        <h3>{post.title}</h3>
-                        <h5 className="mb-2 text-muted">{post.shortDescription}</h5>
-                        <p>{ post.longDescription }</p>
-                      </Col>
-                      <Col sm={2}>
-                        <ArticleImage src={post.imageUrl} /> 
-                      </Col>
-                    </Row>
-                  </ArticleCard>
-                </ArticleLink>
-              </Link>
-            </Col>
-          </Row>
-        </Container>
+          {loading && <CenterSpinner animation="grow" />}
 
-        <Container>
-            <Row>
+          {!loading && post && (
+            <div>
+              <Row key={post.postId}>
+                <Col style={{ padding: 10 }}>
+                  <PostCard post={post} highlightHover={false}/>
+                </Col>
+              </Row>              
+              <Row>
                 <Col style={{ padding: 10 }}>
                   <StyledReactMarkdown source={post.body} />
                 </Col>
-            </Row>
+              </Row>
+            </div>
+          )}
         </Container>
 
       </main>

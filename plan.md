@@ -9,14 +9,15 @@
 - [x] Return some posts through the GraphQL API (Static)
 - [x] Ziet Frontend
 - [x] Display All Posts
-- [ ] Wire up posts to read directly from the database
-  - [ ] design table schema
-  - [ ] create migration script
-  - [ ] populate with dummy data on staging
-  - [ ] hook up with API
+- [x] Wire up posts to read directly from the database
+  - [x] design table schema
+  - [x] create migration script
+  - [x] populate with dummy data on staging
+  - [x] hook up with API
+- [x] Render markdown contents
+- [x] Image support
 
 # Frontend Plan
-- [ ] Render markdown contents
 - [ ] Integrate google analytics
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
@@ -24,6 +25,8 @@
 # Backend Plan
 - [ ] Mutation to create a new post
 - [ ] Mutation to update a post
+- [ ] Back up data
+- [ ] Set production to always on
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)

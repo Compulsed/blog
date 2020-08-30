@@ -2,6 +2,7 @@ import App from 'next/app'
 
 import { ThemeProvider } from 'styled-components'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/styles.css'
 
 const theme = {
   colors: {
