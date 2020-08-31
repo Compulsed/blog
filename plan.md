@@ -63,7 +63,6 @@
 - [ ] IAM Auth on database
 - [ ] Proper logger support
 
-
 ## Awkward Code, and improvements (IMPROVEMENT:)
 - [ ] Should make for env files to be specified as AWS_REGION, AWS_SDK.. etc are needed
 - [ ] Move compose into backend -- Buildkite CD (does not support microservices nicely)
