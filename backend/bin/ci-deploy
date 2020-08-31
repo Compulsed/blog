@@ -53,6 +53,13 @@ trap 'error ${LINENO}' ERR
 #
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
+echo "STAR: Uploading Test Image"
+aws s3 cp "./images/lambda-logo.png" "s3://blog-${STAGE}-image-bucket/lambda-logo.png" --acl public-read
+aws s3 cp "./images/logo.png" "s3://blog-${STAGE}-image-bucket/logo.png" --acl public-read
+aws s3 cp "./images/logo-2.png" "s3://blog-${STAGE}-image-bucket/logo-2.png" --acl public-read
+aws s3 cp "./images/logo-4.png" "s3://blog-${STAGE}-image-bucket/logo-4.png" --acl public-read
+echo "END: Uploading Test Image"
+
 echo "STAR: Oprah Run"
 yarn oprah run -s "$STAGE"
 echo "END: Oprah Run"
@@ -60,12 +67,6 @@ echo "END: Oprah Run"
 echo "STAR: Running Deploy"
 ./bin/stack-deploy -s "$STAGE"
 echo "END: Running Deploy"
-
-echo "STAR: Uploading Test Image"
-aws s3 cp "./images/lambda-logo.png" "s3://blog-${STAGE}-image-bucket/lambda-logo.png" --acl public-read
-aws s3 cp "./images/logo.png" "s3://blog-${STAGE}-image-bucket/logo.png" --acl public-read
-aws s3 cp "./images/logo-2.png" "s3://blog-${STAGE}-image-bucket/logo-2.png" --acl public-read
-echo "END: Uploading Test Image"
 
 echo "START: Setting up remote database connection"
 ./bin/remote-start -s "$STAGE"

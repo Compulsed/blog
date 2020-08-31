@@ -157,7 +157,7 @@ function Post() {
     <div>
       <Head>
         <title>Dale Salter</title>
-        <link rel="icon" href="https://blog-production-image-bucket.s3.amazonaws.com/logo-2.png" />
+        <link rel="icon" href="https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png" />
       </Head>
 
       <main>
