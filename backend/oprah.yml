@@ -4,5 +4,10 @@ provider:
 
 config:
   path: /${stage}/blog/config
+
+  production:
+    AURORA_AUTO_PAUSE: "false"
+
   defaults:
+    AURORA_AUTO_PAUSE: "true"
     DATABASE_NAME: "blog"

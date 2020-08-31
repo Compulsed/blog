@@ -139,10 +139,7 @@ resources:
         EngineMode: serverless
         EnableHttpEndpoint: true # DataAPI - https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
         ScalingConfiguration:
-          AutoPause: !Not
-            - !Equals 
-              - ${opt:stage}
-              - production
+          AutoPause: ${ssm:/${self:provider.configPath}/AURORA_AUTO_PAUSE }
           MaxCapacity: 2
           MinCapacity: 2
           SecondsUntilAutoPause: 300
