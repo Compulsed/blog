@@ -30,6 +30,7 @@
 - [ ] Back up data
 - [ ] Set production to always on
 - [ ] Fix duplication between types querying data (put into service / repo layer)
+- [ ] Post backup
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
