@@ -16,21 +16,21 @@
   - [x] hook up with API
 - [x] Render markdown contents
 - [x] Image support
+- [x] Mutation to create a new post
+- [x] Mutation to update a post
+- [x] Set production to always on
+- [ ] Integrate google analytics
 
 # Frontend Plan
-- [ ] Form sumission errors when missing secret
-- [ ] Integrate google analytics
+- [ ] Site map
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
 - [ ] Build out an about me page
+- [ ] Form sumission errors when missing secret
 
 # Backend Plan
-- [ ] Mutation to create a new post
-- [ ] Mutation to update a post
 - [ ] Back up data
-- [ ] Set production to always on
 - [ ] Fix duplication between types querying data (put into service / repo layer)
-- [ ] Post backup
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
