@@ -7,12 +7,23 @@ const GET_POSTS = gql`
     query {
       posts {
         postId
+        createdAt
       }
     }
 `;
 
+const lastModifiedDate = ({ posts }) => {
+    posts.sortBy()
+}
+
 const createSitemap = ({ posts }) => `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        <url>
+            <loc>https://dalejsalter.com/</loc>
+            <lastmod>2020-08-31T22:56:08+00:00</lastmod>
+            <priority>1.00</priority>
+        </url>
+
         ${posts
           .map(post => {
             return `
