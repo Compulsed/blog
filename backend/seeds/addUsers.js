@@ -27,7 +27,7 @@ soap_gigabyte = text_memory.user(pipeline_icf, web.heat_rj(5 *
 \`\`\`
 
 
-![alt text](https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png "Logo Title From DB Text 1")
+![alt text](https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png "Logo Title From DB Text 1")
 
 Ebrius ostia non, nato [non durat](http://www.aiacem.net/tulisset) poenas
 tumebat cultum meritum homines premunt. Ardet hederis, viro, alas saepius,
@@ -55,7 +55,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: new Date().toISOString(),
         updatedAt: '2020-08-24T12:17:17.278Z'
     },
@@ -65,7 +65,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -75,7 +75,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: '2020-08-24T12:17:17.278Z'
     },
@@ -85,7 +85,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -95,7 +95,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -105,7 +105,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -115,7 +115,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -125,7 +125,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     },
@@ -135,7 +135,7 @@ const getPosts = () =>
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
-        imageUrl: 'https://blog-dev-image-bucket.s3.amazonaws.com/lambda-logo.png',
+        imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
     }                                                            
