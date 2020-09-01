@@ -35,7 +35,7 @@ When people describe cloud computing, they typically refer to a common set of at
 - Economy of scale
 - Software-defined infrastructure
 
-![alt text](https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png "Lambda logo")
+![alt text](https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png "Lambda logo")
 
 ## What are the benefits of serverless computing?
 

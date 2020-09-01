@@ -49,7 +49,7 @@ soap_gigabyte = text_memory.user(pipeline_icf, web.heat_rj(5 *
 \`\`\`
 
 
-![alt text](https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png "Logo Title From DB Text 1")
+![alt text](https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png "Logo Title From DB Text 1")
 
 Ebrius ostia non, nato [non durat](http://www.aiacem.net/tulisset) poenas
 tumebat cultum meritum homines premunt. Ardet hederis, viro, alas saepius,
@@ -72,7 +72,7 @@ Phoebe Palaemona videoque anum **sua quoque**.
 
 const defaultFormValues = {
     title: 'Title From Form',
-    imageUrl: 'https://blog-production-image-bucket.s3.amazonaws.com/lambda-logo.png',
+    imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
     shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
     longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing',
     body: defaultBodyString
@@ -157,7 +157,7 @@ function Post() {
     <div>
       <Head>
         <title>Dale Salter</title>
-        <link rel="icon" href="https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png" />
+        <link rel="icon" href="https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png" />
       </Head>
 
       <main>

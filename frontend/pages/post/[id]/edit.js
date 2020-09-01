@@ -133,7 +133,7 @@ function Post({ router }) {
     <div>
       <Head>
         <title>Dale Salter</title>
-        <link rel="icon" href="https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png" />
+        <link rel="icon" href="https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png" />
       </Head>
 
       <main>

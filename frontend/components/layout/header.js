@@ -10,7 +10,7 @@ export const Header = () => {
                 <Col style={{flex: '0 0 50px', padding: 0 }} >
                     <Link href="/" as='/' passHref >
                         <a>
-                            <img style={{ width: '100%' }} src="https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png" />
+                            <img style={{ width: '100%' }} src="https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png" />
                         </a>
                     </Link>
                 </Col>
