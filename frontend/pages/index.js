@@ -36,8 +36,6 @@ export default function Home() {
       <main>
         <Header />
 
-
-
         <Container>
             {loading && <CenterSpinner animation="grow" />}
 
