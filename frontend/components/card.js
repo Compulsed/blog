@@ -2,13 +2,26 @@ import moment from 'moment';
 import styled from 'styled-components'
 import Link from 'next/link'
 
-import { Row, Col  } from 'react-bootstrap';
+import { Row, Col, Badge } from 'react-bootstrap';
 
-export const PostCard = ({ post, highlightHover = false }) => {
+export const PostCard = ({ post, highlightHover = false, editMode }) => {
     return (
-      <Link href="/post/[id]" as={`/post/${post.postId}`} passHref>
+      <Link href={!editMode ? '/post/[id]' : '/post/[id]/edit'} as={!editMode ? `/post/${post.postId}`: `/post/${post.postId}/edit`} passHref>
         <ArticleLink>
-          <ArticleCard highlightHover={highlightHover}>
+          <ArticleCard highlightHover={highlightHover && post.publishStatus !== 'PUBLISHED' }>
+            { post.publishStatus !== 'PUBLISHED' &&
+              <Row>
+                <Col sm={10}>
+                  { post.publishStatus === 'DRAFT' &&
+                      <Badge variant="light">DRAFT</Badge>
+                  }
+                  { post.publishStatus === 'HIDDEN' &&
+                      <Badge variant="dark">HIDDEN</Badge>
+                  }                
+                </Col>
+              </ Row>
+            }
+
             <Row>
               <Col sm={10}>
                 <h3>{post.title}</h3>

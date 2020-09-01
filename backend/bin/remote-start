@@ -18,6 +18,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ -z "${STAGE}" ]; then
+      echo "Missing stage";
+      exit 1;
+fi
+
 SERVICE_STACK_STACK="blog-$STAGE"
 BASTION_EC2_KEY_STACK="$SERVICE_STACK_STACK-bastion-ec2key"
 BASTION_STACK="$SERVICE_STACK_STACK-bastion"
@@ -122,5 +127,3 @@ PGPASSWORD="$DATABASE_SECRET" \
     -h localhost \
     -c 'SELECT * FROM pg_catalog.pg_tables' >/dev/null || true # HACK: Sometimes can timeout, though warms the instance regardless
 echo "DONE: Running warming query"
-
-

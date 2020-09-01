@@ -1,17 +1,18 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router';
+import { withRouter } from 'next/router'
 
 import { gql, useQuery, useMutation } from '@apollo/client';
-import { withRouter } from 'next/router'
-import { useRouter } from 'next/router';
 
-import { Button, Form, Container, Spinner } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Spinner, Badge } from 'react-bootstrap';
 
 import { Header } from '../../../components/layout/header';
 import { CenterSpinner } from '../../../components/spinner';
 
 const GET_POSTS = gql`
-  query($postId: String!) {
-    post(postId: $postId) {
+  query($postId: String!, $secret: String!) {
+    editorPost(postId: $postId, secret: $secret) {
         id
         postId
         title
@@ -21,6 +22,7 @@ const GET_POSTS = gql`
         body
         createdAt
         updatedAt
+        publishStatus
     }
   }
 `;
@@ -39,6 +41,49 @@ const UPDATE_POST = gql`
                 body
                 createdAt
                 updatedAt
+                publishStatus
+            }
+            errorMessage
+        }
+    }
+`;
+
+const HIDE_POST = gql`
+    mutation ($postId: String!, $secret: String!) {
+        hidePost (postId: $postId, secret: $secret) {
+            status
+            post {
+                id
+                postId
+                title
+                shortDescription
+                longDescription
+                imageUrl
+                body
+                createdAt
+                updatedAt
+                publishStatus
+            }
+            errorMessage
+        }
+    }
+`;
+
+const PUBLISH_POST = gql`
+    mutation ($postId: String!, $secret: String!) {
+        publishPost (postId: $postId, secret: $secret) {
+            status
+            post {
+                id
+                postId
+                title
+                shortDescription
+                longDescription
+                imageUrl
+                body
+                createdAt
+                updatedAt
+                publishStatus
             }
             errorMessage
         }
@@ -48,12 +93,17 @@ const UPDATE_POST = gql`
 
 const PostForm = ({ post }) => {
     const router = useRouter();
-    const [updatePost, { data, loading }] = useMutation(UPDATE_POST);
+    
+    const [updatePost, { data: updatePostData, loading: updatePostLoading }] = useMutation(UPDATE_POST);
+    const [hidePost, { data: hidePostData, loading: hidePostloading }] = useMutation(HIDE_POST);
+    const [publishPost, { data: publishPostData, loading: publishPostloading }] = useMutation(PUBLISH_POST);
+
+    const loading = updatePostLoading || hidePostloading || publishPostloading;
 
     // Handle Success
-    if (data && data.updatePost && data.updatePost.status) {
-        router.push(`/post/[id]`, `/post/${data.updatePost.post.postId}`);
-    }
+    // if (updatePostData && updatePostData.updatePost && updatePostData.updatePost.status) {
+    //     router.push(`/post/[id]`, `/post/${updatePostData.updatePost.post.postId}`);
+    // }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -70,53 +120,103 @@ const PostForm = ({ post }) => {
             body: form.elements.body.value
         };
 
-        const secret = form.elements.secret.value;
+        const secret = localStorage.getItem('_password');
 
         updatePost({ variables: { postInput, secret } });
     };
 
+    const handlePublishAction = (action) => {
+      const secret = localStorage.getItem('_password');
+
+      if (action === 'HIDE') {
+        hidePost({ variables: { postId: post.postId, secret } });
+      }
+
+      if (action === 'PUBLISH') {
+        publishPost({ variables: { postId: post.postId, secret } });
+      }
+    }
+
     return (
-        <Form className="mb-5" onSubmit={handleSubmit}>
-            <Form.Group controlId="secret">
-                <Form.Label>Secret</Form.Label>
-                <Form.Control type="text" />
-            </Form.Group>           
+        <div>
+          <Row className="mb-2">
+            <Col sm={6}>
+              { post.publishStatus === 'PUBLISHED' &&
+                  <Badge variant="primary">PUBLISHED</Badge>
+              }              
+              { post.publishStatus === 'DRAFT' &&
+                  <Badge variant="light">DRAFT</Badge>
+              }
+              { post.publishStatus === 'HIDDEN' &&
+                  <Badge variant="dark">HIDDEN</Badge>
+              }                
+            </Col>
 
-            <Form.Group controlId="title">
-                <Form.Label>Title</Form.Label>
-                <Form.Control type="text"  defaultValue={post.title} />
-            </Form.Group>           
-
-            <Form.Group controlId="imageUrl">
-                <Form.Label>Image URL</Form.Label>
-                <Form.Control type="text"  defaultValue={post.imageUrl} />
-            </Form.Group>
-
-            <Form.Group controlId="shortDescription">
-                <Form.Label>Short Description</Form.Label>
-                <Form.Control as="textarea" rows="1"  defaultValue={post.shortDescription} />
-            </Form.Group>
-
-            <Form.Group controlId="longDescription">
-                <Form.Label>Long Description</Form.Label>
-                <Form.Control as="textarea" rows="3"  defaultValue={post.longDescription}  />
-            </Form.Group>
-
-            <hr className="mt-5 mb-5"></hr>
-
-            <Form.Group controlId="body">
-                <Form.Label>Body</Form.Label>
-                <Form.Control as="textarea" rows="20" defaultValue={post.body}/>
-            </Form.Group>                
-
-            <hr className="mt-5 mb-5"></hr>
-
-            <Button variant="primary" type="submit">
+            <Col sm={6}>
+              { post.publishStatus === 'PUBLISHED' &&
+                <Button className="ml-2" style={{ float: 'right' }} variant="danger" onClick={() => handlePublishAction('HIDE')}>
                 { !loading
-                    ? "Submit"
-                    : <Spinner animation="border" variant="light" />}
-            </Button>
-        </Form>
+                    ? "Hide"
+                    : <Spinner size="sm" animation="border" variant="light" />}
+                </Button>
+              }
+
+              { post.publishStatus === 'DRAFT' &&
+                <Button className="ml-2" style={{ float: 'right' }} variant="primary" onClick={() => handlePublishAction('PUBLISH')}>
+                { !loading
+                    ? "Publish"
+                    : <Spinner size="sm" animation="border" variant="light" />}
+                </Button>
+              }
+
+              { post.publishStatus === 'HIDDEN' &&
+                <Button className="ml-2" style={{ float: 'right' }} variant="warning" onClick={() => handlePublishAction('PUBLISH')}>
+                { !loading
+                    ? "Re-Publish"
+                    : <Spinner size="sm" animation="border" variant="light" />}
+                </Button>
+              }  
+            </Col>
+          </ Row>
+
+          <Form className="mb-5" onSubmit={handleSubmit}>
+              <Form.Group controlId="title">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control type="text"  defaultValue={post.title} />
+              </Form.Group>           
+
+              <Form.Group controlId="imageUrl">
+                  <Form.Label>Image URL</Form.Label>
+                  <Form.Control type="text"  defaultValue={post.imageUrl} />
+              </Form.Group>
+
+              <Form.Group controlId="shortDescription">
+                  <Form.Label>Short Description</Form.Label>
+                  <Form.Control as="textarea" rows="1"  defaultValue={post.shortDescription} />
+              </Form.Group>
+
+              <Form.Group controlId="longDescription">
+                  <Form.Label>Long Description</Form.Label>
+                  <Form.Control as="textarea" rows="3"  defaultValue={post.longDescription}  />
+              </Form.Group>
+
+              <hr className="mt-5 mb-5"></hr>
+
+              <Form.Group controlId="body">
+                  <Form.Label>Body</Form.Label>
+                  <Form.Control as="textarea" rows="20" defaultValue={post.body}/>
+              </Form.Group>                
+
+              <hr className="mt-5 mb-5"></hr>
+
+              <Button variant="primary" type="submit">
+                  { !loading
+                      ? "Update"
+                      : <Spinner size="sm" animation="border" variant="light" />}
+              </Button>                        
+              
+          </Form>
+        </div>   
     )
 }
 
@@ -124,10 +224,10 @@ const PostForm = ({ post }) => {
 function Post({ router }) {
   const { loading, error, data } = useQuery(
     GET_POSTS,
-    { variables: { postId: router.query.id } }
+    { variables: { postId: router.query.id, secret: localStorage.getItem('_password') } }
   );
 
-  const post = data && data.post;
+  const post = data && data.editorPost;
 
   return (
     <div>
@@ -152,4 +252,6 @@ function Post({ router }) {
   )
 }
 
-export default withRouter(Post);
+export default dynamic(() => Promise.resolve(withRouter(Post)), {
+  ssr: false
+});

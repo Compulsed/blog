@@ -102,18 +102,13 @@ const PostForm = () => {
             body: form.elements.body.value
         };
 
-        const secret = form.elements.secret.value;
+        const secret = localStorage.getItem('_password');
 
         createPost({ variables: { postInput, secret } });
     };
 
     return (
         <Form className="mb-5" onSubmit={handleSubmit}>
-            <Form.Group controlId="secret">
-                <Form.Label>Secret</Form.Label>
-                <Form.Control type="text" />
-            </Form.Group>           
-
             <Form.Group controlId="title">
                 <Form.Label>Title</Form.Label>
                 <Form.Control type="text"  defaultValue={defaultFormValues.title} />

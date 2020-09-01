@@ -19,7 +19,6 @@ const theme = {
 import { withApollo } from '../libs/with-apollo';
 
 const App = ({ Component, pageProps }) => {
-
   useEffect(() => {
     const handleRouteChange = (url) => {
       gtag.pageview(url)
@@ -45,7 +44,7 @@ const App = ({ Component, pageProps }) => {
               site_name: 'Dale Salter',
               images: [
                 {
-                  url: 'https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png',
+                  url: 'blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png',
                   width: 512,
                   height: 512,
                   alt: 'Dale Salter Site Logo',

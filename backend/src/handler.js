@@ -14,13 +14,17 @@ const typeDefs = gql`
         imageUrl: String
         createdAt: String
         updatedAt: String
+        publishStatus: String
     }   
 
     type Query {
         hello: String!
 
+        post(postId: String!): Post
         posts: [Post]
-        post(postId: String!): Post!
+
+        editorPost(postId: String!, secret: String!): Post
+        editorPosts(secret: String!): [Post]
     }
     
     input PostInput {
@@ -44,9 +48,23 @@ const typeDefs = gql`
         post: Post
     }
 
+    type HidePostResponse {
+        status: Boolean!
+        errorMessage: String
+        post: Post
+    }
+
+    type PublishPostResponse {
+        status: Boolean!
+        errorMessage: String
+        post: Post
+    }
+
     type Mutation {
         createPost (postInput: PostInput!, secret: String!): CreatePostResponse!
         updatePost (postInput: PostInput!, secret: String!): UpdatePostResponse!
+        publishPost (postId: String!, secret: String!): UpdatePostResponse!
+        hidePost (postId: String!, secret: String!): UpdatePostResponse!
     }
 `;
 
@@ -60,8 +78,31 @@ const resolvers = {
 
     Query: {
         post: async (root, { postId }) => {       
-            const result = await query(
-                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
+            const result = await query(`
+                SELECT
+                    *
+                FROM
+                    "post"
+                WHERE
+                    "postId" = :postId::uuid AND "publishStatus" = 'PUBLISHED'`,
+                { postId }
+            );
+
+            return result.records[0];
+        },
+
+        editorPost: async (root, { postId, secret }) => {
+            if (secret !== 'letmein') {
+                return [];
+            }
+
+            const result = await query(`
+                SELECT
+                    *
+                FROM
+                    "post"
+                WHERE
+                    "postId" = :postId::uuid`,
                 { postId }
             );
 
@@ -69,10 +110,38 @@ const resolvers = {
         },
 
         posts: async () => {
-            const result = await query(`SELECT * FROM "post" ORDER BY "createdAt" DESC`);
+            const result = await query(`
+                SELECT
+                    *
+                FROM
+                    "post"
+                WHERE
+                    "publishStatus" = 'PUBLISHED'   
+                ORDER BY
+                    "createdAt"
+                DESC;
+            `);
         
             return result.records;
         },
+
+        editorPosts: async (root, { secret }) => {
+            if (secret !== 'letmein') {
+                return null;
+            }
+
+            const result = await query(`
+                SELECT
+                    *
+                FROM
+                    "post"
+                ORDER BY
+                    "createdAt"
+                DESC;
+            `);
+        
+            return result.records;
+        }
     },
 
     CreatePostResponse: {
@@ -103,9 +172,37 @@ const resolvers = {
         }
     },
 
+    PublishPostResponse: {
+        post: async ({ postId }) => {
+            if (!postId) return null;
+
+            // # TODO: Remove duplication
+            const result = await query(
+                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
+                { postId }
+            );
+
+            return result && result.records && result.records[0] || null;
+        }
+    },
+
+    HidePostResponse: {
+        post: async ({ postId }) => {
+            if (!postId) return null;
+
+            // # TODO: Remove duplication
+            const result = await query(
+                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
+                { postId }
+            );
+
+            return result && result.records && result.records[0] || null;
+        }
+    },    
+
     Mutation: {
         createPost: async (root, args, context) => {
-            if (args.secret !== 'let me in') {
+            if (args.secret !== 'letmein') {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
@@ -133,7 +230,8 @@ const resolvers = {
                         "longDescription",
                         "imageUrl",
                         "createdAt",
-                        "updatedAt"
+                        "updatedAt",
+                        "publishStatus"
                     )
                     VALUES(
                         :postId::uuid,
@@ -143,7 +241,8 @@ const resolvers = {
                         :longDescription::text,
                         :imageUrl::text,
                         :createdAt::timestamp,
-                        :updatedAt::timestamp         
+                        :updatedAt::timestamp,
+                        'DRAFT'
                     );
                     `,
                     [ post ]
@@ -161,7 +260,7 @@ const resolvers = {
             }
         },
         updatePost: async (root, args, context) => {
-            if (args.secret !== 'let me in') {
+            if (args.secret !== 'letmein') {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
@@ -198,6 +297,74 @@ const resolvers = {
                 return {
                     status: true,
                     postId: post.postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        },
+        publishPost: async (root, args, context) => {
+            if (args.secret !== 'letmein') {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const postId = args.postId;
+
+            try {
+                await query(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "publishStatus"     = 'PUBLISHED',
+                        "createdAt"         = :createdAt::timestamp,
+                        "updatedAt"         = null
+                    WHERE
+                        "postId" = :postId::uuid;
+                    `,
+                    [ { postId, createdAt: new Date().toISOString() } ]
+                );
+
+                return {
+                    status: true,
+                    postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        },
+        hidePost: async (root, args, context) => {
+            if (args.secret !== 'letmein') {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const postId = args.postId;
+
+            try {
+                await query(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "publishStatus" = 'HIDDEN'
+                    WHERE
+                        "postId" = :postId::uuid;
+                    `,
+                    [ { postId } ]
+                );
+
+                return {
+                    status: true,
+                    postId,
                 };
             } catch (err) {
                 return {

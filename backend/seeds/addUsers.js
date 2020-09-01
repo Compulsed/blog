@@ -51,23 +51,25 @@ const getPosts = () =>
 [
     {
         postId: 'b1827e99-2cd6-45b4-8574-7e32a3d6633d',
-        title: 'Title From DB - 1',
+        title: 'PUBLISHED Title From DB - 1',
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: new Date().toISOString(),
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: '2020-08-24T12:17:17.278Z',
+        publishStatus: 'PUBLISHED',
     },
     {
         postId: '1bcc867b-45bc-4a48-99b2-49ef62082e80',
-        title: 'Title From DB - 2', 
+        title: 'DRAFT Title From DB - 2', 
         shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
         longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing', 
         body: POST_BODY,
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     },
     {
         postId: '811d6441-fe5d-4c3e-946a-989e41f1de7e',
@@ -77,7 +79,8 @@ const getPosts = () =>
         body: POST_BODY,
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
-        updatedAt: '2020-08-24T12:17:17.278Z'
+        updatedAt: '2020-08-24T12:17:17.278Z',
+        publishStatus: 'DRAFT',
     },
     {
         postId: '377794da-a21f-422e-bcc7-a86488544fc8',
@@ -88,6 +91,7 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     },
     {
         postId: 'b3b6772a-2795-4e2b-a44f-20db74452b54',
@@ -98,6 +102,7 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'PUBLISHED',
     },
     {
         postId: '53ffe3a0-d720-4dee-b477-2c39e8afb4e6',
@@ -108,6 +113,7 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     },
     {
         postId: 'bab5efe1-2b11-49b9-9445-1683f5d2c450',
@@ -118,6 +124,7 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     },
     {
         postId: '0b3aeb49-ea04-4d0a-82d0-8e728905d027',
@@ -128,6 +135,7 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     },
     {
         postId: '0d10bbf3-aafb-4f5c-b830-28603d7c9975',
@@ -138,5 +146,6 @@ const getPosts = () =>
         imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
         createdAt: '2020-08-23T12:17:17.278Z',
         updatedAt: null,
+        publishStatus: 'DRAFT',
     }                                                            
 ];
