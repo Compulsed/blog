@@ -13,19 +13,22 @@ const GET_POSTS = gql`
 `;
 
 const lastModifiedDate = ({ posts }) => {
-    posts.sortBy()
+    return new Date(posts
+        .sort((a, b) => a.createdAt < b.createdAt)[0]
+        .createdAt
+    ).toISOString();
 }
 
 const createSitemap = ({ posts }) => `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
             <loc>https://dalejsalter.com/</loc>
-            <lastmod>2020-08-31T22:56:08+00:00</lastmod>
+            <changefreq>weekly</changefreq>
+            <lastmod>${lastModifiedDate({ posts })}</lastmod>
             <priority>1.00</priority>
         </url>
 
-        ${posts
-          .map(post => {
+        ${posts.map(post => {
             return `
                     <url>
                         <loc>${`${EXTERNAL_DATA_URL}/${post.postId}`}</loc>
