@@ -7,7 +7,7 @@ export const Header = () => {
     return (
         <SpacedContainer>
             <Row>
-                <Col style={{flex: '0 0 50px', padding: 0, alignSelf: 'center' }} >
+                <Col style={{flex: '0 0 50px', padding: 0 }} >
                     <Link href="/" as='/' passHref >
                         <a>
                             <img style={{ width: '100%' }} src="https://blog-production-image-bucket.s3.amazonaws.com/logo-4.png" />
@@ -17,9 +17,9 @@ export const Header = () => {
                 <Col>
                     <Link href="/" as='/' passHref >
                         <TitleLink>
-                            <h1 className="title">
+                            <Title>
                                 Dale Salter
-                            </h1>
+                            </Title>
                         </TitleLink>
                     </Link>
                     <h6 className="mb-2 text-muted">Serverless, Software Engineering, Leadership, DevOps</h6>          
@@ -28,6 +28,14 @@ export const Header = () => {
         </SpacedContainer>
     );
 }
+
+const Title = styled.h1`
+    font-family: Inter;
+    font-weight: 900;
+    margin-bottom: 0;
+    letter-spacing: -.02em;
+`;
+
 
 const TitleLink = styled.a`
   color: inherit;

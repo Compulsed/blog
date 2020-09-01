@@ -23,6 +23,7 @@
 
 # Frontend Plan
 - [ ] Site map
+- [ ] Add a footer for spacing
 - [ ] Segment Frontend
 - [ ] AppCues Frontend
 - [ ] Build out an about me page
@@ -31,6 +32,7 @@
 # Backend Plan
 - [ ] Back up data
 - [ ] Fix duplication between types querying data (put into service / repo layer)
+- [ ] Add cloudfront for serving images
 
 ## Testing Improvements
 - [ ] API Performance monitoring (jest?)
