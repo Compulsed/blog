@@ -13,3 +13,12 @@ html {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
 }
+
+@font-face {
+    font-family: 'Inter';
+    font-style:  normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url("../public/inter/Inter-Black.woff") format("woff2"),
+         url("../public/inter/Inter-Black.woff") format("woff");
+}
