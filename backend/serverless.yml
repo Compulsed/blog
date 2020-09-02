@@ -85,6 +85,7 @@ functions:
       DATABASE_USER: ${self:custom.RDS.databaseUser}
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
+      FRONTEND_AUTH_SECRET: ${ssm:/${self:provider.configPath}/FRONTEND_AUTH_SECRET }
 
 package:
   include:

@@ -92,7 +92,7 @@ const resolvers = {
         },
 
         editorPost: async (root, { postId, secret }) => {
-            if (secret !== 'letmein') {
+            if (secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return [];
             }
 
@@ -126,7 +126,7 @@ const resolvers = {
         },
 
         editorPosts: async (root, { secret }) => {
-            if (secret !== 'letmein') {
+            if (secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return null;
             }
 
@@ -202,7 +202,7 @@ const resolvers = {
 
     Mutation: {
         createPost: async (root, args, context) => {
-            if (args.secret !== 'letmein') {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
@@ -260,7 +260,7 @@ const resolvers = {
             }
         },
         updatePost: async (root, args, context) => {
-            if (args.secret !== 'letmein') {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
@@ -306,7 +306,7 @@ const resolvers = {
             }
         },
         publishPost: async (root, args, context) => {
-            if (args.secret !== 'letmein') {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
@@ -341,7 +341,7 @@ const resolvers = {
             }
         },
         hidePost: async (root, args, context) => {
-            if (args.secret !== 'letmein') {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
                 return {
                     status: false,
                     errorMessage: 'Invalid Secret',
