@@ -1,7 +1,7 @@
 import React from 'react';
 import { request, gql } from 'graphql-request'
 
-const EXTERNAL_DATA_URL = 'https://dalejsalter.com/posts';
+const EXTERNAL_DATA_URL = 'https://dalejsalter.com/post';
 
 const GET_POSTS = gql`
     query {
