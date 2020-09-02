@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import { gql, useQuery } from '@apollo/client';
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
-import { Container, Row, Col  } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import { Header } from '../../components/layout/header';
 import { PostCard } from '../../components/card';
@@ -41,6 +42,16 @@ const Editor = () => {
         <Header />
 
         <Container>
+          <Row>
+            <Col style={{ padding: 10 }}>
+              <h1 style={{ display: 'inline-block'}}>Admin Editor</h1>
+              <Link href="/admin/post/create" as='/admin/post/create' passHref >
+                <Button className="mt-2" style={{ float: 'right' }} variant="light">Create New Post</Button>
+              </Link>
+            </Col>
+          </Row>   
+
+
             {loading && <CenterSpinner animation="grow" />}
 
             { (data && data.editorPosts || []).map(post => {

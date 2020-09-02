@@ -6,7 +6,7 @@ import { Row, Col, Badge } from 'react-bootstrap';
 
 export const PostCard = ({ post, highlightHover = false, editMode }) => {
     return (
-      <Link href={!editMode ? '/post/[id]' : '/post/[id]/edit'} as={!editMode ? `/post/${post.postId}`: `/post/${post.postId}/edit`} passHref>
+      <Link href={!editMode ? '/post/[id]' : '/admin/post/[id]'} as={!editMode ? `/post/${post.postId}`: `/admin/post/${post.postId}`} passHref>
         <ArticleLink>
           <ArticleCard highlightHover={highlightHover && post.publishStatus !== 'PUBLISHED' }>
             { post.publishStatus !== 'PUBLISHED' &&

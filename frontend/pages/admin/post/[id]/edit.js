@@ -7,8 +7,8 @@ import { gql, useQuery, useMutation } from '@apollo/client';
 
 import { Button, Form, Container, Row, Col, Spinner, Badge } from 'react-bootstrap';
 
-import { Header } from '../../../components/layout/header';
-import { CenterSpinner } from '../../../components/spinner';
+import { Header } from '../../../../components/layout/header';
+import { CenterSpinner } from '../../../../components/spinner';
 
 const GET_POSTS = gql`
   query($postId: String!, $secret: String!) {
@@ -100,11 +100,6 @@ const PostForm = ({ post }) => {
 
     const loading = updatePostLoading || hidePostloading || publishPostloading;
 
-    // Handle Success
-    // if (updatePostData && updatePostData.updatePost && updatePostData.updatePost.status) {
-    //     router.push(`/post/[id]`, `/post/${updatePostData.updatePost.post.postId}`);
-    // }
-
     const handleSubmit = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -154,26 +149,26 @@ const PostForm = ({ post }) => {
 
             <Col sm={6}>
               { post.publishStatus === 'PUBLISHED' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="danger" onClick={() => handlePublishAction('HIDE')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('HIDE')}>
                 { !loading
                     ? "Hide"
-                    : <Spinner size="sm" animation="border" variant="light" />}
+                    : <Spinner size="sm" animation="border" variant="dark" />}
                 </Button>
               }
 
               { post.publishStatus === 'DRAFT' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="primary" onClick={() => handlePublishAction('PUBLISH')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('PUBLISH')}>
                 { !loading
                     ? "Publish"
-                    : <Spinner size="sm" animation="border" variant="light" />}
+                    : <Spinner size="sm" animation="border" variant="dark" />}
                 </Button>
               }
 
               { post.publishStatus === 'HIDDEN' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="warning" onClick={() => handlePublishAction('PUBLISH')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('PUBLISH')}>
                 { !loading
                     ? "Re-Publish"
-                    : <Spinner size="sm" animation="border" variant="light" />}
+                    : <Spinner size="sm" animation="border" variant="dark" />}
                 </Button>
               }  
             </Col>
@@ -209,11 +204,18 @@ const PostForm = ({ post }) => {
 
               <hr className="mt-5 mb-5"></hr>
 
-              <Button variant="primary" type="submit">
-                  { !loading
-                      ? "Update"
-                      : <Spinner size="sm" animation="border" variant="light" />}
-              </Button>                        
+              <div>
+                <Button variant="dark" type="submit">
+                    { !loading
+                        ? "Update"
+                        : <Spinner size="sm" animation="border" variant="light" />}
+                </Button>
+                <span className="ml-2">
+                  { updatePostData?.updatePost?.status === true && 'Successfully Updated' }
+                  { updatePostData?.updatePost?.status === false && updatePostData?.updatePost?.errorMessage }
+                </span>
+              </div>
+                    
               
           </Form>
         </div>   

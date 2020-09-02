@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Button, Form, Container, Spinner } from 'react-bootstrap';
 
-import { Header } from '../../components/layout/header';
+import { Header } from '../../../components/layout/header';
 
 const CREATE_POST = gql`
     mutation ($postInput: PostInput!, $secret: String!) {
@@ -49,7 +49,7 @@ soap_gigabyte = text_memory.user(pipeline_icf, web.heat_rj(5 *
 \`\`\`
 
 
-![alt text](https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png "Logo Title From DB Text 1")
+![alt text](https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png "Logo Title From DB Text 1")
 
 Ebrius ostia non, nato [non durat](http://www.aiacem.net/tulisset) poenas
 tumebat cultum meritum homines premunt. Ardet hederis, viro, alas saepius,
@@ -72,7 +72,7 @@ Phoebe Palaemona videoque anum **sua quoque**.
 
 const defaultFormValues = {
     title: 'Title From Form',
-    imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/lambda-logo.png',
+    imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png',
     shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
     longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing',
     body: defaultBodyString
@@ -84,7 +84,7 @@ const PostForm = () => {
 
     // Handle Success
     if (data && data.createPost && data.createPost.status) {
-        router.push(`/post/[id]`, `/post/${data.createPost.post.postId}`);
+        router.push(`/admin/post/[id]`, `/admin/post/${data.createPost.post.postId}`);
     }
 
     const handleSubmit = (event) => {
@@ -138,11 +138,17 @@ const PostForm = () => {
 
             <hr className="mt-5 mb-5"></hr>
 
-            <Button variant="primary" type="submit">
-                { !loading
-                    ? "Submit"
-                    : <Spinner animation="border" variant="light" />}
-            </Button>
+            <div>
+                <Button variant="dark" type="submit">
+                    { !loading
+                        ? "Create"
+                        : <Spinner size="sm" animation="border" variant="light" />}
+                </Button>
+                <span className="ml-2">
+                  { data?.createPost?.status === false && data?.createPost?.errorMessage }
+                </span>
+            </div>
+                                
         </Form>
     )
 }
