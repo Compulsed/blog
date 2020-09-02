@@ -110,7 +110,7 @@ const StyledReactMarkdown = styled(ReactMarkdown)`
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 25%;
+    width: 80%;
   }
 `
 
