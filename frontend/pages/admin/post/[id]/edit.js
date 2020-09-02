@@ -128,7 +128,9 @@ const PostForm = ({ post }) => {
       }
 
       if (action === 'PUBLISH') {
-        publishPost({ variables: { postId: post.postId, secret } });
+        if (confirm('Are you sure you want to post this?')){
+          publishPost({ variables: { postId: post.postId, secret } });
+        }
       }
     }
 
