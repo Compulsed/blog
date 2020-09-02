@@ -1,7 +1,10 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const _ = require('lodash');
-const { getPosts } = require('./data/posts');
 const { query } = require('./tools/dataApiClient');
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+
+const s3 = new AWS.S3();
 
 const typeDefs = gql`
     type Post {
@@ -25,6 +28,8 @@ const typeDefs = gql`
 
         editorPost(postId: String!, secret: String!): Post
         editorPosts(secret: String!): [Post]
+
+        editorSignedUrl(fileName: String!, secret: String!, contentType: String!): String
     }
     
     input PostInput {
@@ -141,6 +146,24 @@ const resolvers = {
             `);
         
             return result.records;
+        },
+
+
+        editorSignedUrl: async (root, { fileName, secret, contentType }) => {
+            if (secret !== process.env.FRONTEND_AUTH_SECRET) {
+                return null;
+            }
+
+            const params = {
+                Bucket: process.env.IMAGE_BUCKET_NAME,
+                Key: `${uuidv4()}-${fileName}`,
+                ContentType: contentType,
+            };
+            
+            const url = await s3
+                .getSignedUrlPromise('putObject', params);
+
+            return url;
         }
     },
 

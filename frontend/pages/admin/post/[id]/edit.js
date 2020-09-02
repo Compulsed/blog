@@ -1,14 +1,23 @@
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router';
 import { withRouter } from 'next/router'
 
-import { gql, useQuery, useMutation } from '@apollo/client';
-
+import { useDropzone } from 'react-dropzone'
+import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Button, Form, Container, Row, Col, Spinner, Badge } from 'react-bootstrap';
-
 import { Header } from '../../../../components/layout/header';
 import { CenterSpinner } from '../../../../components/spinner';
+import { initApolloClient } from '../../../../libs/init-apollo-client';
+
+import axios from 'axios';
+
+const GET_SIGNED_URL = gql`
+  query ($secret: String!, $fileName: String!, $contentType: String!) {
+    editorSignedUrl (secret: $secret, fileName: $fileName, contentType: $contentType)
+  }
+`;
 
 const GET_POSTS = gql`
   query($postId: String!, $secret: String!) {
@@ -90,10 +99,66 @@ const PUBLISH_POST = gql`
     }
 `;
 
+const ImageUploader = () => {
+  const client = useApolloClient();
+  const [files, setFiles] = useState([]);
+  const [uploadUrl, setUploadUrl] = useState();
 
-const PostForm = ({ post }) => {
-    const router = useRouter();
-    
+  const onDrop = useCallback(acceptedFiles => {
+    setFiles(
+      acceptedFiles.map(file =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file)
+        })
+      )
+    );
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    maxSize: 5368709120, // 5Gb
+    accept: 'image/jpeg, image/jpg, image/png'
+  });
+
+  const onUpload = async e => {
+    setUploadUrl('');
+
+    const file = files[0];
+
+    const result = await client.query({ 
+      query: GET_SIGNED_URL,
+      fetchPolicy: 'no-cache',
+      variables: { fileName: file.name, contentType: file.type, secret: localStorage.getItem('_password') }
+    });
+
+    await axios
+      .put(result.data.editorSignedUrl, file, { headers: { 'Content-Type': file.type } })
+      .then(response => response.statusText === 'OK');
+
+    setUploadUrl(result.data.editorSignedUrl.split('?')[0].replace('.s3.', '.s3-accelerate.'));
+  };
+
+  return (
+    <>
+      <Container {...getRootProps()} style={{ display: 'inline' }}>
+        <Button variant="light">
+          Upload
+        </Button>
+        <input {...getInputProps()} />
+      </Container>
+
+      <Button variant="dark" onClick={onUpload}>
+        Submit
+      </Button>
+
+      <span className="ml-2">{ uploadUrl }</span>      
+    </>
+  );
+};
+
+
+const PostForm = ({ post }) => {   
     const [updatePost, { data: updatePostData, loading: updatePostLoading }] = useMutation(UPDATE_POST);
     const [hidePost, { data: hidePostData, loading: hidePostloading }] = useMutation(HIDE_POST);
     const [publishPost, { data: publishPostData, loading: publishPostloading }] = useMutation(PUBLISH_POST);
@@ -204,7 +269,9 @@ const PostForm = ({ post }) => {
                   <Form.Control as="textarea" rows="20" defaultValue={post.body}/>
               </Form.Group>                
 
-              <hr className="mt-5 mb-5"></hr>
+              <hr className="mt-5 mb-2"></hr>
+                <ImageUploader />
+              <hr className="mt-2 mb-5"></hr>
 
               <div>
                 <Button variant="dark" type="submit">
@@ -217,7 +284,6 @@ const PostForm = ({ post }) => {
                   { updatePostData?.updatePost?.status === false && updatePostData?.updatePost?.errorMessage }
                 </span>
               </div>
-                    
               
           </Form>
         </div>   

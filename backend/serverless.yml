@@ -25,6 +25,11 @@ provider:
         - 'rds-data:ExecuteStatement'
         - 'rds-data:RollbackTransaction'
       Resource: '*'
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::${self:custom.S3.imageBucketName}*
+
   environment:
     STACK_NAME: ${self:provider.stackName}
 
@@ -54,6 +59,8 @@ custom:
     PublicSubnet3CIDR: "10.192.13.0/24"
     PublicSubnet4CIDR: "10.192.14.0/24"
     PublicSubnet5CIDR: "10.192.15.0/24"
+  S3:
+    imageBucketName: ${self:provider.stackName}-image-bucket
 
 plugins:
   - serverless-offline
@@ -86,6 +93,7 @@ functions:
       DATABASE_HOSTNAME: !GetAtt "DatabaseCluster.Endpoint.Address" # not used - but for waiting until DB is done
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
       FRONTEND_AUTH_SECRET: ${ssm:/${self:provider.configPath}/FRONTEND_AUTH_SECRET }
+      IMAGE_BUCKET_NAME: ${self:custom.S3.imageBucketName}
 
 package:
   include:
@@ -161,9 +169,35 @@ resources:
     ImageBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.stackName}-image-bucket
+        BucketName: ${self:custom.S3.imageBucketName}
         AccelerateConfiguration:
-          AccelerationStatus: Enabled  
+          AccelerationStatus: Enabled
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ['*']
+              AllowedMethods: ['PUT']
+              AllowedOrigins: ['*']
+
+    ImageBucketBucketPolicy: 
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: { Ref: ImageBucket }
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: 
+                - "s3:GetObject"
+              Effect: "Allow"
+              Resource: 
+                Fn::Join: 
+                  - ""
+                  - 
+                    - "arn:aws:s3:::"
+                    - 
+                      { Ref: ImageBucket }
+                    - "/*"
+              Principal: "*"
 
     ################
     # Networking
