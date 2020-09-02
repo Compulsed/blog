@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
 
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown/with-html';
 import styled from 'styled-components'
 
 import { Container, Row, Col } from 'react-bootstrap';
@@ -57,7 +57,7 @@ function Post({ router }) {
               </Row>              
               <Row>
                 <Col style={{ padding: 10 }}>
-                  <StyledReactMarkdown source={post.body} />
+                  <StyledReactMarkdown escapeHtml={false} source={post.body} />
                 </Col>
               </Row>
             </div>
