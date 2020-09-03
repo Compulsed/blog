@@ -72,7 +72,7 @@ Phoebe Palaemona videoque anum **sua quoque**.
 
 const defaultFormValues = {
     title: 'Title From Form',
-    imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/logo-4.png',
+    imageUrl: 'https://blog-production-image-bucket.s3-accelerate.amazonaws.com/cf720254-751d-432c-bb75-5928594c7bbb-D2099DD1-EEB3-4A55-8D2C-896254DA249C.png',
     shortDescription: 'Lorem Ipsum is simply dummy text of the printing',
     longDescription: 'Lorem Ipsum is simply dummy text of the printing Lorem Ipsum is simply dummy text of the printing',
     body: defaultBodyString
