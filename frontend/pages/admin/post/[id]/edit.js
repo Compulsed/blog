@@ -102,7 +102,8 @@ const PUBLISH_POST = gql`
 const ImageUploader = () => {
   const client = useApolloClient();
   const [files, setFiles] = useState([]);
-  const [uploadUrl, setUploadUrl] = useState();
+  const [uploadUrl, setUploadUrl] = useState('');
+  const [updateState, setUploadState] = useState(false);
 
   const onDrop = useCallback(acceptedFiles => {
     setFiles(
@@ -117,12 +118,12 @@ const ImageUploader = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
-    maxSize: 5368709120, // 5Gb
-    accept: 'image/jpeg, image/jpg, image/png'
+    maxSize: 5368709120 // 5Gb
   });
 
   const onUpload = async e => {
     setUploadUrl('');
+    setUploadState(true);
 
     const file = files[0];
 
@@ -137,6 +138,7 @@ const ImageUploader = () => {
       .then(response => response.statusText === 'OK');
 
     setUploadUrl(result.data.editorSignedUrl.split('?')[0].replace('.s3.', '.s3-accelerate.'));
+    setUploadState(false);
   };
 
   return (
@@ -148,7 +150,7 @@ const ImageUploader = () => {
         <input {...getInputProps()} />
       </Container>
 
-      <Button variant="dark" onClick={onUpload}>
+      <Button variant="dark" disabled={updateState} onClick={onUpload}>
         Submit
       </Button>
 
