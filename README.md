@@ -1,9 +1,27 @@
 # Blog
+[![Build status](https://badge.buildkite.com/0d04ab9bd8fb4277716aad48dfb0c3a38efaafa030013e507a.svg?step=Staging)](https://buildkite.com/dale-salter/blog-merge)
 
-## Build Status
+## Information
 
-| Pipeline      | Status        |
-| ------------- |:-------------:|
-| Production    | [![Build status](https://badge.buildkite.com/73683d1965cbb64e0e158c533a53295876e0870ea30113c1a4.svg?step=Production)](https://buildkite.com/dale-salter/blog-deploy) |
-| Staging       | [![Build status](https://badge.buildkite.com/0d04ab9bd8fb4277716aad48dfb0c3a38efaafa030013e507a.svg?step=Staging)](https://buildkite.com/dale-salter/blog-merge) |
-| Pull Request  | [![Build status](https://badge.buildkite.com/823d065e3be06422c56e4f2a217256256eb2216dc9e872cec6.svg?branch=master)](https://buildkite.com/dale-salter/blog-pr) |
+This is the public repo for [dalejsalter.com](https://dalejsalter.com).
+
+Backend was kick started with [serverless-aurora-graphql-starter](https://github.com/Compulsed/serverless-aurora-graphql-starter)
+
+## Technologies
+
+### Frontend
+- Server Side Rendering through Vercel/ Next.JS [Vercel](https://vercel.com/)
+- Apollo Client
+- React / React Bootstrap
+- Axios
+
+### Backend
+- Serverless Framework (w/ Serverless offline)
+- GraphQL.js (ApolloServer) on Lambda (For API)
+- Serverless Aurora Postgres
+- Data API w/ Data API Client
+- Knex (Running DB Migrations / Seeds)
+- ASDF (Version management, node, jq, yarn)
+- Direnv (Managing multiple environments)
+- Oprah (For managing secrets & credentials)
+- Cloudformation template for a temporarily spinning up a bastion host
