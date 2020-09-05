@@ -28,8 +28,9 @@ const GET_POSTS = gql`
   }
 `;
 
-const DisqusComponent = (post) => {
+const DisqusComponent = ({ post }) => {
   const disqusShortname = 'dalejsalter';
+
   const disqusConfig = {
     url: `https://dalejsalter.com/post/${post.postId}`,
     identifier: post.postId,
