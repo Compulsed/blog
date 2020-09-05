@@ -2,6 +2,7 @@ import Head from 'next/head';
 
 import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
+import Disqus from "disqus-react"
 
 import ReactMarkdown from 'react-markdown/with-html';
 import styled from 'styled-components'
@@ -26,6 +27,23 @@ const GET_POSTS = gql`
     }
   }
 `;
+
+const DisqusComponent = (post) => {
+  const disqusShortname = "your-site-shortname"
+  const disqusConfig = {
+    url: `https://dalejsalter.com/post/${post.postId}`,
+    identifier: post.postId,
+    title: post.title
+  }
+
+  return (
+    <Disqus.DiscussionEmbed
+      shortname={disqusShortname}
+      config={disqusConfig}
+    />
+  )
+}
+
 
 function Post({ router }) {
   const { loading, error, data } = useQuery(
@@ -60,6 +78,11 @@ function Post({ router }) {
                   <StyledReactMarkdown escapeHtml={false} source={post.body} />
                 </Col>
               </Row>
+              <Row>
+              <Col style={{ padding: 10 }}>
+                <DisqusComponent post={post} />
+              </Col>                
+              </Row>              
             </div>
           )}
         </Container>
