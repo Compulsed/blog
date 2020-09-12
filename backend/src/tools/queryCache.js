@@ -8,7 +8,9 @@ const _generateHash = args =>
     String(stringHash(JSON.stringify(args)))
 
 const getCacheValue = async (args) => {
-    return (await _getCacheValueByHash(_generateHash(args))).queryResult;
+    const cacheValue = await _getCacheValueByHash(_generateHash(args));
+    
+    return cacheValue && cacheValue.queryResult;
 }
 
 const _getCacheValueByHash = async (hash) => {
