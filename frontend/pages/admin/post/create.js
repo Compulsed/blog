@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Button, Form, Container, Spinner } from 'react-bootstrap';
 
 import { Header } from '../../../components/layout/header';
+import { Footer } from '../../../components/layout/footer';
 
 const CREATE_POST = gql`
     mutation ($postInput: PostInput!, $secret: String!) {
@@ -170,6 +171,7 @@ function Post() {
             <PostForm />
         </Container>
 
+        <Footer />
       </main>
     </div>
   )

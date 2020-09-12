@@ -9,6 +9,7 @@ import styled from 'styled-components'
 
 import { Container, Row, Col } from 'react-bootstrap';
 import { Header } from '../../components/layout/header';
+import { Footer } from '../../components/layout/footer';
 import { PostCard } from '../../components/card';
 import { CenterSpinner } from '../../components/spinner';
 
@@ -88,6 +89,7 @@ function Post({ router }) {
           )}
         </Container>
 
+        <Footer />
       </main>
     </div>
   )

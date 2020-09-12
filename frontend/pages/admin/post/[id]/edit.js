@@ -1,15 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router';
 import { withRouter } from 'next/router'
+import autosize from 'autosize';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { useDropzone } from 'react-dropzone'
 import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Button, Form, Container, Row, Col, Spinner, Badge } from 'react-bootstrap';
 import { Header } from '../../../../components/layout/header';
+import { Footer } from '../../../../components/layout/footer';
 import { CenterSpinner } from '../../../../components/spinner';
-import { initApolloClient } from '../../../../libs/init-apollo-client';
 
 import axios from 'axios';
 
@@ -165,9 +166,11 @@ const PostForm = ({ post }) => {
     const [hidePost, { data: hidePostData, loading: hidePostloading }] = useMutation(HIDE_POST);
     const [publishPost, { data: publishPostData, loading: publishPostloading }] = useMutation(PUBLISH_POST);
 
+    const [debouncedUpdatePost] = useDebouncedCallback(updatePost, 5000);
+
     const loading = updatePostLoading || hidePostloading || publishPostloading;
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (type, event) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -184,7 +187,13 @@ const PostForm = ({ post }) => {
 
         const secret = localStorage.getItem('_password');
 
-        updatePost({ variables: { postInput, secret } });
+        if (post.publishStatus !== 'PUBLISHED' && type === 'change') {
+          debouncedUpdatePost({ variables: { postInput, secret } });
+        }
+
+        if (type === 'submit') {
+          updatePost({ variables: { postInput, secret } });
+        }
     };
 
     const handlePublishAction = (action) => {
@@ -243,7 +252,7 @@ const PostForm = ({ post }) => {
             </Col>
           </ Row>
 
-          <Form className="mb-5" onSubmit={handleSubmit}>
+          <Form className="mb-5" onSubmit={e => handleSubmit('sumbit', e)} onChange={e => handleSubmit('change', e)}>
               <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control type="text"  defaultValue={post.title} />
@@ -268,7 +277,7 @@ const PostForm = ({ post }) => {
 
               <Form.Group controlId="body">
                   <Form.Label>Body</Form.Label>
-                  <Form.Control as="textarea" rows="20" defaultValue={post.body}/>
+                  <Form.Control as="textarea" defaultValue={post.body} rows={50} />
               </Form.Group>                
 
               <hr className="mt-5 mb-2"></hr>
@@ -319,6 +328,7 @@ function Post({ router }) {
           )}
         </Container>
 
+        <Footer />
       </main>
     </div>
   )

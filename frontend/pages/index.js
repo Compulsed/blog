@@ -4,6 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Container, Row, Col  } from 'react-bootstrap';
 
 import { Header } from '../components/layout/header';
+import { Footer } from '../components/layout/footer';
 import { PostCard } from '../components/card';
 import { CenterSpinner } from '../components/spinner';
 
@@ -50,6 +51,8 @@ export default function Home() {
               );
           })}
         </Container>
+
+        <Footer />
       </main>
     </div>
   )
