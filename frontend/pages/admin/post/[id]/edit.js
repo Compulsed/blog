@@ -275,7 +275,7 @@ const PostForm = ({ post }) => {
 
               <Form.Group controlId="body">
                   <Form.Label>Body</Form.Label>
-                  <Form.Control as="textarea" rows="15" defaultValue={post.body} />
+                  <Form.Control as="textarea" rows="50" defaultValue={post.body} />
               </Form.Group>                
 
               <hr className="mt-5 mb-2"></hr>
