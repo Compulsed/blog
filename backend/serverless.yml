@@ -31,8 +31,7 @@ provider:
       Resource: arn:aws:s3:::${self:custom.S3.imageBucketName}*
     - Effect: Allow
       Action:
-        - s3:PutObject
-        - s3:GetObject
+        - s3:*
       Resource: arn:aws:s3:::${self:custom.S3.queryCache}*
 
 
