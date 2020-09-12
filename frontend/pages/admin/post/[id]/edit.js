@@ -268,16 +268,14 @@ const PostForm = ({ post }) => {
                   <Form.Control as="textarea" rows="1"  defaultValue={post.shortDescription} />
               </Form.Group>
 
-              <Form.Group controlId="longDescription">
+              <Form.Group className="mb-5" controlId="longDescription">
                   <Form.Label>Long Description</Form.Label>
                   <Form.Control as="textarea" rows="3"  defaultValue={post.longDescription}  />
               </Form.Group>
 
-              <hr className="mt-5 mb-5"></hr>
-
               <Form.Group controlId="body">
                   <Form.Label>Body</Form.Label>
-                  <Form.Control as="textarea" defaultValue={post.body} rows={50} />
+                  <Form.Control as="textarea" rows="15" defaultValue={post.body} />
               </Form.Group>                
 
               <hr className="mt-5 mb-2"></hr>
