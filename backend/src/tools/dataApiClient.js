@@ -49,7 +49,7 @@ const queryMutation = async (...args) => {
 
     const dataApiClient = await getDataAPIClient();
 
-    const updateResponse = dataApiClient
+    const updateResponse = await dataApiClient
         .query(...args);
 
     await updateAllQueries(dataApiClient);
