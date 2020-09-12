@@ -6,10 +6,10 @@ config:
   path: /${stage}/blog/config
 
   production:
-    AURORA_AUTO_PAUSE: "false"
+    AURORA_AUTO_PAUSE: "true"
 
   defaults:
-    AURORA_AUTO_PAUSE: "false"
+    AURORA_AUTO_PAUSE: "true"
     DATABASE_NAME: "blog"
 
   required:
