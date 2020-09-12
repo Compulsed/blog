@@ -23,6 +23,12 @@ if [ -z "${STAGE}" ]; then
       exit 1;
 fi
 
+if [[ $AWS_PROFILE && ($AWS_PROFILE != *$STAGE*) ]]; then
+    echo "ERROR: You have likely mistakenly used the wrong STAGE ($STAGE) for this AWS_PROFILE ($AWS_PROFILE)";
+    echo " To avoid incorrect stage deployments include the STAGE name within your AWS_PROFILE name."
+    exit 1;
+fi
+
 SERVICE_STACK_STACK="blog-$STAGE"
 BASTION_EC2_KEY_STACK="$SERVICE_STACK_STACK-bastion-ec2key"
 BASTION_STACK="$SERVICE_STACK_STACK-bastion"
