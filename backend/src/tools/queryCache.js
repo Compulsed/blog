@@ -7,8 +7,8 @@ const s3 = new AWS.S3();
 const _generateHash = args => 
     String(stringHash(JSON.stringify(args)))
 
-const getCacheValue = (args) => {
-    _getCacheValueByHash(_generateHash(args)).queryResult;
+const getCacheValue = async (args) => {
+    return (await _getCacheValueByHash(_generateHash(args))).queryResult;
 }
 
 const _getCacheValueByHash = async (hash) => {
