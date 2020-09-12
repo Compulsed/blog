@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eou pipefail
 
 STAGE=""
 
@@ -18,11 +18,13 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+set +u # AWS_PROFILE is not going to be set on CI, command will not fail
 if [[ $AWS_PROFILE && ($AWS_PROFILE != *$STAGE*) ]]; then
     echo "ERROR: You have likely mistakenly used the wrong STAGE ($STAGE) for this AWS_PROFILE ($AWS_PROFILE)";
     echo " To avoid incorrect stage deployments include the STAGE name within your AWS_PROFILE name."
     exit 1;
 fi
+set -u
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 #
