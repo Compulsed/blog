@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server-lambda');
 const _ = require('lodash');
-const { query } = require('./tools/dataApiClient');
+const { queryWithCache, queryNoCache, queryMutation } = require('./tools/dataApiClient');
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
 
@@ -82,8 +82,9 @@ const resolvers = {
     },
 
     Query: {
-        post: async (root, { postId }) => {       
-            const result = await query(`
+        // Public
+        post: async (root, { postId }) => {
+            const result = await queryWithCache(`
                 SELECT
                     *
                 FROM
@@ -101,7 +102,7 @@ const resolvers = {
                 return [];
             }
 
-            const result = await query(`
+            const result = await queryNoCache(`
                 SELECT
                     *
                 FROM
@@ -114,8 +115,9 @@ const resolvers = {
             return result.records[0];
         },
 
+        // Public
         posts: async () => {
-            const result = await query(`
+            const result = await queryWithCache(`
                 SELECT
                     *
                 FROM
@@ -135,7 +137,7 @@ const resolvers = {
                 return null;
             }
 
-            const result = await query(`
+            const result = await queryNoCache(`
                 SELECT
                     *
                 FROM
@@ -172,7 +174,7 @@ const resolvers = {
             if (!postId) return null;
 
             // # TODO: Remove duplication
-            const result = await query(
+            const result = await queryNoCache(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
             );
@@ -186,7 +188,7 @@ const resolvers = {
             if (!postId) return null;
 
             // # TODO: Remove duplication
-            const result = await query(
+            const result = await queryNoCache(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
             );
@@ -200,7 +202,7 @@ const resolvers = {
             if (!postId) return null;
 
             // # TODO: Remove duplication
-            const result = await query(
+            const result = await queryNoCache(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
             );
@@ -214,7 +216,7 @@ const resolvers = {
             if (!postId) return null;
 
             // # TODO: Remove duplication
-            const result = await query(
+            const result = await queryNoCache(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
             );
@@ -244,7 +246,7 @@ const resolvers = {
             }
 
             try {
-                await query(`
+                await queryMutation(`
                     INSERT INTO "post" (
                         "postId",
                         "title",
@@ -301,7 +303,7 @@ const resolvers = {
             }
 
             try {
-                await query(`
+                await queryMutation(`
                     UPDATE
                         "post"
                     SET 
@@ -339,7 +341,7 @@ const resolvers = {
             const postId = args.postId;
 
             try {
-                await query(`
+                await queryMutation(`
                     UPDATE
                         "post"
                     SET 
@@ -374,7 +376,7 @@ const resolvers = {
             const postId = args.postId;
 
             try {
-                await query(`
+                await queryMutation(`
                     UPDATE
                         "post"
                     SET 

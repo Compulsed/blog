@@ -29,6 +29,12 @@ provider:
       Action:
         - s3:PutObject
       Resource: arn:aws:s3:::${self:custom.S3.imageBucketName}*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: arn:aws:s3:::${self:custom.S3.queryCache}*
+
 
   environment:
     STACK_NAME: ${self:provider.stackName}
@@ -61,6 +67,7 @@ custom:
     PublicSubnet5CIDR: "10.192.15.0/24"
   S3:
     imageBucketName: ${self:provider.stackName}-image-bucket
+    queryCache: ${self:provider.stackName}-query-cache-bucket
 
 plugins:
   - serverless-offline
@@ -94,6 +101,7 @@ functions:
       DATABASE_PORT: !GetAtt "DatabaseCluster.Endpoint.Port"        # not used - but for waiting until DB is done
       FRONTEND_AUTH_SECRET: ${ssm:/${self:provider.configPath}/FRONTEND_AUTH_SECRET }
       IMAGE_BUCKET_NAME: ${self:custom.S3.imageBucketName}
+      QUERY_CACHE_BUCKET: ${self:custom.S3.queryCache}
 
 package:
   include:
@@ -162,6 +170,14 @@ resources:
         SecretId: { Ref: DatabaseSecret }
         TargetId: { Ref: DatabaseCluster }
         TargetType: AWS::RDS::DBCluster
+
+    ################
+    # Query Cache
+    ################
+    QueryCacheBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.S3.queryCache}
 
     ################
     # Image Storage

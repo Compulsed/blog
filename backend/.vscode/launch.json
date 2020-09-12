@@ -40,7 +40,9 @@
                 "./node_modules/.bin/serverless",
                 "offline",
                 "-s",
-                "${env:STAGE}"
+                "dev",
+                "-P",
+                "4000"
             ],
             "outFiles": [
                 "${workspaceFolder}/handler.js"
@@ -48,7 +50,7 @@
             "port": 9229,
             "sourceMaps": true,
             "args": [],
-            "envFile": "${workspaceFolder}/.secrets/.env.dev"
+            "envFile": "${workspaceFolder}/.env.dev"
         },
         {
             "type": "node",

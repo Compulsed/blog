@@ -9,7 +9,7 @@ config:
     AURORA_AUTO_PAUSE: "false"
 
   defaults:
-    AURORA_AUTO_PAUSE: "true"
+    AURORA_AUTO_PAUSE: "false"
     DATABASE_NAME: "blog"
 
   required:
