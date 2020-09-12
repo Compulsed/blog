@@ -1,6 +1,8 @@
 # Blog
 [![Build status](https://badge.buildkite.com/0d04ab9bd8fb4277716aad48dfb0c3a38efaafa030013e507a.svg?step=Staging)](https://buildkite.com/dale-salter/blog-merge)
 
+[![License](https://img.shields.io/github/license/Compulsed/blog.svg)](https://github.com/Compulsed/blog/blob/master/LICENSE)
+
 ## Information
 
 This is the public repo for [dalejsalter.com](https://dalejsalter.com).
