@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import { Header } from '../../components/layout/header';
-import { Footer } from '.../../components/layout/footer';
+import { Footer } from '../../components/layout/footer';
 import { PostCard } from '../../components/card';
 import { CenterSpinner } from '../../components/spinner';
 
