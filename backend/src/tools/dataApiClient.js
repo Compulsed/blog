@@ -1,6 +1,7 @@
 const { logger } = require('./logger');
 const { getDatabaseSecretArn } = require('./getDatabaseSecretArn');
 const { getCacheValue, persistCacheValue, updateAllQueries } = require('./queryCache');
+const _ = require('lodash');
 
 const makedataAPIClient = async () => {
     const databaseSecretARN = await getDatabaseSecretArn();
@@ -12,8 +13,8 @@ const makedataAPIClient = async () => {
     });
 }
 
-// Cached per container
-const dataAPIClientPromise = makedataAPIClient();
+// Cached per container, lazy evaluation as initialisation connects to db
+const getDataAPIClient = _.memoize(makedataAPIClient);
 
 const queryWithCache = async (...args) => {
     logger.info('queryWithCache: ', args[0], args[1] && args[1].length);
@@ -24,7 +25,9 @@ const queryWithCache = async (...args) => {
         return cache;
     }
     
-    const queryResult = await (await dataAPIClientPromise)
+    logger.info('queryWithCache: Cache Miss');
+
+    const queryResult = await (await getDataAPIClient())
         .query(...args);
     
     await persistCacheValue(args, queryResult);
@@ -35,7 +38,7 @@ const queryWithCache = async (...args) => {
 const queryNoCache = async (...args) => {
     logger.info('queryNoCache: ', args[0], args[1] && args[1].length);
 
-    const dataApiClient = await dataAPIClientPromise;
+    const dataApiClient = await getDataAPIClient();
     
     return dataApiClient
         .query(...args);
@@ -44,7 +47,7 @@ const queryNoCache = async (...args) => {
 const queryMutation = async (...args) => {
     logger.info('queryMutation: ', args[0], args[1] && args[1].length);
 
-    const dataApiClient = await dataAPIClientPromise;
+    const dataApiClient = await getDataAPIClient();
 
     const updateResponse = dataApiClient
         .query(...args);
