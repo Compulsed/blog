@@ -9,7 +9,7 @@ export const PostCard = ({ post, highlightHover = false, editMode }) => {
       <Link href={!editMode ? '/post/[id]' : '/admin/post/[id]'} as={!editMode ? `/post/${post.postId}`: `/admin/post/${post.postId}`} passHref>
         <ArticleLink>
           <ArticleCard highlightHover={highlightHover && post.publishStatus !== 'PUBLISHED' }>
-            { editMode &&
+            { (editMode || post.publishStatus !== 'PUBLISHED') &&
               <Row>
                 <Col sm={10}>
                   { post.publishStatus === 'DRAFT' &&
