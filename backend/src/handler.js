@@ -18,6 +18,7 @@ const typeDefs = gql`
         createdAt: String
         updatedAt: String
         publishStatus: String
+        availableWithLink: Boolean
     }   
 
     type Query {
@@ -41,35 +42,20 @@ const typeDefs = gql`
         imageUrl: String
     }
 
-    type CreatePostResponse {
-        status: Boolean!
-        errorMessage: String
-        post: Post
-    }
-
     type UpdatePostResponse {
         status: Boolean!
         errorMessage: String
         post: Post
     }
 
-    type HidePostResponse {
-        status: Boolean!
-        errorMessage: String
-        post: Post
-    }
-
-    type PublishPostResponse {
-        status: Boolean!
-        errorMessage: String
-        post: Post
-    }
-
     type Mutation {
-        createPost (postInput: PostInput!, secret: String!): CreatePostResponse!
+        createPost (postInput: PostInput!, secret: String!): UpdatePostResponse!
         updatePost (postInput: PostInput!, secret: String!): UpdatePostResponse!
         publishPost (postId: String!, secret: String!): UpdatePostResponse!
         hidePost (postId: String!, secret: String!): UpdatePostResponse!
+        unhidePost (postId: String!, secret: String!): UpdatePostResponse!
+        setAvailableWithLink (postId: String!, secret: String!): UpdatePostResponse!
+        removeAvailableWithLink (postId: String!, secret: String!): UpdatePostResponse!
     }
 `;
 
@@ -82,7 +68,6 @@ const resolvers = {
     },
 
     Query: {
-        // Public
         post: async (root, { postId }) => {
             const result = await queryWithCache(`
                 SELECT
@@ -90,7 +75,7 @@ const resolvers = {
                 FROM
                     "post"
                 WHERE
-                    "postId" = :postId::uuid AND "publishStatus" = 'PUBLISHED'`,
+                    "postId" = :postId::uuid AND ("publishStatus" = 'PUBLISHED' OR "availableWithLink" = true)`,
                 { postId }
             );
 
@@ -115,7 +100,6 @@ const resolvers = {
             return result.records[0];
         },
 
-        // Public
         posts: async () => {
             const result = await queryWithCache(`
                 SELECT
@@ -169,25 +153,10 @@ const resolvers = {
         }
     },
 
-    CreatePostResponse: {
-        post: async ({ postId }) => {
-            if (!postId) return null;
-
-            // # TODO: Remove duplication
-            const result = await queryNoCache(
-                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
-                { postId }
-            );
-
-            return result && result.records && result.records[0] || null;
-        }
-    },
-
     UpdatePostResponse: {
         post: async ({ postId }) => {
             if (!postId) return null;
 
-            // # TODO: Remove duplication
             const result = await queryNoCache(
                 `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
                 { postId }
@@ -196,34 +165,6 @@ const resolvers = {
             return result && result.records && result.records[0] || null;
         }
     },
-
-    PublishPostResponse: {
-        post: async ({ postId }) => {
-            if (!postId) return null;
-
-            // # TODO: Remove duplication
-            const result = await queryNoCache(
-                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
-                { postId }
-            );
-
-            return result && result.records && result.records[0] || null;
-        }
-    },
-
-    HidePostResponse: {
-        post: async ({ postId }) => {
-            if (!postId) return null;
-
-            // # TODO: Remove duplication
-            const result = await queryNoCache(
-                `SELECT * FROM "post" WHERE "postId" = :postId::uuid`,
-                { postId }
-            );
-
-            return result && result.records && result.records[0] || null;
-        }
-    },    
 
     Mutation: {
         createPost: async (root, args, context) => {
@@ -349,7 +290,7 @@ const resolvers = {
                         "createdAt"         = :createdAt::timestamp,
                         "updatedAt"         = null
                     WHERE
-                        "postId" = :postId::uuid;
+                        "postId" = :postId::uuid AND 'DRAFT';
                     `,
                     [ { postId, createdAt: new Date().toISOString() } ]
                 );
@@ -382,6 +323,73 @@ const resolvers = {
                     SET 
                         "publishStatus" = 'HIDDEN'
                     WHERE
+                        "postId" = :postId::uuid AND "publishStatus" = 'PUBLISHED';
+                    `,
+                    [ { postId } ]
+                );
+
+                return {
+                    status: true,
+                    postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        },
+        unhidePost: async (root, args, context) => {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const postId = args.postId;
+
+            try {
+                await queryMutation(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "publishStatus" = 'PUBLISHED'
+                    WHERE
+                        "postId" = :postId::uuid AND "publishStatus" = 'HIDDEN';
+                    `,
+                    [ { postId } ]
+                );
+
+                return {
+                    status: true,
+                    postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        },
+
+        setAvailableWithLink: async (root, args, context) => {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const postId = args.postId;
+
+            try {
+                await queryMutation(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "availableWithLink" = true
+                    WHERE
                         "postId" = :postId::uuid;
                     `,
                     [ { postId } ]
@@ -397,7 +405,41 @@ const resolvers = {
                     errorMessage: err.message,
                 };
             }
-        }        
+        },
+
+        removeAvailableWithLink: async (root, args, context) => {
+            if (args.secret !== process.env.FRONTEND_AUTH_SECRET) {
+                return {
+                    status: false,
+                    errorMessage: 'Invalid Secret',
+                };
+            }
+
+            const postId = args.postId;
+
+            try {
+                await queryMutation(`
+                    UPDATE
+                        "post"
+                    SET 
+                        "availableWithLink" = false
+                    WHERE
+                        "postId" = :postId::uuid;
+                    `,
+                    [ { postId } ]
+                );
+
+                return {
+                    status: true,
+                    postId,
+                };
+            } catch (err) {
+                return {
+                    status: false,
+                    errorMessage: err.message,
+                };
+            }
+        },
     }
 };
 

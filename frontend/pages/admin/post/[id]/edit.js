@@ -11,6 +11,7 @@ import { Button, Form, Container, Row, Col, Spinner, Badge } from 'react-bootstr
 import { Header } from '../../../../components/layout/header';
 import { Footer } from '../../../../components/layout/footer';
 import { CenterSpinner } from '../../../../components/spinner';
+import { POST_FRAGMENT } from '../../../../libs/fragments';
 
 import axios from 'axios';
 
@@ -20,21 +21,14 @@ const GET_SIGNED_URL = gql`
   }
 `;
 
-const GET_POSTS = gql`
+const GET_POST = gql`
   query($postId: String!, $secret: String!) {
     editorPost(postId: $postId, secret: $secret) {
-        id
-        postId
-        title
-        shortDescription
-        longDescription
-        imageUrl
-        body
-        createdAt
-        updatedAt
-        publishStatus
+      ...PostParts
     }
   }
+
+  ${POST_FRAGMENT}
 `;
 
 const UPDATE_POST = gql`
@@ -42,41 +36,41 @@ const UPDATE_POST = gql`
         updatePost (postInput: $postInput, secret: $secret) {
             status
             post {
-                id
-                postId
-                title
-                shortDescription
-                longDescription
-                imageUrl
-                body
-                createdAt
-                updatedAt
-                publishStatus
+              ...PostParts
             }
             errorMessage
         }
     }
+
+    ${POST_FRAGMENT}
 `;
 
 const HIDE_POST = gql`
+  mutation ($postId: String!, $secret: String!) {
+      hidePost (postId: $postId, secret: $secret) {
+          status
+          post {
+            ...PostParts
+          }
+          errorMessage
+      }
+  }
+
+  ${POST_FRAGMENT}
+`;
+
+const UNHIDE_POST = gql`
     mutation ($postId: String!, $secret: String!) {
-        hidePost (postId: $postId, secret: $secret) {
+        unhidePost (postId: $postId, secret: $secret) {
             status
             post {
-                id
-                postId
-                title
-                shortDescription
-                longDescription
-                imageUrl
-                body
-                createdAt
-                updatedAt
-                publishStatus
+              ...PostParts
             }
             errorMessage
         }
     }
+
+    ${POST_FRAGMENT}
 `;
 
 const PUBLISH_POST = gql`
@@ -84,20 +78,38 @@ const PUBLISH_POST = gql`
         publishPost (postId: $postId, secret: $secret) {
             status
             post {
-                id
-                postId
-                title
-                shortDescription
-                longDescription
-                imageUrl
-                body
-                createdAt
-                updatedAt
-                publishStatus
+              ...PostParts
             }
             errorMessage
         }
     }
+    ${POST_FRAGMENT}
+`;
+
+const SET_AVAILABLE_WITH_LINK = gql`
+    mutation ($postId: String!, $secret: String!) {
+        setAvailableWithLink (postId: $postId, secret: $secret) {
+          status
+          post {
+            ...PostParts
+          }
+          errorMessage
+        }
+    }
+    ${POST_FRAGMENT}
+`;
+
+const REMOVE_AVAILABLE_WITH_LINK = gql`
+    mutation ($postId: String!, $secret: String!) {
+        removeAvailableWithLink (postId: $postId, secret: $secret) {
+          status
+          post {
+            ...PostParts
+          }
+          errorMessage
+        }
+    }
+    ${POST_FRAGMENT}
 `;
 
 const ImageUploader = () => {
@@ -164,11 +176,21 @@ const ImageUploader = () => {
 const PostForm = ({ post }) => {   
     const [updatePost, { data: updatePostData, loading: updatePostLoading }] = useMutation(UPDATE_POST);
     const [hidePost, { data: hidePostData, loading: hidePostloading }] = useMutation(HIDE_POST);
+    const [unhidePost, { data: unhidePostData, loading: unhidePostloading }] = useMutation(UNHIDE_POST);
     const [publishPost, { data: publishPostData, loading: publishPostloading }] = useMutation(PUBLISH_POST);
+    const [setAvailableWithLink, { data: setAvailableWithLinkData, loading: setAvailableWithLinkLoading }] = useMutation(SET_AVAILABLE_WITH_LINK);
+    const [removeAvailableWithLink, { data: removeAvailableWithLinkData, loading: removeAvailableWithLinkLoading }] = useMutation(REMOVE_AVAILABLE_WITH_LINK);
 
     const [debouncedUpdatePost] = useDebouncedCallback(updatePost, 5000);
 
-    const loading = updatePostLoading || hidePostloading || publishPostloading;
+    const loading = (
+      updatePostLoading ||
+      hidePostloading ||
+      publishPostloading ||
+      unhidePostloading ||
+      setAvailableWithLinkLoading ||
+      removeAvailableWithLinkLoading
+    );
 
     const handleSubmit = (type, event) => {
         event.preventDefault();
@@ -196,17 +218,43 @@ const PostForm = ({ post }) => {
         }
     };
 
-    const handlePublishAction = (action) => {
+    const handlePostVisibilityOption = (action) => {
       const secret = localStorage.getItem('_password');
 
-      if (action === 'HIDE') {
-        hidePost({ variables: { postId: post.postId, secret } });
-      }
-
-      if (action === 'PUBLISH') {
-        if (confirm('Are you sure you want to post this?')){
-          publishPost({ variables: { postId: post.postId, secret } });
+      switch (action) {
+        case 'PUBLISH': {
+          if (confirm('Are you sure you want to publish this post?')) {
+             publishPost({ variables: { postId: post.postId, secret } });
+          }
         }
+        case 'HIDE': {
+          if (confirm('Are you sure you want to hide this post?')) {
+            hidePost({ variables: { postId: post.postId, secret } });
+          }
+          return;
+        }
+
+        case 'UNHIDE': {
+          if (confirm('Are you sure you want to unhide this post?')) {
+            unhidePost({ variables: { postId: post.postId, secret } });
+          }
+          return;
+        }
+        default: console.log('Unsupported publish action');
+      }
+    }
+
+    const handleLinkAvailability = (action) => {
+      const secret = localStorage.getItem('_password');
+
+      switch (action) {
+        case 'SET': {
+          return setAvailableWithLink({ variables: { postId: post.postId, secret } });
+        }
+        case 'REMOVE': {
+          return removeAvailableWithLink({ variables: { postId: post.postId, secret } });
+        }
+        default: console.log('Unsupported publish action');
       }
     }
 
@@ -218,16 +266,32 @@ const PostForm = ({ post }) => {
                   <Badge variant="primary">PUBLISHED</Badge>
               }              
               { post.publishStatus === 'DRAFT' &&
-                  <Badge variant="light">DRAFT</Badge>
+                  <Badge variant="light">DRAFT{ post.availableWithLink && ', LINKABLE' }</Badge>
               }
               { post.publishStatus === 'HIDDEN' &&
-                  <Badge variant="dark">HIDDEN</Badge>
+                <Badge variant="dark">HIDDEN{ post.availableWithLink && ', LINKABLE' }</Badge>
               }                
             </Col>
 
             <Col sm={6}>
+              { (post.publishStatus !== 'PUBLISHED' && post.availableWithLink === false) &&
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handleLinkAvailability('SET')}>
+                { !loading
+                    ? "Allow Public Link"
+                    : <Spinner size="sm" animation="border" variant="dark" />}
+                </Button>
+              }
+
+              { (post.publishStatus !== 'PUBLISHED' && post.availableWithLink === true) &&
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handleLinkAvailability('REMOVE')}>
+                { !loading
+                    ? "Delete Public Link"
+                    : <Spinner size="sm" animation="border" variant="dark" />}
+                </Button>
+              }
+
               { post.publishStatus === 'PUBLISHED' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('HIDE')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePostVisibilityOption('HIDE')}>
                 { !loading
                     ? "Hide"
                     : <Spinner size="sm" animation="border" variant="dark" />}
@@ -235,7 +299,7 @@ const PostForm = ({ post }) => {
               }
 
               { post.publishStatus === 'DRAFT' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('PUBLISH')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePostVisibilityOption('PUBLISH')}>
                 { !loading
                     ? "Publish"
                     : <Spinner size="sm" animation="border" variant="dark" />}
@@ -243,9 +307,9 @@ const PostForm = ({ post }) => {
               }
 
               { post.publishStatus === 'HIDDEN' &&
-                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePublishAction('PUBLISH')}>
+                <Button className="ml-2" style={{ float: 'right' }} variant="light" onClick={() => handlePostVisibilityOption('UNHIDE')}>
                 { !loading
-                    ? "Re-Publish"
+                    ? "Unhide"
                     : <Spinner size="sm" animation="border" variant="dark" />}
                 </Button>
               }  
@@ -302,7 +366,7 @@ const PostForm = ({ post }) => {
 
 function Post({ router }) {
   const { loading, error, data } = useQuery(
-    GET_POSTS,
+    GET_POST,
     { variables: { postId: router.query.id, secret: localStorage.getItem('_password') } }
   );
 
