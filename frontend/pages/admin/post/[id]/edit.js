@@ -342,10 +342,6 @@ const PostForm = ({ post }) => {
                   <Form.Control as="textarea" rows="50" defaultValue={post.body} />
               </Form.Group>                
 
-              <hr className="mt-5 mb-2"></hr>
-                <ImageUploader />
-              <hr className="mt-2 mb-5"></hr>
-
               <div>
                 <Button variant="dark" type="submit">
                     { !loading
@@ -359,7 +355,13 @@ const PostForm = ({ post }) => {
               </div>
               
           </Form>
-        </div>   
+
+          <hr className="mt-5 mb-2"></hr>
+            <h4>Image Uploader</h4>
+            <ImageUploader />
+          <hr className="mt-2 mb-5"></hr>
+
+        </div>           
     )
 }
 
