@@ -45,7 +45,7 @@ export const StyledReactMarkdown = styled(ReactMarkdown)`
   }
 
   ul {
-    margin-top: 0px;
+    margin-top: -15px;
   }
   
   p {
