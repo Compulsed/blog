@@ -4,14 +4,12 @@ import { gql, useQuery } from '@apollo/client';
 import { withRouter } from 'next/router'
 import Disqus from "disqus-react"
 
-import ReactMarkdown from 'react-markdown/with-html';
-import styled from 'styled-components'
-
 import { Container, Row, Col } from 'react-bootstrap';
 import { Header } from '../../components/layout/header';
 import { Footer } from '../../components/layout/footer';
 import { PostCard } from '../../components/card';
 import { CenterSpinner } from '../../components/spinner';
+import { BlogMarkdown } from '../../components/blog-markdown';
 
 const GET_POSTS = gql`
   query($postId: String!) {
@@ -77,7 +75,7 @@ function Post({ router }) {
               </Row>              
               <Row>
                 <Col style={{ padding: 10 }}>
-                  <StyledReactMarkdown escapeHtml={false} source={post.body} />
+                  <BlogMarkdown escapeHtml={false} source={post.body} />
                 </Col>
               </Row>
               <Row>
@@ -94,66 +92,5 @@ function Post({ router }) {
     </div>
   )
 }
-
-const StyledReactMarkdown = styled(ReactMarkdown)`
-  padding 20px;
-  box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
-
-  h1 {
-    font-size: 24px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  h3 {
-    font-size: 16px;
-  }
-
-  h4 {
-    font-size: 14px;
-  }
-
-  h5 {
-    font-size: 12px;
-  }
-
-  img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
-  }
-`
-
-const ArticleImage = styled.img`
-  width: 100%;
-`
-
-const ArticleLink = styled.a`
-  text-decoration: none;
-  color: inherit;
-  outline: 0;
-  cursor: auto;
-
-  :hover {
-    text-decoration: none;
-    color: inherit;
-    outline: 0;
-    cursor: auto;
-  }
-`
-
-const ArticleCard = styled.div`
-  padding 20px;
-  border-radius: 5px;
-  box-shadow: 0px 3px 15px rgba(0,0,0,0.01);
-  border: 1px solid #d0d0d0;
-
-  :hover {
-    cursor: pointer;
-  }
-`
 
 export default withRouter(Post);

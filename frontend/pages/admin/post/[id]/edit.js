@@ -192,30 +192,30 @@ const PostForm = ({ post }) => {
       removeAvailableWithLinkLoading
     );
 
-    const handleSubmit = (type, event) => {
-        event.preventDefault();
-        event.stopPropagation();
+    const handleFormAction = (type, event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-        const form = event.currentTarget;
+      const form = event.currentTarget;
 
-        const postInput = {
-            postId: post.postId,
-            title: form.elements.title.value,
-            imageUrl: form.elements.imageUrl.value,
-            shortDescription: form.elements.shortDescription.value,
-            longDescription: form.elements.longDescription.value,
-            body: form.elements.body.value
-        };
+      const postInput = {
+          postId: post.postId,
+          title: form.elements.title.value,
+          imageUrl: form.elements.imageUrl.value,
+          shortDescription: form.elements.shortDescription.value,
+          longDescription: form.elements.longDescription.value,
+          body: form.elements.body.value
+      };
 
-        const secret = localStorage.getItem('_password');
+      const secret = localStorage.getItem('_password');
 
-        if (post.publishStatus !== 'PUBLISHED' && type === 'change') {
-          debouncedUpdatePost({ variables: { postInput, secret } });
-        }
+      if (post.publishStatus !== 'PUBLISHED' && type === 'change') {
+        debouncedUpdatePost({ variables: { postInput, secret } });
+      }
 
-        if (type === 'submit') {
-          updatePost({ variables: { postInput, secret } });
-        }
+      if (type === 'submit') {
+        updatePost({ variables: { postInput, secret } });
+      }
     };
 
     const handlePostVisibilityOption = (action) => {
@@ -316,7 +316,7 @@ const PostForm = ({ post }) => {
             </Col>
           </ Row>
 
-          <Form className="mb-5" onSubmit={e => handleSubmit('sumbit', e)} onChange={e => handleSubmit('change', e)}>
+          <Form className="mb-5" onSubmit={e => handleFormAction('submit', e)} onChange={e => handleFormAction('change', e)}>
               <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control type="text"  defaultValue={post.title} />

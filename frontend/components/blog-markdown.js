@@ -11,32 +11,32 @@ export const StyledReactMarkdown = styled(ReactMarkdown)`
 
   h1 {
     font-size: 28px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 0px;
   }
 
   h2 {
     font-size: 20px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 0px;
   }
 
   h3 {
     font-size: 16px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 0px;
   }
 
   h4 {
     font-size: 14px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 0px;
   }
 
   h5 {
     font-size: 12px;
-    margin-top: 40px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 0px;
   }
 
   a {
@@ -45,16 +45,25 @@ export const StyledReactMarkdown = styled(ReactMarkdown)`
   }
 
   ul {
-    margin-top: -25px;
-    margin-bottom: 40px;
+    margin-top: 0px;
   }
   
-  p {
-    margin-bottom: 25px;
+  p, ul {
+    margin-top: 15px;
+  }
+
+  li > ul {
+    margin-top: 0px;
+  }
+
+  input[type=checkbox] {
+    margin-right: 10px;
   }
 
   img {
     display: block;
+    margin-top: 25px;
+    margin-bottom: 25px;
     margin-left: auto;
     margin-right: auto;
     width: 80%;
